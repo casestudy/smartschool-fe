@@ -1,4 +1,20 @@
 .gutter-box {
-    padding: 8px 0;
+    padding: 5px 0;
     background: #00a0e9;
-  }
+}
+
+.gutter-box:hover {
+	background-color: darkblue;
+	border: 5px solid black;
+}
+
+.app-menu-link {
+	color: black;
+}
+
+.app-menu-link:hover {
+	color: black;
+	background: darkblue;
+	background-color: darkblue;
+	border: 5px solid black;
+}
