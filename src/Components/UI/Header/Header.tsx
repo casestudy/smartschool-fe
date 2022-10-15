@@ -26,12 +26,12 @@ import './Header.css';
 interface Prop {
     title: string;
 	lastlogin?: string;
-	menu?: React.ReactNode;
+	loggedin: boolean;
 }
 
 const { Title } = Typography;
 
-const Header: React.FC<Prop> = ({title, lastlogin}) => {
+const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 	const [collapsed, setCollapsed] = useState(false);
 
     const toggleCollapsed = () => {
@@ -40,7 +40,6 @@ const Header: React.FC<Prop> = ({title, lastlogin}) => {
     };
 
 	const appsMenu = () => {
-		console.log("I clicked on the menu");
 		toggleCollapsed();
 	}
 
@@ -77,6 +76,7 @@ const Header: React.FC<Prop> = ({title, lastlogin}) => {
 				}
 			]
 		},
+		loggedin?
 		{
 			key: 'profile',
 			icon: <User/>,
@@ -102,7 +102,11 @@ const Header: React.FC<Prop> = ({title, lastlogin}) => {
 					key: 'darkmode'
 				}
 			]
-		},
+		}:{key:'', style:{display: 'none'}},
+		loggedin? {key: 'menu', icon: <MenuIcon/>, onClick: appsMenu} : {key:'', style:{display: 'none'}},
+	] ;
+
+	const appMenu: MenuProps['items'] = [
 		{
 			key: 'menu',
 			icon: <MenuIcon/>,

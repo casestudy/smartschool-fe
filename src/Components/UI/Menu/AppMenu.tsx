@@ -41,14 +41,18 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 					right: "0px", 
 					marginRight: "4px", 
 					visibility: `${visibility}`, 
-					border: "2px solid black",
+					border: "2px solid #dcdcdc",
 					borderRadius: "15px",
 					maxHeight: "calc(-65px + 100vh)"}}>
 				
                 <Row gutter={16}>
 					<Col span={8} className="gutter-row">
-						<Row justify="center" align="middle" style={styleIcon}><AdminIcon/></Row>
-						<Row justify="center" style={styleLabel}>Administrators</Row>
+						<Link to="/roles" className="app-menu-link">
+							<div className="app-menu-item-container">
+								<Row justify="center" align="middle" style={styleIcon}><AdminIcon/></Row>
+								<Row justify="center" style={styleLabel}>Administrators</Row>
+							</div>
+						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Row justify="center" align="middle" style={styleIcon}><TeacherIcon/></Row>

@@ -10,7 +10,7 @@ const LoginScreen: React.FC<any> = () => {
     //const collapsed : boolean = localStorage.getItem("collapsed") === "true"? true : false;
     return (
         <Flex>
-            <Header title='Login'></Header>
+            <Header title='Login' loggedin={false}></Header>
             {/* <LeftMenu collapsed={collapsed}/> */}
         </Flex>
     );
