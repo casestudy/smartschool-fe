@@ -1,0 +1,13 @@
+.last-login {
+    color: white !important;
+}
+
+.last-login:hover {
+    color: white !important;
+    text-decoration: none !important;
+    border: none !important;
+}
+
+.ant-menu-horizontal, .ant-menu-item::after, .ant-menu-submenu::after {
+    border: none !important;
+}
