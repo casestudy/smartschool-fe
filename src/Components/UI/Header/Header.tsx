@@ -36,7 +36,6 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
-		//localStorage.setItem("collapsed", collapsed.toString());
     };
 
 	const appsMenu = () => {
@@ -106,14 +105,6 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 		loggedin? {key: 'menu', icon: <MenuIcon/>, onClick: appsMenu} : {key:'', style:{display: 'none'}},
 	] ;
 
-	const appMenu: MenuProps['items'] = [
-		{
-			key: 'menu',
-			icon: <MenuIcon/>,
-			onClick: appsMenu
-		}
-	] ;
-
     return (
         <HeaderContainer>
 			<div
@@ -128,7 +119,6 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					borderBottomRightRadius: "93px",
         		}}
 			>
-				{/* <JustifyIcon onClick={toggleCollapsed} collapsed={!collapsed}/> */}
 				<Title
 					level={4}
 					style={{
