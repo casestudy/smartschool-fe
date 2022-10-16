@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Divider, Typography } from 'antd';
 
 import User from '../UI/Icons/User';
 import Lock from '../UI/Icons/Lock';
@@ -36,18 +36,20 @@ interface CustomizedFormProps {
 	onChange: (fields: FieldData[]) => void;
 	fields: FieldData[];
 	button: boolean;
+	finish: any;
 }
 
+const { Paragraph } = Typography;
 
-
-const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, button }) => (
+const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, button, finish }) => (
     <>
 		<Form 
 			name='loginform'
 			fields={fields}
 			onFieldsChange={(_, allFields) => {
 				onChange(allFields);
-			}}>
+			}}
+			onFinish={finish}>
 
 			<Form.Item
 				name="username"
@@ -67,6 +69,20 @@ const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, butto
 				</Button>
 			</Form.Item>
 
+			<Divider
+				type="horizontal"
+				style={{
+					backgroundColor: "#000",
+					width: "0.1rem",
+					height: "0.1rem",
+					margin: "0 0 0 0",
+				}}
+			/>
+
+			<Paragraph style={{textAlign: 'left', fontSize: '11px', paddingTop: '10px'}}>This system is for the use of authorized users only. 
+					By clicking on the Login button above and logging, you agree to the terms and conditions of both your 
+					institution and that of Smart Systems.</Paragraph>
+
 		</Form>
     </>
 );
@@ -74,6 +90,10 @@ const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, butto
 const LoginForm: React.FC = () => {
 	const [fields, setFields] = useState<FieldData[]>([{ name: ['username'], value: '' },{ name: ['password'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
+
+	const onFinish = (values: any) => {
+		console.log('Success:', values);
+	};
 
 	return (
 		<>
@@ -88,6 +108,7 @@ const LoginForm: React.FC = () => {
 					}
 				}}
 				button={disabled}
+				finish={onFinish}
 			/>
 		</>
 	);

@@ -13,7 +13,6 @@ import LockIcon from '../Icons/Lock';
 import LogoutIcon from '../Icons/Logout';
 import ProfileIcon from '../Icons/Profile';
 import MoonIcon from '../Icons/Moon';
-//import JustifyIcon from '../Icons/Justify';
 import MenuIcon from '../Icons/Menu';
 
 import Label from '../Label/Label';
