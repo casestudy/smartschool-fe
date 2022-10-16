@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { UserOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
+import { SizeType } from 'antd/lib/config-provider/SizeContext';
 
-const App: React.FC = () => (
+interface Prop {
+	size: SizeType;
+	holder: string;
+	type?: string;
+	prefix: ReactNode;
+}
+
+const App: React.FC<Prop> = ({size, holder, type, prefix}) => (
   <>
-    <Input size="large" placeholder="large size" prefix={<UserOutlined />} />
-    <br />
-    <br />
-    <Input placeholder="default size" prefix={<UserOutlined />} />
-    <br />
-    <br />
-    <Input size="small" placeholder="small size" prefix={<UserOutlined />} />
+    	<Input type={type} size={size} placeholder={holder} prefix={prefix} />
   </>
 );
 

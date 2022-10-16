@@ -1,6 +1,6 @@
-import React, { useState, MouseEventHandler } from 'react';
+import React, { useState } from 'react';
 
-import { Collapse, Typography } from 'antd';
+import { Typography } from 'antd';
 import { Divider } from 'antd';
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
@@ -78,7 +78,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 		loggedin?
 		{
 			key: 'profile',
-			icon: <User/>,
+			icon: <User color='#fff' size='22px' line='33px'/>,
 			children: [
 				{
 					icon: <ProfileIcon/>,
@@ -91,7 +91,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					key: 'logout'
 				},
 				{
-					icon: <LockIcon/>,
+					icon: <LockIcon color='#fff' size='22px' line='33px'/>,
 					label: <Label value='Lock Screen'/>,
 					key: 'lockscreen'
 				},
@@ -101,8 +101,8 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					key: 'darkmode'
 				}
 			]
-		}:{key:'', style:{display: 'none'}},
-		loggedin? {key: 'menu', icon: <MenuIcon/>, onClick: appsMenu} : {key:'', style:{display: 'none'}},
+		}:{key:'profile', style:{display: 'none'}},
+		loggedin? {key: 'menu', icon: <MenuIcon/>, onClick: appsMenu} : {key:'menu', style:{display: 'none'}},
 	] ;
 
     return (

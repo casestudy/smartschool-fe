@@ -1,15 +1,16 @@
 import React from 'react';
-import { UserOutlined } from '@ant-design/icons';
+import { LoginOutlined } from '@ant-design/icons';
 
 interface Prop {
 	color: string;
 	size: string;
 	line: string;
+    padding: string;
 }
 
-const GlobeIcon: React.FC<Prop> = ({color, size, line}) => {
+const LogInIcon:  React.FC<Prop> = ({color, size, line, padding}) => {
   const AppIcon = () => (
-        <UserOutlined
+        <LoginOutlined
             style={{
                 color: `${color}`,
                 fontFamily: "Open Sans",
@@ -17,13 +18,11 @@ const GlobeIcon: React.FC<Prop> = ({color, size, line}) => {
                 fontWeight: 800,
                 fontSize: `${size}`,
                 lineHeight: `${line}`,
-                padding: "0.5rem 0 0 0"
+                padding: `${padding}`,
             }}
         />	
   );
   return <AppIcon/>;
 };
 
-export default GlobeIcon;
-
-//#fff, size: 20px line 33px
+export default LogInIcon;
