@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
-import { Form, Input, Button, Divider, Typography } from 'antd';
+import { Form, Input, Button, Divider, Typography, Modal, Spin } from 'antd';
 
 import User from '../UI/Icons/User';
 import Lock from '../UI/Icons/Lock';
 import Login from '../UI/Icons/Login';
+import Danger from '../UI/Icons/Danger';
+
+import { useAppDispatch, useAppSelector} from '../../State/Hooks';
+import { loginUserAsync } from '../../State/Thunks/LoginThunk';
+import { magik } from '../../AppEnv';
+
+import './LoginForm.css'
 
 interface Prop {
   
@@ -54,13 +60,13 @@ const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, butto
 			<Form.Item
 				name="username"
 				rules={[{ required: true, message: 'Please input your Username!' }]} style={{textAlign: "left"}}>
-				<Input size='small' prefix={<User color='#000' size='18px' line='20px' />} placeholder="Username" style={{borderRadius: "5px"}}/>
+				<Input prefix={<User color='#000' size='18px' line='20px' />} placeholder="Username" style={{borderRadius: "5px"}}/>
 			</Form.Item>
 
 			<Form.Item
 				name="password"
 				rules={[{ required: true, message: 'Please input your Password!' }]} style={{textAlign: "left"}}>
-				<Input.Password size='small' prefix={<Lock color='#000' size='18px' line='20px' />} placeholder="Password" style={{borderRadius: "5px"}} />
+				<Input.Password prefix={<Lock color='#000' size='18px' line='20px' />} placeholder="Password" style={{borderRadius: "5px"}} />
 			</Form.Item>
 
 			<Form.Item {...tailFormItemLayout}>
@@ -90,26 +96,87 @@ const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, butto
 const LoginForm: React.FC = () => {
 	const [fields, setFields] = useState<FieldData[]>([{ name: ['username'], value: '' },{ name: ['password'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
+	const [loading, setLoading] = useState(false);
+
+	const toggle = (checked: boolean) => {
+		setLoading(checked);
+	};
+
+	const dispatch = useAppDispatch();
 
 	const onFinish = (values: any) => {
-		console.log('Success:', values);
+		
+		const usrorg = values.username.split('/');
+		const username = usrorg[0];
+		const orgid = usrorg[1];
+
+		console.log(window.location.hostname);
+		
+		const data = {
+			username: username,
+			password: values.password,
+			orgid: orgid,
+			magik: magik,
+			mid: "femencha",
+			midtype: "host",
+			locale: "en"
+		};
+
+		//console.log(data);
+
+		dispatch(loginUserAsync(data)).then((value) => {
+			toggle(true);
+			const result = value.payload ;
+
+			if(result.error === false) {
+				
+			} else { 
+				//Probably an error due to axios. check for status 400 first
+				let msg = '';
+				let code = '';
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					console.log(result);
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Login`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger/>
+				});
+
+				modal.update({});
+				toggle(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+
+		//TODO: remember to load dashboard here on success
 	};
 
 	return (
 		<>
-			<CustomizedForm
-				fields={fields}
-				onChange={newFields => {
-					setFields(newFields);
-					if(fields[0].value.length > 0 && fields[1].value.length > 0) {
-						setDisabled(false);
-					} else {
-						setDisabled(true);
-					}
-				}}
-				button={disabled}
-				finish={onFinish}
-			/>
+			<Spin spinning={loading} tip="Login in...">
+				<CustomizedForm
+					fields={fields}
+					onChange={newFields => {
+						setFields(newFields);
+						if(fields[0].value.length > 0 && fields[1].value.length > 0) {
+							setDisabled(false);
+						} else {
+							setDisabled(true);
+						}
+					}}
+					button={disabled}
+					finish={onFinish}
+				/>
+			</Spin>
 		</>
 	);
 };

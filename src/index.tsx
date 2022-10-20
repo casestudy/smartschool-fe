@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+
+import { Store } from './State/Store';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
-import { BrowserRouter, Routes, Route } from 'react-router-dom' 
 import reportWebVitals from './reportWebVitals';
 
 export default function MainApp() {
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<App/>}/>
-			</Routes>
-		</BrowserRouter>
+		<>
+			<Provider store={Store} children={<App/>}></Provider>
+		</>
 	);
 }
 

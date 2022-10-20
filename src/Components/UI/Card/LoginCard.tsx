@@ -13,7 +13,7 @@ const LoginCard: React.FC<Prop> = () => (
     <>
 		<Row justify='center'>
 			<Col md={8}>
-				<Card title="User login" size='small' extra={<Link style={{ color: 'white', fontWeight: 'bold'}} to="/chpwd">Change password</Link>} style={{ width: 500, marginTop: 'calc(25vh)', border: '2px solid #dcdcdc'}} headStyle={{background: '#007bff', color: 'white', textAlign: 'left', fontWeight: 'bold'}}>
+				<Card title="User login" size='default' extra={<Link style={{ color: 'white', fontWeight: 'bold'}} to="/chpwd">Change password</Link>} style={{ width: 500, marginTop: 'calc(25vh)', border: '2px solid #dcdcdc'}} headStyle={{background: '#007bff', color: 'white', textAlign: 'left', fontWeight: 'bold'}}>
 					<LoginForm/>
 				</Card>
 			</Col>

@@ -13,8 +13,9 @@ export const loginUserAsync = createAsyncThunk (
 			const response = await Post.loginUser(postData);
 			return response;
 		} catch(error){
-			console.log(error);
-			return { status: 400, data: Object}
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
 		}
 	}
 )

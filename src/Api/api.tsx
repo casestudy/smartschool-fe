@@ -22,5 +22,5 @@ const requests = {
 };
 
 export const Post = {
-	loginUser: (params: {}): Promise <any> => requests.post(`user/login`, params)
+	loginUser: (params: {}): Promise <any> => requests.post(`login`, params)
 }
