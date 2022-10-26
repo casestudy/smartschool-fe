@@ -109,8 +109,6 @@ const LoginForm: React.FC = () => {
 		const usrorg = values.username.split('/');
 		const username = usrorg[0];
 		const orgid = usrorg[1];
-
-		console.log(window.location.hostname);
 		
 		const data = {
 			username: username,
@@ -129,7 +127,7 @@ const LoginForm: React.FC = () => {
 			const result = value.payload ;
 
 			if(result.error === false) {
-				
+				console.log(result);
 			} else { 
 				//Probably an error due to axios. check for status 400 first
 				let msg = '';
@@ -139,7 +137,6 @@ const LoginForm: React.FC = () => {
 					code = result.code;
 				} else {
 					//It is error from the back end
-					console.log(result);
 					msg = result.error.msg;
 					code = result.error.code;
 				}
