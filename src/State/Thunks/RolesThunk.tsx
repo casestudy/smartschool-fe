@@ -1,11 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Post } from '../../Api/api';
 
-interface Obj {
-     username: string;
-     password: string;
-}
-
 export const fetchRolesAsync = createAsyncThunk (
 	'fetchRoles',
 	async (postData: any) => {

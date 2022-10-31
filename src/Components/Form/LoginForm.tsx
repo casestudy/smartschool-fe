@@ -131,6 +131,7 @@ const LoginForm: React.FC = () => {
 				localStorage.setItem("loggedin", "true");
 
 				const lln = result.result.value[0][0].lastlogin;
+				const appid = result.result.value[0][0].app_id;
 
 				let dateTime = lln.split('T');
 				let date = dateTime[0];
@@ -150,6 +151,7 @@ const LoginForm: React.FC = () => {
 				let encoded = base64_encode(JSON.stringify(result));
 				localStorage.setItem("data", encoded);
 				localStorage.setItem("lastlogin",ll);
+				localStorage.setItem("connid",appid);
 				
 				navigate('/dashboard');
 			} else { 

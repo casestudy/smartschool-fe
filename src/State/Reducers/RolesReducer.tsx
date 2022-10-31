@@ -12,7 +12,7 @@ export interface Roles {
 
 const initialState: Roles = {
     roles: {
-        roleid: '',
+        connid: '',
     },
 };
 
@@ -22,7 +22,7 @@ export const fetchRolesSlice = createSlice({
     
     reducers: {
         performFetchRoles: (state, action: PayloadAction<Array<any>>) => {
-            console.log(state);
+            state.roles = action.payload;
         },
     },
     extraReducers(builder) {
