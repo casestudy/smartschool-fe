@@ -1,17 +1,20 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import loginUserReducer from './Reducers/LoginReducer';
+import fetchRolesReducer from './Reducers/RolesReducer';
 
 export const Store = configureStore({
     middleware: (getDefaultMiddleware) => 
 		getDefaultMiddleware({
 			serializableCheck: {
 				ignoredActions: [
-					'loginUser/fulfilled'
+					'loginUser/fulfilled',
+					'fetchRoles/fulfilled'
 				]
 			},
 		}),
 	reducer: {
-		loginUser: loginUserReducer
+		loginUser: loginUserReducer,
+		fetchRoles: fetchRolesReducer
 	}, 
 });
 

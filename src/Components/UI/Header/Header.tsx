@@ -54,7 +54,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					lineHeight: "33px",
 					padding: "0.5rem 0 0 0"
 				}}>
-					{lastlogin}
+				Last Logged in on:	{lastlogin}
 			</Title>,
 			key: 'test'
 		},

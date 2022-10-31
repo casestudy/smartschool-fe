@@ -6,7 +6,7 @@ import Header from '../../Components/UI/Header/Header';
 import LoginCard from '../../Components/UI/Card/LoginCard';
 
 const LoginScreen: React.FC<any> = () => {
-    useEffect(() => {}, []);
+    // useEffect(() => {}, []);
     return (
         <Flex>
             <Header title='Login' loggedin={false}></Header>

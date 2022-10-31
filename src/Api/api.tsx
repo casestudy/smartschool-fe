@@ -22,5 +22,6 @@ const requests = {
 };
 
 export const Post = {
-	loginUser: (params: {}): Promise <any> => requests.post(`login`, params)
+	loginUser: (params: {}): Promise <any> => requests.post(`login`, params),
+	fetchRoles: (params: {}): Promise <any> => requests.post(`getallroles`, params)
 }

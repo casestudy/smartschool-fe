@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Form, Input, Button, Divider, Typography, Modal, Spin } from 'antd';
+import { encode as base64_encode} from 'base-64';
 
 import User from '../UI/Icons/User';
 import Lock from '../UI/Icons/Lock';
@@ -97,6 +99,7 @@ const LoginForm: React.FC = () => {
 	const [fields, setFields] = useState<FieldData[]>([{ name: ['username'], value: '' },{ name: ['password'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const toggle = (checked: boolean) => {
 		setLoading(checked);
@@ -120,14 +123,35 @@ const LoginForm: React.FC = () => {
 			locale: "en"
 		};
 
-		//console.log(data);
-
 		dispatch(loginUserAsync(data)).then((value) => {
 			toggle(true);
 			const result = value.payload ;
 
 			if(result.error === false) {
-				console.log(result);
+				localStorage.setItem("loggedin", "true");
+
+				const lln = result.result.value[0][0].lastlogin;
+
+				let dateTime = lln.split('T');
+				let date = dateTime[0];
+				let time = dateTime[1].split('.')[0];
+
+				let ll= '';
+
+				let m_names = ['January', 'February', 'March', 'April', 'May', 'June', 
+							'July', 'August', 'September', 'October', 'November', 'December'];
+
+				let w_names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+				let d = new Date(date);
+
+				ll += w_names[d.getDay()] + ' ' + d.getDate() + ', ' + m_names[d.getMonth()] + ' ' + d.getFullYear() + ' at ' + time;
+
+				let encoded = base64_encode(JSON.stringify(result));
+				localStorage.setItem("data", encoded);
+				localStorage.setItem("lastlogin",ll);
+				
+				navigate('/dashboard');
 			} else { 
 				//Probably an error due to axios. check for status 400 first
 				let msg = '';

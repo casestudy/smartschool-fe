@@ -39,6 +39,6 @@ export const loginUserSlice = createSlice({
 
 export const { performLogin } = loginUserSlice.actions;
 
-export const logiuUser = (state: RootState) => state.loginUser.login;
+export const loginUser = (state: RootState) => state.loginUser.login;
 
 export default loginUserSlice.reducer;
