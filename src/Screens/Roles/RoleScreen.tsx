@@ -42,7 +42,8 @@ const RoleScreen: React.FC<any> = () => {
 			title: 'Name',
 			dataIndex: 'rname',
 			key: 'rname',
-			width: '25%'
+			width: '25%',
+			sorter: (a: any, b: any) => a.rname.localeCompare(b.rname),
         },
         {
 			title: 'Description',

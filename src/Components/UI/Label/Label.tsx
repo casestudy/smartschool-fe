@@ -16,8 +16,8 @@ const Label: React.FC<Prop> = ({value}) => {
                     fontStyle: "normal",
                     fontWeight: 800,
                     fontSize: "14px",
-                    lineHeight: "33px",
-                    padding: "0.5rem 0 0 0"
+                    // lineHeight: "33px",
+                    padding: "0 0.5rem 0 0.5rem"
                 }}
             >{value}</Text>
         </>

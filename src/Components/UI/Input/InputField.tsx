@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 import { UserOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
@@ -8,12 +8,14 @@ interface Prop {
 	size: SizeType;
 	holder: string;
 	type?: string;
-	prefix: ReactNode;
+	prefix?: ReactNode;
+	suffix?: ReactNode;
+	style?: CSSProperties;
 }
 
-const App: React.FC<Prop> = ({size, holder, type, prefix}) => (
+const App: React.FC<Prop> = ({size, holder, type, prefix, suffix, style}) => (
   <>
-    	<Input type={type} size={size} placeholder={holder} prefix={prefix} />
+    	<Input type={type} size={size} placeholder={holder} prefix={prefix} suffix={suffix} style={style}/>
   </>
 );
 

@@ -1,7 +1,12 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Table } from 'antd';
+import { Table, Row, Col } from 'antd';
 import { TableStyles } from './Styles';
+
+import Input from '../Input/InputField';
+import FormInput from '../Input/FormInputField';
+import Select from '../Input/SelectField';
+import Label from '../Label/Label';
 
 interface Prop {
 	source?: any,
@@ -30,6 +35,14 @@ const CustomTable: React.FC<Prop> = ({
 	return (
 		<>
 			<TableStyles/>
+			<Row>
+				<Col md={16}>
+					<Select/>
+				</Col>
+				<Col md={8}>
+					<FormInput label={<Label value='Search  '/>}/>
+				</Col>
+			</Row>
 			<StyledTable 
 				columns = {columns} 
 				dataSource = {source}
