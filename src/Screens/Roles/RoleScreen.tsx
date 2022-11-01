@@ -17,6 +17,7 @@ import { fetchRolesAsync } from '../../../src/State/Thunks/RolesThunk';
 
 const RoleScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
+	const [originRoles, setOriginRoles] = useState([]);
 	const [filteredRoles, setFilteredRoles] = useState([]);
 
 	const toggle = (checked: boolean) => {
@@ -28,6 +29,14 @@ const RoleScreen: React.FC<any> = () => {
 	const dispatch = useAppDispatch();
 	const data = {
 		connid: localStorage.getItem('connid'),
+	};
+
+	const filterTable = (e: any) => {
+		//console.log(e);
+		const filt = originRoles.filter((x:any) => x.rname.includes(e));
+		//console.log(filt);
+		setFilteredRoles(filt);
+		//setFilteredRoles(filteredRoles.filter((x:any) => x.rname.includes(e)));
 	};
 
 	const columns = [
@@ -43,7 +52,7 @@ const RoleScreen: React.FC<any> = () => {
 			dataIndex: 'rname',
 			key: 'rname',
 			width: '25%',
-			sorter: (a: any, b: any) => a.rname.localeCompare(b.rname),
+			sorter: (a: any, b: any) => a.rname.localeCompare(b.rname)
         },
         {
 			title: 'Description',
@@ -75,6 +84,7 @@ const RoleScreen: React.FC<any> = () => {
 				// We have the db results here
 				const dataSource = result.result.value;
 				setFilteredRoles(dataSource);
+				setOriginRoles(dataSource);
 				toggle(false);
 			} else {
 				//An axios error
@@ -112,7 +122,7 @@ const RoleScreen: React.FC<any> = () => {
 				<Row>
 					<Col md={18}>
 						<div style={{padding: "1rem 5rem 1px 5rem"}}>
-							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid'/>
+							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid' filter={filterTable}/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>

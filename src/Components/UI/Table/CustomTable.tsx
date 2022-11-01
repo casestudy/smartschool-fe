@@ -19,6 +19,7 @@ interface Prop {
 	rowKey?: any,
 	rowSelection?: any,
 	scroll?: any,
+	filter?: any
 }
 
 const CustomTable: React.FC<Prop> = ({
@@ -30,9 +31,11 @@ const CustomTable: React.FC<Prop> = ({
 	expandRowByClick,
 	showHeader,
 	rowKey,
-	scroll
+	scroll,
+	filter
 }) => {
 	const [perPage, setPerPage] = useState(5);
+	const [filteredRoles, setFilteredRoles] = useState([]);
 
 	const handleChange = (value: number) => {
 		console.log(`selected ${value}`);
@@ -47,7 +50,7 @@ const CustomTable: React.FC<Prop> = ({
 					<Select handleChange={handleChange}/>
 				</Col>
 				<Col md={8}>
-					<FormInput label={<Label value='Search  '/>}/>
+					<FormInput label={<Label value='Search  '/>} change={filter}/>
 				</Col>
 			</Row>
 			<StyledTable 

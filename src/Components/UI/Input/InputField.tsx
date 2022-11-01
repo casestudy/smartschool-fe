@@ -11,11 +11,12 @@ interface Prop {
 	prefix?: ReactNode;
 	suffix?: ReactNode;
 	style?: CSSProperties;
+	onChange?: any;
 }
 
-const App: React.FC<Prop> = ({size, holder, type, prefix, suffix, style}) => (
+const App: React.FC<Prop> = ({size, holder, type, prefix, suffix, style, onChange}) => (
   <>
-    	<Input type={type} size={size} placeholder={holder} prefix={prefix} suffix={suffix} style={style}/>
+    	<Input type={type} size={size} placeholder={holder} prefix={prefix} suffix={suffix} style={style} onChange={onChange}/>
   </>
 );
 
