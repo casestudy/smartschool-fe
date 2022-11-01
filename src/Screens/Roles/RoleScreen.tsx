@@ -112,7 +112,7 @@ const RoleScreen: React.FC<any> = () => {
 				<Row>
 					<Col md={18}>
 						<div style={{padding: "1rem 5rem 1px 5rem"}}>
-							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid' pagination={{position: ['bottomCenter'], pageSize: 5}}/>
+							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid'/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>

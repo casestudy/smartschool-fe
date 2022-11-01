@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
 import { Table, Row, Col } from 'antd';
 import { TableStyles } from './Styles';
@@ -32,12 +32,19 @@ const CustomTable: React.FC<Prop> = ({
 	rowKey,
 	scroll
 }) => {
+	const [perPage, setPerPage] = useState(5);
+
+	const handleChange = (value: number) => {
+		console.log(`selected ${value}`);
+		setPerPage(value);
+	};
+	
 	return (
 		<>
 			<TableStyles/>
 			<Row>
 				<Col md={16}>
-					<Select/>
+					<Select handleChange={handleChange}/>
 				</Col>
 				<Col md={8}>
 					<FormInput label={<Label value='Search  '/>}/>
@@ -50,7 +57,7 @@ const CustomTable: React.FC<Prop> = ({
 				expandRowByClick = {expandRowByClick}
 				showHeader = {showHeader}
 				rowKey = {rowKey}
-				{...{ pagination, onRow }}
+				pagination={{position: ['bottomCenter'], pageSize: perPage}}
 				rowClassName = {(record, index) => 'table-custom-row'}
 				scroll = {scroll}
 			/>
