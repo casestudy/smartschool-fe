@@ -8,9 +8,11 @@ import 'antd/dist/antd.css';
 
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 import Danger from '../../Components/UI/Icons/Danger';
+import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 
 import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
+import AddButton from '../../Components/UI/Button/AddButton';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
 import { fetchRolesAsync } from '../../../src/State/Thunks/RolesThunk';
@@ -123,6 +125,7 @@ const RoleScreen: React.FC<any> = () => {
 					<Col md={18}>
 						<div style={{padding: "1rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid' filter={filterTable}/>
+							<AddButton icon={<PlusIcon/>} top='-50px' float='right'/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>

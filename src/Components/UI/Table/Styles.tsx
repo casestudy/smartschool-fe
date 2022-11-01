@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 export const TableStyles = createGlobalStyle `
 	.ant-table {
 		background: inherit !important;
-		min-height: 680px;
+		// min-height: 680px;
 	}
 	.ant-table-thead {
 		height: 40px;
@@ -182,7 +182,7 @@ export const TableStyles = createGlobalStyle `
 		left: 561px !important;
 		top: 1000px !important;
 		border-radius: 8px !important;
-		margin: 33px auto 0 auto !important;
+		margin: 33px auto 0 0 !important;
 	}
 	.ant-table-pagination-center {
 		justify-content: space-evenly !important;
