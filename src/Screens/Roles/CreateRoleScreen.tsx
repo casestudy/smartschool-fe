@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import { useNavigate } from 'react-router-dom';
+
 import BackButton from '../../Components/UI/Button/BackButton';
 import BackIcon from '../../Components/UI/Icons/BackArrow';
 
@@ -10,6 +12,7 @@ import { Col, Row } from "antd";
 
 const CreateRoleScreen: React.FC<any> = () => {
     let ll: any = localStorage.getItem('lastlogin');
+	const navigate = useNavigate();
 
     return (
         <>
@@ -19,7 +22,7 @@ const CreateRoleScreen: React.FC<any> = () => {
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", display: "flex"}}>
 							<BackArrow>
-								<BackButton icon={<BackIcon/>} />
+								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/roles')}}/>
 							</BackArrow>
 							<Flex style={{columnGap: '4rem'}}>
 								<Title>Create New Role</Title>

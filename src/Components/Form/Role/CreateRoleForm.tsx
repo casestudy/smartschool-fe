@@ -2,23 +2,86 @@ import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-import { Form, Input } from 'antd';
+import { Form, Input, Modal } from 'antd';
 
 import SaveButton from '../../UI/Button/SaveButton';
+import Danger from '../../UI/Icons/Danger';
+
+import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
+import { createRoleAsync } from '../../../State/Thunks/RolesThunk';
 
 const { TextArea } = Input;
 
+interface FieldData {
+	name: string | number | (string | number)[];
+	value?: any;
+	touched?: boolean;
+	validating?: boolean;
+	errors?: string[];
+}
+
 interface Prop {
-  
+
 }
 
 
-const CreateRoleForm: React.FC<Prop> = ({}) => {
+const CreateRoleForm: React.FC<Prop> = () => {
+	const [fields, setFields] = useState<FieldData[]>([{ name: ['name'], value: '' },{ name: ['description'], value: ''}]);
+	const [disabled, setDisabled] = useState(true);
+
+	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+
+	const onFinish = () => {
+		const data = {
+			rname: fields[0].value,
+			descriptt: fields[1].value,
+			connid: localStorage.getItem('connid')
+		}
+
+		dispatch(createRoleAsync(data)).then((value) => {
+			console.log(value.payload);
+
+			const result = value.payload;
+
+			if(result.error === false) {
+				navigate('/roles');
+			} else {
+				//Probably an error due to axios. check for status 400 first
+				let msg = '';
+				let code = '';
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Create Role`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger/>
+				});
+
+				modal.update({});
+			}
+		})
+	}
 
 	return (
 		<>
 			<Form
+				fields={fields}
 				layout='vertical'
+				onFieldsChange={(_, allFields) => {
+					setFields(allFields);
+					if(fields[0].value.length > 0 && fields[1].value.length > 0) {
+						setDisabled(false);
+					} else {
+						setDisabled(true);
+					}
+				}}
 			>
 				<Flex>
 					<InputRow>
@@ -34,7 +97,7 @@ const CreateRoleForm: React.FC<Prop> = ({}) => {
 					<InputRow>
 						<FormItem 
 							label='Description:'
-							name='descript'
+							name='description'
 							style={{width: '500px', paddingBottom: '50px'}}
 							rules={[{ required: true, message: '' }]}
 						>
@@ -52,10 +115,10 @@ const CreateRoleForm: React.FC<Prop> = ({}) => {
 					</InputRow>
 					<InputRow>
 						<FormItem>
-						 	<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C'/>
+						 	<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/roles')}}/>
 						</FormItem>
 						<FormItem>
-						 	<SaveButton title='Save' size='large' bgcolor='#BC6470' disabled={true}/>
+						 	<SaveButton title='Save' size='large' bgcolor='#BC6470' disabled={disabled} onClick={onFinish}/>
 						</FormItem>
 					</InputRow>
 				</Flex>
