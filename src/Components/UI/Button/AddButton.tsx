@@ -27,6 +27,7 @@ const AddButton: React.FC<Prop> = ({ children, icon, onClick, top, float }) => {
                     float: float,
                     marginTop: top
                 }}
+                onClick={onClick}
             >
                 {children}
             </Button>

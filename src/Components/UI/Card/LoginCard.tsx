@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Card, Col, Row} from 'antd';
 
-import LoginForm from '../../Form/LoginForm';
+import LoginForm from '../../Form/Login/LoginForm';
 
 interface Prop {
   

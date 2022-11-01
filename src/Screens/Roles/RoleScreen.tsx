@@ -22,6 +22,8 @@ const RoleScreen: React.FC<any> = () => {
 	const [originRoles, setOriginRoles] = useState([]);
 	const [filteredRoles, setFilteredRoles] = useState([]);
 
+	const navigate = useNavigate();
+
 	const toggle = (checked: boolean) => {
 		setLoading(checked);
 	};
@@ -123,9 +125,9 @@ const RoleScreen: React.FC<any> = () => {
 				<Header title='Roles' loggedin={true} lastlogin={ll}></Header>
 				<Row>
 					<Col md={18}>
-						<div style={{padding: "1rem 5rem 1px 5rem"}}>
+						<div style={{padding: "5rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid' filter={filterTable}/>
-							<AddButton icon={<PlusIcon/>} top='-50px' float='right'/>
+							<AddButton icon={<PlusIcon/>} top='-50px' float='right' onClick={() => {navigate('/roles/new')}}/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>

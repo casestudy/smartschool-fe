@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Divider, Typography, Modal, Spin } from 'antd';
 import { encode as base64_encode} from 'base-64';
 
-import User from '../UI/Icons/User';
-import Lock from '../UI/Icons/Lock';
-import Login from '../UI/Icons/Login';
-import Danger from '../UI/Icons/Danger';
+import User from '../../UI/Icons/User';
+import Lock from '../../UI/Icons/Lock';
+import Login from '../../UI/Icons/Login';
+import Danger from '../../UI/Icons/Danger';
 
-import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { loginUserAsync } from '../../State/Thunks/LoginThunk';
-import { magik } from '../../AppEnv';
+import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
+import { loginUserAsync } from '../../../State/Thunks/LoginThunk';
+import { magik } from '../../../AppEnv';
 
 import './LoginForm.css'
 

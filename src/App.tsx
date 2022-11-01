@@ -7,6 +7,8 @@ import 'antd/dist/antd.css'
 import LoginScreen from './Screens/Login/LoginScreen';
 import DashboardScreen from './Screens/Dashboard/DashboardScreen';
 import RoleScreen from './Screens/Roles/RoleScreen';
+import CreateRoleScreen from './Screens/Roles/CreateRoleScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -20,6 +22,7 @@ const App = () => {
 					<Route path="/" element={loggedin === 'true'? <DashboardScreen/> : <LoginScreen/>}/>
 					<Route path="/dashboard" element={loggedin === 'true'? <DashboardScreen/> : <LoginScreen/>} />
 					<Route path="/roles" element={loggedin === 'true'? <RoleScreen/> : <LoginScreen/>} />
+					<Route path="/roles/new" element={loggedin === 'true'? <CreateRoleScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>
