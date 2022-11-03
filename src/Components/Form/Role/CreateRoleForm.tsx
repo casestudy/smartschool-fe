@@ -21,11 +21,12 @@ interface FieldData {
 }
 
 interface Prop {
-
+	rname?: string;
+	description?: string;
 }
 
 
-const CreateRoleForm: React.FC<Prop> = () => {
+const CreateRoleForm: React.FC<Prop> = ({rname, description}) => {
 	const [fields, setFields] = useState<FieldData[]>([{ name: ['name'], value: '' },{ name: ['description'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
 
@@ -91,7 +92,12 @@ const CreateRoleForm: React.FC<Prop> = () => {
 							style={{width: '250px'}}
 							rules={[{required: true, message: ''}]}
 						>
-							<Input type='text' placeholder='Role name' style={{borderRadius: 8}}/>
+							<Input 
+								type='text' 
+								placeholder='Role name' 
+								style={{borderRadius: 8}} 
+								value={rname}
+							/>
 						</FormItem>
 					</InputRow>
 					<InputRow>
@@ -110,6 +116,7 @@ const CreateRoleForm: React.FC<Prop> = () => {
 									width: '100%',
 									borderRadius: 8
 								}}
+								value={description}
 							/>
 						</FormItem>
 					</InputRow>

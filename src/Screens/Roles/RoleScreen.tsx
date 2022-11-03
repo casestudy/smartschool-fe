@@ -69,7 +69,7 @@ const RoleScreen: React.FC<any> = () => {
             dataIndex: 'visualize',
             key: 'visualize',
             width: '5%',
-			render: () => <Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}}><VisualizeIcon/></Button>
+			render: () => <Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => {navigate('/roles/visualize')}}><VisualizeIcon/></Button>
         },
 		{
 			title: 'Role Id',
