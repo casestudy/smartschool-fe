@@ -12,11 +12,6 @@ const ModifyRole: React.FC<any> = ({}) => {
         setRoleId(roleDetails.roleid);
         setRoleName(roleDetails.rname);
         setRoleDescription(roleDetails.descript);
-
-		//Allow in local storage because changing tab will need it in useEffect
-		// setTimeout(() => {
-		// 	localStorage.removeItem("role");
-		// },3000);
     })
     return (
         <>

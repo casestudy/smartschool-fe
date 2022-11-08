@@ -26,4 +26,5 @@ export const Post = {
 	fetchRoles: (params: {}): Promise <any> => requests.post(`getallroles`, params),
 	createRole: (params: {}): Promise <any> => requests.post(`createrole`, params),
 	updateRole: (params: {}): Promise <any> => requests.post(`updaterole`, params),
+	getRolePerms: (params: {}): Promise <any> => requests.post(`getroleperms`, params),
 }

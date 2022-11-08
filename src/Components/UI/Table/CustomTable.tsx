@@ -38,7 +38,6 @@ const CustomTable: React.FC<Prop> = ({
 	const [filteredRoles, setFilteredRoles] = useState([]);
 
 	const handleChange = (value: number) => {
-		console.log(`selected ${value}`);
 		setPerPage(value);
 	};
 	

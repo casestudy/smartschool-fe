@@ -1,17 +1,40 @@
 import  React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { Modal} from 'antd';
+
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
 
 import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
+import Danger from '../../../Components/UI/Icons/Danger';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import AddButton from '../../../Components/UI/Button/AddButton';
 
+import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
+import { getRolePermsAsync } from '../../../../src/State/Thunks/RolesThunk';
+
 const RolePrivileges: React.FC<any> = ({}) => {
+    const [originRoles, setOriginRoles] = useState([]);
+	const [filteredRoles, setFilteredRoles] = useState([]);
+
+    const role: any = localStorage.getItem("role");
+    const roleDetails = JSON.parse(role);
 
     const navigate = useNavigate();
+
+    const dispatch = useAppDispatch();
+
+    const data = {
+		connid: localStorage.getItem('connid'),
+        roleid: roleDetails.roleid
+	};
+
+    const filterTable = (e: any) => {
+		const filt = originRoles.filter((x:any) => x.descript.toLowerCase().includes(e.toLowerCase()));
+		setFilteredRoles(filt);
+	};
 
     const columns = [
         {
@@ -20,13 +43,6 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			key: 'sn',
 			width: '5%',
 			render: (text:any,record:any,index:any) => (index+1)
-        },
-        {
-			title: 'Name',
-			dataIndex: 'rname',
-			key: 'rname',
-			width: '25%',
-			sorter: (a: any, b: any) => a.rname.localeCompare(b.rname)
         },
         {
 			title: 'Description',
@@ -45,18 +61,55 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			// }}><VisualizeIcon/></Button>
         },
 		{
-			title: 'Role Id',
-			dataIndex: 'roleid',
-			key: 'roleid',
-			width: '5%',
+			title: 'Mode',
+			dataIndex: 'mode',
+			key: 'mode',
+			width: '40%',
 			hidden: true
 		},
     ].filter(item => !item.hidden);
 
+    useEffect(() => {        
+        dispatch(getRolePermsAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setFilteredRoles(dataSource);
+				setOriginRoles(dataSource);
+				// toggle(false);
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Role Permissions`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger/>
+				});
+	
+				modal.update({});
+				
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+    },[])
+
     return (
         <>
             <Flex>
-                <CustomTable columns={columns}/>
+                <CustomTable columns={columns} source={filteredRoles} rowKey='mode' filter={filterTable}/>
                 <AddButton icon={<PlusIcon/>} top='-50px' float='right' onClick={() => {navigate('/roles/new')}}/>
             </Flex>
 		</>
