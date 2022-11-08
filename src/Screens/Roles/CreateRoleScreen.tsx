@@ -30,7 +30,7 @@ const CreateRoleScreen: React.FC<any> = () => {
                         </Flex>
 						<StyledFormBody style={{padding: "5rem 5rem 1px 5rem"}}>
 							<Filler/>
-							<CreateRoleForm/>
+							<CreateRoleForm disp="none"/>
 						</StyledFormBody>
                     </Col>
                     <Col md={6}></Col>

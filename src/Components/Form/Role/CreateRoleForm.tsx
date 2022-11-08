@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Spin } from 'antd';
 
 import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createRoleAsync } from '../../../State/Thunks/RolesThunk';
+import { createRoleAsync, editRoleAsync } from '../../../State/Thunks/RolesThunk';
 
 const { TextArea } = Input;
 
@@ -23,113 +23,189 @@ interface FieldData {
 interface Prop {
 	rname?: string;
 	description?: string;
+	disp?: string;
+	roleid?: string;
 }
 
 
-const CreateRoleForm: React.FC<Prop> = ({rname, description}) => {
-	const [fields, setFields] = useState<FieldData[]>([{ name: ['name'], value: '' },{ name: ['description'], value: ''}]);
+const CreateRoleForm: React.FC<Prop> = ({rname, description, roleid, disp}) => {
+	const [fields, setFields] = useState<FieldData[]>([{name: ['roleid'], value: ''}, { name: ['name'], value: '' },{ name: ['description'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
+
+	const [loading, setLoading] = useState(false);
+	const [loadingMessage, setLoadingMessage] = useState('');
 
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
+	if(typeof roleid !== 'undefined') {
+		if(!(fields[1].value.length > 0)) {
+			//Don't read
+			setTimeout(() => {
+				setFields([{name: ['roleid'], value: roleid}, {name: ['name'] , value: rname}, {name: ['description'], value: description}]);
+				setDisabled(false);
+			},100);
+		}
+	}
+
 	const onFinish = () => {
 		const data = {
-			rname: fields[0].value,
-			descriptt: fields[1].value,
+			roleid: fields[0].value,
+			rname: fields[1].value,
+			descript: fields[2].value,
 			connid: localStorage.getItem('connid')
 		}
 
-		dispatch(createRoleAsync(data)).then((value) => {
-			console.log(value.payload);
+		setLoading(true);
 
-			const result = value.payload;
-
-			if(result.error === false) {
-				navigate('/roles');
-			} else {
-				//Probably an error due to axios. check for status 400 first
-				let msg = '';
-				let code = '';
-				if(result.status === 400) {
-					msg = result.message;
-					code = result.code;
+		if (data.roleid === '') {
+			// We are adding
+			setLoadingMessage('Creating role...');
+			dispatch(createRoleAsync(data)).then((value) => {
+				console.log(value.payload);
+	
+				const result = value.payload;
+	
+				if(result.error === false) {
+					navigate('/roles');
 				} else {
-					//It is error from the back end
-					msg = result.error.msg;
-					code = result.error.code;
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Create Role`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger/>
+					});
+	
+					modal.update({});
 				}
-				const modal = Modal.error({
-					title: `Create Role`,
-					content: msg + ' (' + code + ')',
-					icon: <Danger/>
-				});
-
-				modal.update({});
-			}
-		})
+				setLoading(false);
+			})
+		} else {
+			// We are updating the role
+			setLoadingMessage('Updating role: ' + data.rname + '...');
+			dispatch(editRoleAsync(data)).then((value) => {
+				console.log(value.payload);
+	
+				const result = value.payload;
+	
+				if(result.error === false) {
+					navigate('/roles');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Modify Role: ` + data.rname,
+						content: msg + ' (' + code + ')',
+						icon: <Danger/>
+					});
+	
+					modal.update({});
+				}
+			})
+			setLoading(false);
+		}
 	}
 
 	return (
 		<>
-			<Form
-				fields={fields}
-				layout='vertical'
-				onFieldsChange={(_, allFields) => {
-					setFields(allFields);
-					if(fields[0].value.length > 0 && fields[1].value.length > 0) {
-						setDisabled(false);
-					} else {
-						setDisabled(true);
-					}
-				}}
-			>
-				<Flex>
-					<InputRow>
-						<FormItem 
-							label='Name:'
-							name='name'
-							style={{width: '250px'}}
-							rules={[{required: true, message: ''}]}
-						>
-							<Input 
-								type='text' 
-								placeholder='Role name' 
-								style={{borderRadius: 8}} 
-								value={rname}
-							/>
-						</FormItem>
-					</InputRow>
-					<InputRow>
-						<FormItem 
-							label='Description:'
-							name='description'
-							style={{width: '500px', paddingBottom: '50px'}}
-							rules={[{ required: true, message: '' }]}
-						>
-							<TextArea 
-								placeholder = 'Role description' 
-								autoSize={{ minRows:4, maxRows: 6 }} 
-								style={{
-									resize: 'none',
-									flex: 1,
-									width: '100%',
-									borderRadius: 8
-								}}
-								value={description}
-							/>
-						</FormItem>
-					</InputRow>
-					<InputRow>
-						<FormItem>
-						 	<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/roles')}}/>
-						</FormItem>
-						<FormItem>
-						 	<SaveButton title='Save' size='large' bgcolor='#BC6470' disabled={disabled} onClick={onFinish}/>
-						</FormItem>
-					</InputRow>
-				</Flex>
-			</Form>
+			<Spin spinning={loading} tip={loadingMessage}>
+				<Form
+					fields={fields}
+					layout='vertical'
+					onFieldsChange={(_, allFields) => {
+						setFields(allFields);
+						if(fields[0].value === '') {
+							//We are adding a new role
+							if(fields[1].value.length > 0 && fields[2].value.length > 0) {
+								setDisabled(false);
+							} else {
+								setDisabled(true);
+							}
+						}	
+					}}
+				>
+					<Flex>
+						<InputRow style={{display: `${disp}`}}>
+							<FormItem 
+								label='Role Id:'
+								name='roleid'
+								style={{width: '250px'}}
+								rules={[{required: true, message: ''}]}
+							>
+								<Input 
+									type='text' 
+									placeholder='Role name' 
+									style={{borderRadius: 8}} 
+									readOnly={true}
+									value={roleid}
+								/>
+							</FormItem>
+						</InputRow>
+						<InputRow>
+							<FormItem 
+								label='Name:'
+								name='name'
+								style={{width: '250px'}}
+								rules={[{required: true, message: ''}]}
+							>
+								<Input 
+									type='text' 
+									placeholder='Role name' 
+									style={{borderRadius: 8}} 
+									value={rname}
+								/>
+							</FormItem>
+						</InputRow>
+						<InputRow>
+							<FormItem 
+								label='Description:'
+								name='description'
+								style={{width: '500px', paddingBottom: '50px'}}
+								rules={[{ required: true, message: '' }]}
+							>
+								<TextArea 
+									placeholder = 'Role description' 
+									autoSize={{ minRows:4, maxRows: 6 }} 
+									style={{
+										resize: 'none',
+										flex: 1,
+										width: '100%',
+										borderRadius: 8
+									}}
+									value={description}
+								/>
+							</FormItem>
+						</InputRow>
+						<InputRow>
+							<FormItem>
+								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/roles')}}/>
+							</FormItem>
+							<FormItem>
+								<SaveButton title='Save' size='large' bgcolor='#BC6470' disabled={disabled} onClick={onFinish}/>
+							</FormItem>
+						</InputRow>
+					</Flex>
+				</Form>
+			</Spin>
 		</>
 	);
 };

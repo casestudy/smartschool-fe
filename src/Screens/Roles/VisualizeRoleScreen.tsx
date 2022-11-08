@@ -13,11 +13,15 @@ import { Col, Row } from "antd";
 const VisualizeRoleScreen: React.FC<any> = () => {
 	const [currentTab, setCurrentTab] = useState('Modify');
 	const [currentTabView, setCurrentTabView] = useState(<></>);
+	const [title, setCurrentTitle] = useState('');
 	
     let ll: any = localStorage.getItem('lastlogin');
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		const title: any = localStorage.getItem("role");
+		setCurrentTitle(JSON.parse(title).rname);
+
 		if(currentTab === 'Modify') {
 			setCurrentTabView(<ModifyRole/>);
 		} else if(currentTab === 'SubRoles') {
@@ -37,8 +41,8 @@ const VisualizeRoleScreen: React.FC<any> = () => {
                             <BackArrow>
 								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/roles')}}/>
 							</BackArrow>
-                            <Flex style={{columnGap: '4rem'}}>
-								<Title>Role Details</Title>
+                            <Flex style={{columnGap: '1rem', display: 'flex'}}>
+								<Title>Role</Title> <Title style={{textTransform: 'lowercase'}}>"{title}"</Title> <Title>Details</Title>
 							</Flex>
 							<TabHeader 
 								key={`role-details-modify`}
@@ -49,7 +53,10 @@ const VisualizeRoleScreen: React.FC<any> = () => {
 								onClick={() => {setCurrentTab('Modify')}}
 							>
                                 {'Modify'}
-								<Line style={{ visibility: currentTab === 'Modify' ? 'visible' : 'hidden'}}/>
+								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+									<Line style={{ visibility: currentTab === 'Modify' ? 'visible' : 'hidden'}}/>
+								</Flex>
+								
                             </TabHeader>
 
 							<TabHeader
@@ -61,7 +68,9 @@ const VisualizeRoleScreen: React.FC<any> = () => {
 								onClick={() => {setCurrentTab('SubRoles')}}
 							>
                                 {'Sub Roles'}
-								<Line style={{ visibility: currentTab === 'SubRoles' ? 'visible' : 'hidden'}}/>
+								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+									<Line style={{ visibility: currentTab === 'SubRoles' ? 'visible' : 'hidden'}}/>
+								</Flex>
                             </TabHeader>
 
 							<TabHeader
@@ -73,7 +82,10 @@ const VisualizeRoleScreen: React.FC<any> = () => {
 								onClick={() => {setCurrentTab('Privileges')}}
 							>
                                 {'Privileges'}
-								<Line style={{ visibility: currentTab === 'Privileges' ? 'visible' : 'hidden'}}/>
+								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+									<Line style={{ visibility: currentTab === 'Privileges' ? 'visible' : 'hidden'}}/>
+								</Flex>
+								
                             </TabHeader>
                         </Flex>
 						<StyledTabPane style={{padding: "2rem 5rem 1px 5rem"}}>
@@ -117,6 +129,8 @@ const Line = styled.div`
     height: 0;
     width: 3.375rem;
     border: 2px solid #BC6470;
+	display: flex;
+	justify-content: center;
     &:Hover {
         border: 2px solid color: #BC64702B;
     }

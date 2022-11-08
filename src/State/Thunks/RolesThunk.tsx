@@ -28,3 +28,17 @@ export const createRoleAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const editRoleAsync = createAsyncThunk (
+	'updateRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.updateRole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
