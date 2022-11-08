@@ -13,13 +13,20 @@ import ThrashIcon from '../../../Components/UI/Icons/ThrashIcon';
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import AddButton from '../../../Components/UI/Button/AddButton';
 
+import Title from '../../../Components/UI/Messages/Title';
+import Message from '../../../Components/UI/Messages/Message';
+
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { getRolePermsAsync } from '../../../../src/State/Thunks/RolesThunk';
+import { getRolePermsAsync, deleteRolePermAsync } from '../../../../src/State/Thunks/RolesThunk';
+
+const { confirm } = Modal;
 
 const RolePrivileges: React.FC<any> = ({}) => {
     const [loading, setLoading] = useState(true);
     const [originRoles, setOriginRoles] = useState([]);
 	const [filteredRoles, setFilteredRoles] = useState([]);
+	const [currentRoleName, setCurrentRoleName] = useState('');
+    const [currentRoleDescription, setCurrentRoleDescription] = useState('');
 
     const role: any = localStorage.getItem("role");
     const roleDetails = JSON.parse(role);
@@ -27,6 +34,22 @@ const RolePrivileges: React.FC<any> = ({}) => {
     const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
+
+    const confirmDeleteRole = () => {
+        console.log(currentRoleDescription);
+        
+		confirm({
+			title: 'Remove privilege from role: ' + currentRoleName,
+			icon: <Danger />,
+			content: 'Do you really want to remove the privilege: ' + currentRoleDescription + '?',
+			onOk() {
+			  console.log('OK');
+			},
+			onCancel() {
+			  console.log('Cancel');
+			},
+		});
+    }
 
     const data = {
 		connid: localStorage.getItem('connid'),
@@ -46,6 +69,13 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			width: '5%',
 			render: (text:any,record:any,index:any) => (index+1)
         },
+		{
+			title: 'Name',
+			dataIndex: 'rname',
+			key: 'rname',
+			width: '25%',
+			hidden: true
+        },
         {
 			title: 'Description',
 			dataIndex: 'descript',
@@ -58,15 +88,79 @@ const RolePrivileges: React.FC<any> = ({}) => {
             key: 'visualize',
             width: '5%',
 			render: (text:any,row:any) => <Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => {
-				localStorage.setItem("role", JSON.stringify(row));
-				navigate('/roles/visualize');
-			}}><ThrashIcon/></Button>
+				
+				confirm({
+					title: <Title value={'Remove privilege from role: ' + row.rname}/>,
+					icon: <Danger />,
+					width: '600px',
+					content: <Message value='Do you really want to remove the privilege' 
+										item={row.descript} msg='All users with this role will no longer be able to perform this specific action.'
+										warn='This cannot be undone.'/>,
+					okText: 'Yes',
+					okType: 'danger',
+					okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+					cancelText: 'Cancel',
+					cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+					onOk() {
+						setLoading(true);
+						const data = {
+							connid: localStorage.getItem('connid'),
+							roleid: roleDetails.roleid,
+							priv: row.mode
+						};
+
+						dispatch(deleteRolePermAsync(data)).then((value) => {
+							const result = value.payload ;
+							if(result.error === false) {
+								// We have the db results here
+								const dataSource = result.result.value;
+								setFilteredRoles(dataSource);
+								setOriginRoles(dataSource);
+								setLoading(false);
+
+								Modal.success({
+									content: 'Permission removed from role successfully!',
+									okType: 'danger',
+									okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+								});
+							} else {
+								//An axios error
+								let msg = '';
+								let code = '';
+					
+								if(result.status === 400) {
+									msg = result.message;
+									code = result.code;
+								} else {
+									//It is error from the back end
+									msg = result.error.msg;
+									code = result.error.code;
+								}
+								const modal = Modal.error({
+									title: `Delete permission`,
+									content: msg + ' (' + code + ')',
+									icon: <Danger/>
+								});
+					
+								modal.update({});
+								setLoading(false);
+							}
+						},(error) => {
+							console.log("Error");
+							console.log(error);
+						} );
+					},
+					onCancel() {
+					  console.log('Cancel');
+					},
+				});
+            }}><ThrashIcon/></Button>
         },
 		{
 			title: 'Mode',
 			dataIndex: 'mode',
 			key: 'mode',
-			width: '40%',
+			width: '15%',
 			hidden: true
 		},
     ].filter(item => !item.hidden);
@@ -122,5 +216,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 };
 
 const Flex = styled.div``;
+
+
 
 export default RolePrivileges;

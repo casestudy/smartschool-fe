@@ -7,10 +7,11 @@ interface Prop {
     disabled?: boolean;
     size?: SizeType;
     onClick?: MouseEventHandler;
-    bgcolor?: string
+    bgcolor?: string,
+    icon?: ReactNode
 }
 
-const SaveButton: React.FC<Prop> = ({ title, disabled, size, onClick, bgcolor }) => {
+const SaveButton: React.FC<Prop> = ({ title, disabled, size, onClick, bgcolor, icon }) => {
     return (
         <>
             <Button
@@ -29,6 +30,7 @@ const SaveButton: React.FC<Prop> = ({ title, disabled, size, onClick, bgcolor })
                 onClick={onClick}
                 size={size}
                 disabled={disabled}
+                icon={icon}
             >
                 <span style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>{title}</span>
             </Button>

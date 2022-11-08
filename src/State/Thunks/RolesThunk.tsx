@@ -56,3 +56,17 @@ export const getRolePermsAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const deleteRolePermAsync = createAsyncThunk (
+	'deleteRolePerm',
+	async (postData: any) => {
+		try {
+			const response = await Post.deleteRolePerm(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
