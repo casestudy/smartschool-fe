@@ -53,17 +53,21 @@ const CustomTable: React.FC<Prop> = ({
 					<FormInput label={<Label value='Search  '/>} change={filter}/>
 				</Col>
 			</Row>
-			<StyledTable 
-				columns = {columns} 
-				dataSource = {source}
-				expandable = {expandable}
-				expandRowByClick = {expandRowByClick}
-				showHeader = {showHeader}
-				rowKey = {rowKey}
-				pagination={{position: ['bottomCenter'], pageSize: perPage}}
-				rowClassName = {(record, index) => 'table-custom-row'}
-				scroll = {scroll}
-			/>
+			<Row>
+				<Col md={24}>
+					<StyledTable 
+						columns = {columns} 
+						dataSource = {source}
+						expandable = {expandable}
+						expandRowByClick = {expandRowByClick}
+						showHeader = {showHeader}
+						rowKey = {rowKey}
+						pagination={{position: ['bottomCenter'], pageSize: perPage}}
+						rowClassName = {(record, index) => 'table-custom-row'}
+						scroll = {scroll}
+					/>
+				</Col>
+			</Row>
 		</>
 	);
 };

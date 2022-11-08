@@ -37,10 +37,9 @@ const RoleScreen: React.FC<any> = () => {
 
 	const filterTable = (e: any) => {
 		//console.log(e);
-		const filt = originRoles.filter((x:any) => x.rname.includes(e));
+		const filt = originRoles.filter((x:any) => x.rname.toLowerCase().includes(e.toLowerCase()) || x.descript.toLowerCase().includes(e.toLowerCase()));
 		//console.log(filt);
 		setFilteredRoles(filt);
-		//setFilteredRoles(filteredRoles.filter((x:any) => x.rname.includes(e)));
 	};
 
 	const columns = [

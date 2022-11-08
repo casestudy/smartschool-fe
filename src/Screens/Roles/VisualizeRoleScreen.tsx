@@ -8,6 +8,7 @@ import BackIcon from '../../Components/UI/Icons/BackArrow';
 
 import Header from '../../Components/UI/Header/Header';
 import ModifyRole from './Tabs/ModifyRoleTab';
+import RolePrivileges from './Tabs/RolePrivilegesTab';
 import { Col, Row } from "antd";
 
 const VisualizeRoleScreen: React.FC<any> = () => {
@@ -27,7 +28,7 @@ const VisualizeRoleScreen: React.FC<any> = () => {
 		} else if(currentTab === 'SubRoles') {
 			setCurrentTabView(<></>);
 		} else if(currentTab === 'Privileges') {
-			setCurrentTabView(<></>);
+			setCurrentTabView(<RolePrivileges/>);
 		}
 	}, [currentTab]);
 
