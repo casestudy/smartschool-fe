@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Table, Row, Col } from 'antd';
 import { TableStyles } from './Styles';
 
-import Input from '../Input/InputField';
 import FormInput from '../Input/FormInputField';
 import Select from '../Input/SelectField';
 import Label from '../Label/Label';
@@ -35,7 +34,6 @@ const CustomTable: React.FC<Prop> = ({
 	filter
 }) => {
 	const [perPage, setPerPage] = useState(5);
-	const [filteredRoles, setFilteredRoles] = useState([]);
 
 	const handleChange = (value: number) => {
 		setPerPage(value);
@@ -45,10 +43,10 @@ const CustomTable: React.FC<Prop> = ({
 		<>
 			<TableStyles/>
 			<Row>
-				<Col md={16}>
+				<Col md={16} sm={12}>
 					<Select handleChange={handleChange}/>
 				</Col>
-				<Col md={8}>
+				<Col md={8} sm={12}>
 					<FormInput label={<Label value='Search  '/>} change={filter}/>
 				</Col>
 			</Row>
@@ -61,7 +59,7 @@ const CustomTable: React.FC<Prop> = ({
 						expandRowByClick = {expandRowByClick}
 						showHeader = {showHeader}
 						rowKey = {rowKey}
-						pagination={{position: ['bottomCenter'], pageSize: perPage}}
+						pagination={{position: ['bottomCenter'], pageSize: perPage, size: 'small'}}
 						rowClassName = {(record, index) => 'table-custom-row'}
 						scroll = {scroll}
 					/>
