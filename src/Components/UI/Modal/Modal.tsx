@@ -11,12 +11,13 @@ interface Prop {
     columns: any,
     source?: any,
 	tableKey: string,
+	okDisabled: boolean,
     onOk: MouseEventHandler,
     onCancel: MouseEventHandler,
 	onFilter: any,
 }
 
-const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, source, tableKey, onFilter}) => {    
+const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, source, tableKey, onFilter, okDisabled}) => {    
     return (
         <>
 			<ModalStyles/>
@@ -26,7 +27,7 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 					onCancel={onCancel}
 					okType='danger'
 					okText={okText}
-					okButtonProps = {{style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
+					okButtonProps = {{style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}, disabled: okDisabled}}
 					cancelButtonProps={{style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
 					
 			>

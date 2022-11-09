@@ -43,10 +43,10 @@ const CustomTable: React.FC<Prop> = ({
 		<>
 			<TableStyles/>
 			<Row>
-				<Col md={16} sm={12}>
+				<Col md={16}>
 					<Select handleChange={handleChange}/>
 				</Col>
-				<Col md={8} sm={12}>
+				<Col md={8}>
 					<FormInput label={<Label value='Search  '/>} change={filter}/>
 				</Col>
 			</Row>

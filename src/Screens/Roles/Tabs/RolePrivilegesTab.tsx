@@ -9,16 +9,19 @@ import 'antd/dist/antd.css';
 import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
 import Danger from '../../../Components/UI/Icons/Danger';
 import ThrashIcon from '../../../Components/UI/Icons/ThrashIcon';
+import ArrowUpIcon from '../../../Components/UI/Icons/ArrowUp';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import CustomModal from '../../../Components/UI/Modal/Modal';
 import AddButton from '../../../Components/UI/Button/AddButton';
+import CheckboxField from '../../../Components/UI/Input/CheckBox';
 
 import Title from '../../../Components/UI/Messages/Title';
 import Message from '../../../Components/UI/Messages/Message';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { getRolePermsAsync, deleteRolePermAsync, getPermTypesAsync } from '../../../../src/State/Thunks/RolesThunk';
+import { getRolePermsAsync, deleteRolePermAsync, getPermTypesAsync, addPermToRoleAsync } from '../../../../src/State/Thunks/RolesThunk';
+import { forEachChild } from 'typescript';
 
 const { confirm } = Modal;
 
@@ -29,6 +32,9 @@ const RolePrivileges: React.FC<any> = ({}) => {
 	const [isAddPermModalOpen, setIsAddPermModalOpen] = useState(false);
 	const [originPerms, setOriginPerms] = useState([]);
 	const [filteredPerms, setFilteredPerms] = useState([]);
+	const [permsBatch, setPermsBatch] = useState([]);
+
+	const selectedPerms: any = [] ;
 
 	const handleOkAddPerm = () => {
 		setIsAddPermModalOpen(false);
@@ -85,7 +91,66 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			title: 'Add',
 			dataIndex: 'add',
 			key: 'add',
-			width: '5%'
+			width: '5%',
+			render: (text:any,row:any, index: any) => <Flex style={{display: 'flex', alignItems: 'center'}}><Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => {
+				const data = {
+					connid: localStorage.getItem('connid'),
+					roleid: roleDetails.roleid,
+					priv: row.mode
+				};
+				
+				dispatch(addPermToRoleAsync(data)).then((value) => {
+					const result = value.payload ;
+					if(result.error === false) {
+						// We have the db results here
+						setFilteredPerms(filteredPerms.filter((x:any) => x.mode !== row.mode));
+
+						const dataSource = result.result.value;
+						setFilteredRoles(dataSource);
+						setOriginRoles(dataSource);
+
+						setLoading(false);
+
+						Modal.success({
+							content: 'Permission added to role successfully!',
+							okType: 'danger',
+							okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+						});
+					} else {
+						//An axios error
+						let msg = '';
+						let code = '';
+			
+						if(result.status === 400) {
+							msg = result.message;
+							code = result.code;
+						} else {
+							//It is error from the back end
+							msg = result.error.msg;
+							code = result.error.code;
+						}
+						const modal = Modal.error({
+							title: `Add permission to role`,
+							content: msg + ' (' + code + ')',
+							icon: <Danger/>
+						});
+			
+						modal.update({});
+						setLoading(false);
+					}
+				},(error) => {
+					console.log("Error");
+					console.log(error);
+				} );
+			}}><ArrowUpIcon/></Button> <CheckboxField onChange={(e:any) => {
+				
+				if(e.target.checked) {
+					selectedPerms.push(row.mode);
+				} else {
+					selectedPerms.splice(selectedPerms.indexOf(row.mode),1)
+				}
+				setPermsBatch(selectedPerms);
+			}}/></Flex>
 		},
 		{
 			title: 'Mode',
@@ -151,6 +216,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 								const dataSource = result.result.value;
 								setFilteredRoles(dataSource);
 								setOriginRoles(dataSource);
+
 								setLoading(false);
 
 								Modal.success({
@@ -206,6 +272,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
+
 				setFilteredRoles(dataSource);
 				setOriginRoles(dataSource);
 				setLoading(false);
@@ -257,7 +324,15 @@ const RolePrivileges: React.FC<any> = ({}) => {
 							const result = value.payload ;
 							if(result.error === false) {
 								// We have the db results here
-								const dataSource = result.result.value;
+								let dataSource = result.result.value;
+								
+								//We have to filter before display to remove roles there already have
+
+								for (let i = 0; i < filteredRoles.length; i++) {
+									const element: any = filteredRoles[i];
+									dataSource = dataSource.filter((x:any) => x.mode !== element.mode) ;
+								}
+								
 								setFilteredPerms(dataSource);
 								setOriginPerms(dataSource);
 								setLoading(false);
@@ -291,7 +366,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 
 					<CustomModal visible={isAddPermModalOpen} title='All Privileges' 
 								okText='Add selected privileges' onOk={handleOkAddPerm} onCancel={handleCancelAddPerm} 
-								columns={addPrivColumns} source={filteredPerms} tableKey='mode' onFilter={filterPermTable} />
+								columns={addPrivColumns} source={filteredPerms} tableKey='mode' onFilter={filterPermTable} okDisabled={permsBatch.length > 0? false : true} />
                 </Spin>
                 
             </Flex>
@@ -300,7 +375,5 @@ const RolePrivileges: React.FC<any> = ({}) => {
 };
 
 const Flex = styled.div``;
-
-
 
 export default RolePrivileges;
