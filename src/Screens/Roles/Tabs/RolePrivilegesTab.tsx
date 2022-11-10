@@ -32,12 +32,13 @@ const RolePrivileges: React.FC<any> = ({}) => {
 	const [isAddPermModalOpen, setIsAddPermModalOpen] = useState(false);
 	const [originPerms, setOriginPerms] = useState([]);
 	const [filteredPerms, setFilteredPerms] = useState([]);
-	const [permsBatch, setPermsBatch] = useState([]);
+	const [permsBatch, setPermsBatch] = useState<string[]>([]);
 
 	const selectedPerms: any = [] ;
 
 	const handleOkAddPerm = () => {
-		setIsAddPermModalOpen(false);
+		console.log("master test");
+		console.log(permsBatch);
 	};
 
 	const handleCancelAddPerm = () => {
@@ -145,11 +146,10 @@ const RolePrivileges: React.FC<any> = ({}) => {
 			}}><ArrowUpIcon/></Button> <CheckboxField onChange={(e:any) => {
 				
 				if(e.target.checked) {
-					selectedPerms.push(row.mode);
+					setPermsBatch(perm => [...perm, row.mode]);
 				} else {
-					selectedPerms.splice(selectedPerms.indexOf(row.mode),1)
+					permsBatch.splice(permsBatch.indexOf(row.mode),1)
 				}
-				setPermsBatch(selectedPerms);
 			}}/></Flex>
 		},
 		{
