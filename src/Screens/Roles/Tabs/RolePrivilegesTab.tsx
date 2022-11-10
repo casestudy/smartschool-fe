@@ -20,13 +20,22 @@ import Title from '../../../Components/UI/Messages/Title';
 import Message from '../../../Components/UI/Messages/Message';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { getRolePermsAsync, deleteRolePermAsync, getPermTypesAsync, addPermToRoleAsync } from '../../../../src/State/Thunks/RolesThunk';
+import { 
+		getRolePermsAsync, 
+		deleteRolePermAsync, 
+		getPermTypesAsync, 
+		addPermToRoleAsync, 
+		addPermsToRoleAsync 
+	} from '../../../../src/State/Thunks/RolesThunk';
 import { forEachChild } from 'typescript';
 
 const { confirm } = Modal;
 
 const RolePrivileges: React.FC<any> = ({}) => {
     const [loading, setLoading] = useState(true);
+	const [loadingMessage, setLoadingMessage] = useState('');
+	const [modalLoading, setModalLoading] = useState(false);
+	const [modalLoadingMessage, setModalLoadingMessage] = useState('');
     const [originRoles, setOriginRoles] = useState([]);
 	const [filteredRoles, setFilteredRoles] = useState([]);
 	const [isAddPermModalOpen, setIsAddPermModalOpen] = useState(false);
@@ -34,11 +43,56 @@ const RolePrivileges: React.FC<any> = ({}) => {
 	const [filteredPerms, setFilteredPerms] = useState([]);
 	const [permsBatch, setPermsBatch] = useState<string[]>([]);
 
-	const selectedPerms: any = [] ;
+	const handleOkAddPerms = () => {
+		const data = {
+			connid: localStorage.getItem('connid'),
+			roleid: roleDetails.roleid,
+			privs: permsBatch
+		};
 
-	const handleOkAddPerm = () => {
-		console.log("master test");
-		console.log(permsBatch);
+		setModalLoading(true);
+		setModalLoadingMessage('Adding selected permissions to role...');
+		dispatch(addPermsToRoleAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setFilteredRoles(dataSource);
+				setOriginRoles(dataSource);
+
+				setModalLoading(false);
+
+				Modal.success({
+					content: 'Permissions added to role successfully!',
+					okType: 'danger',
+					okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+				});
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Add permissions to role`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger/>
+				});
+	
+				modal.update({});
+				setModalLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
 	};
 
 	const handleCancelAddPerm = () => {
@@ -267,6 +321,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
     ].filter(item => !item.hidden);
 
     useEffect(() => {        
+		setLoadingMessage('Fetching role privileges...');
         dispatch(getRolePermsAsync(data)).then((value) => {
 			const result = value.payload ;
 			if(result.error === false) {
@@ -307,7 +362,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
     return (
         <>
             <Flex>
-                <Spin spinning={loading} tip="Fetching role privileges...">
+                <Spin spinning={loading} tip={loadingMessage}>
                     <CustomTable 
 						columns={columns} 
 						source={filteredRoles} 
@@ -320,6 +375,8 @@ const RolePrivileges: React.FC<any> = ({}) => {
 							connid: localStorage.getItem('connid')
 						};
 						
+						setModalLoading(true);
+						setModalLoadingMessage('Fetching all privileges...');
 						dispatch(getPermTypesAsync(data)).then((value) => {
 							const result = value.payload ;
 							if(result.error === false) {
@@ -335,7 +392,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 								
 								setFilteredPerms(dataSource);
 								setOriginPerms(dataSource);
-								setLoading(false);
+								setModalLoading(false);
 							} else {
 								//An axios error
 								let msg = '';
@@ -356,7 +413,7 @@ const RolePrivileges: React.FC<any> = ({}) => {
 								});
 					
 								modal.update({});
-								setLoading(false);
+								setModalLoading(false);
 							}
 						},(error) => {
 							console.log("Error");
@@ -365,8 +422,9 @@ const RolePrivileges: React.FC<any> = ({}) => {
 					}}/>
 
 					<CustomModal visible={isAddPermModalOpen} title='All Privileges' 
-								okText='Add selected privileges' onOk={handleOkAddPerm} onCancel={handleCancelAddPerm} 
-								columns={addPrivColumns} source={filteredPerms} tableKey='mode' onFilter={filterPermTable} okDisabled={permsBatch.length > 0? false : true} />
+								okText='Add selected privileges' onOk={handleOkAddPerms} onCancel={handleCancelAddPerm} 
+								columns={addPrivColumns} source={filteredPerms} tableKey='mode' onFilter={filterPermTable} 
+								okDisabled={permsBatch.length > 0? false : true} spin={modalLoading} spinMessage={modalLoadingMessage} />
                 </Spin>
                 
             </Flex>

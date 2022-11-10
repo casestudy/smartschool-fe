@@ -30,4 +30,5 @@ export const Post = {
 	deleteRolePerm: (params: {}): Promise <any> => requests.post(`removeprivfromrole`, params),
 	getPermTypes: (params: {}): Promise <any> => requests.post(`getpermtypes`, params),
 	addPermToRole: (params: {}): Promise <any> => requests.post(`addprivtorole`, params),
+	addPermsToRole: (params: {}): Promise <any> => requests.post(`addprivstorole`, params),
 }

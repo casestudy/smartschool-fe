@@ -98,3 +98,17 @@ export const addPermToRoleAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const addPermsToRoleAsync = createAsyncThunk (
+	'addPermsToRow',
+	async (postData: any) => {
+		try {
+			const response = await Post.addPermsToRole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
