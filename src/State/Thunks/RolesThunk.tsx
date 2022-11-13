@@ -100,7 +100,7 @@ export const getPermTypesAsync = createAsyncThunk (
 )
 
 export const addPermToRoleAsync = createAsyncThunk (
-	'addPermToRow',
+	'addPermToRole',
 	async (postData: any) => {
 		try {
 			const response = await Post.addPermToRole(postData);
@@ -114,10 +114,68 @@ export const addPermToRoleAsync = createAsyncThunk (
 )
 
 export const addPermsToRoleAsync = createAsyncThunk (
-	'addPermsToRow',
+	'addPermsToRole',
 	async (postData: any) => {
 		try {
 			const response = await Post.addPermsToRole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+//Sub role thunks
+
+export const getRoleSubRolesAsync = createAsyncThunk (
+	'getRoleSubRoles',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchRoleSubRoles(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const addRoleToRoleAsync = createAsyncThunk (
+	'addRoleToRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.addRoleToTole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const addRolesToRoleAsync = createAsyncThunk (
+	'addRolesToRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.addRolesToTole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const removeRoleFromRoleAsync = createAsyncThunk (
+	'removeRoleFromRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.removeRoleFromTole(postData);
 			return response;
 		} catch(error){
 			const err = JSON.stringify(error);

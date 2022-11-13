@@ -32,4 +32,10 @@ export const Post = {
 	addPermToRole: (params: {}): Promise <any> => requests.post(`addprivtorole`, params),
 	addPermsToRole: (params: {}): Promise <any> => requests.post(`addprivstorole`, params),
 	deleteRolePerms: (params: {}): Promise <any> => requests.post(`removeprivsfromrole`, params),
+
+	//Sub role apis
+	fetchRoleSubRoles: (params: {}): Promise <any> => requests.post(`getsubroles`, params),
+	addRoleToTole: (params: {}): Promise <any> => requests.post(`addroletorole`, params),
+	addRolesToTole: (params: {}): Promise <any> => requests.post(`addrolestorole`, params),
+	removeRoleFromTole: (params: {}): Promise <any> => requests.post(`removerolefromrole`, params),
 }

@@ -15,7 +15,6 @@ import ArrowUpIcon from '../../../Components/UI/Icons/ArrowUp';
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import CustomModal from '../../../Components/UI/Modal/Modal';
 import AddButton from '../../../Components/UI/Button/AddButton';
-import SaveButton from '../../../Components/UI/Button/SaveButton';
 import CheckboxField from '../../../Components/UI/Input/CheckBox';
 
 import Title from '../../../Components/UI/Messages/Title';
@@ -109,8 +108,6 @@ const RolePrivileges: React.FC<any> = ({}) => {
 
     const role: any = localStorage.getItem("role");
     const roleDetails = JSON.parse(role);
-
-    const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
 
