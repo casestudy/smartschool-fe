@@ -17,6 +17,7 @@ import MenuIcon from '../Icons/Menu';
 
 import Label from '../Label/Label';
 import AppMenu from '../Menu/AppMenu';
+import Color from './Theme.json';
 
 
 import { HeaderContainer } from './Header.style';
@@ -104,6 +105,13 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 		loggedin? {key: 'menu', icon: <MenuIcon/>, onClick: appsMenu} : {key:'menu', style:{display: 'none'}},
 	] ;
 
+	let color = '';
+	if (title.toLocaleLowerCase() === 'dashboard') {
+		color = Color.dashboard;
+	} else if (title.toLocaleLowerCase() === 'roles') {
+		color = Color.roles;
+	}
+
     return (
         <HeaderContainer>
 			<div
@@ -113,7 +121,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					height: "2.9rem",
 					flexDirection: "row",
 					alignItems: "center",
-					backgroundColor: "#6076bf",
+					backgroundColor: `${color}`,
 					padding: "0 0 0 2rem",
 					borderBottomRightRadius: "93px",
         		}}

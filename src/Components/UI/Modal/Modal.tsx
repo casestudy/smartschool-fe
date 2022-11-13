@@ -14,12 +14,13 @@ interface Prop {
 	okDisabled: boolean,
     onOk: MouseEventHandler,
     onCancel: MouseEventHandler,
+	onClose: any,
 	onFilter: any,
 	spin: boolean,
 	spinMessage: string,
 }
 
-const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, source, tableKey, onFilter, okDisabled, spin, spinMessage}) => {    
+const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage}) => {    
     return (
         <>
 				<ModalStyles/>
@@ -32,7 +33,7 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 						okButtonProps = {{style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}, disabled: okDisabled}}
 						cancelButtonProps={{style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
 						destroyOnClose={true}
-						afterClose={() => {source = []}}
+						afterClose={onClose}
 				>
 					<Spin spinning={spin} tip={spinMessage}>
 						{<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} />}
