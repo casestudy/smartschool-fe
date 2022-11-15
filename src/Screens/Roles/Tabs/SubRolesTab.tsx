@@ -26,7 +26,8 @@ import {
 	fetchRolesAsync,
 	addRoleToRoleAsync,
 	addRolesToRoleAsync,
-	removeRoleFromRoleAsync
+	removeRoleFromRoleAsync,
+	removeRolesFromRoleAsync
 } from '../../../../src/State/Thunks/RolesThunk';
 
 const { confirm, info } = Modal;
@@ -76,11 +77,14 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 			const result = value.payload ;
 			if(result.error === false) {
 				// We have the db results here
+				let filt = filteredRoles;
 				for (let i = 0; i < subRolesBatch.length; i++) {
 					const element = subRolesBatch[i];
-					console.log(element);
-					setFilteredRoles(filteredRoles.filter((x:any) => x.roleid !== element));
+					
+					filt = filt.filter((x:any) => x.roleid !== element) ;
 				}
+
+				setFilteredRoles(filt);
 
 				const dataSource = result.result.value;
 				setFilteredSubRoles(dataSource);
@@ -166,7 +170,7 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 							title: <Title value={'Remove role from role: ' + row.rname}/>,
 							icon: <Danger />,
 							width: '600px',
-							content: <Message value='Do you really want to remove the role' 
+							content: <Message value='Do you really want to remove the sub role' 
 												item={row.rname} msg='Users will no longer be able to perform actions associated with this role.'
 												warn='This cannot be undone.'/>,
 							okText: 'Yes',
@@ -234,7 +238,11 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 					<ThrashIcon/>
 				</Button>
 				<CheckboxField onChange={(e:any) => {
-
+					if(e.target.checked) {
+						setSubRolesBatch(perm => [...perm, row.roleid]);
+					} else {
+						subRolesBatch.splice(subRolesBatch.indexOf(row.roleid),1)
+					}
 				}}/>
 			</Flex>
         },
@@ -333,12 +341,12 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 				</Button>
 				<CheckboxField onChange={(e:any) => {
 				
-				if(e.target.checked) {
-					setSubRolesBatch(perm => [...perm, row.roleid]);
-				} else {
-					subRolesBatch.splice(subRolesBatch.indexOf(row.roleid),1)
-				}
-			}}/>
+					if(e.target.checked) {
+						setSubRolesBatch(perm => [...perm, row.roleid]);
+					} else {
+						subRolesBatch.splice(subRolesBatch.indexOf(row.roleid),1)
+					}
+				}}/>
 			</Flex>
         },
 		{
@@ -408,7 +416,89 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 					/>
 					<Flex style={{marginTop: '-50px', float:'right', display: 'flex'}}>
 						<Flex style={{paddingRight: '15px'}}>
-							<AddButton icon={<MinusIcon/>} hint='Remove selected roles from role' />
+							<AddButton icon={<MinusIcon/>} hint='Remove selected roles from role' onClick={() => {
+								const role: any = localStorage.getItem('role');
+								const name = JSON.parse(role) .rname;
+
+								if(subRolesBatch.length > 0) {
+
+									confirm({
+										title: <Title value={'Remove roles from role: ' + name}/>,
+										icon: <Danger />,
+										width: '600px',
+										content: <Message value='Do you really want to remove the selected sub roles?' 
+															item='' msg='Users will no longer be able to perform actions associated with this role.'
+															warn='This cannot be undone.'/>,
+										okText: 'Yes',
+										okType: 'danger',
+										okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+										cancelText: 'Cancel',
+										cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+										onOk() {										
+											const data = {
+												connid: localStorage.getItem('connid'),
+												owner: roleDetails.roleid,
+												targets: subRolesBatch
+											};
+
+											dispatch(removeRolesFromRoleAsync(data)).then((value) => {
+												const result = value.payload ;
+												if(result.error === false) {
+			
+													// We have the db results here
+													const dataSource = result.result.value;
+													setFilteredSubRoles(dataSource);
+													setOriginSubRoles(dataSource);
+					
+													setLoading(false);
+					
+													Modal.success({
+														content: 'Roles removed from role successfully!',
+														okType: 'danger',
+														okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+													});
+												} else {
+													//An axios error
+													let msg = '';
+													let code = '';
+										
+													if(result.status === 400) {
+														msg = result.message;
+														code = result.code;
+													} else {
+														//It is error from the back end
+														msg = result.error.msg;
+														code = result.error.code;
+													}
+													const modal = Modal.error({
+														title: `Remove roles from role`,
+														content: msg + ' (' + code + ')',
+														icon: <Danger/>
+													});
+										
+													modal.update({});
+													setLoading(false);
+												}
+											},(error) => {
+												console.log("Error");
+												console.log(error);
+											} );
+										},
+										onCancel() {
+											console.log('Cancel');
+										},
+									});	
+								} else {
+									info({
+										title: <Title value={'Remove roles from role: ' + name}/>,
+										content: 'First select some roles to be removed',
+										okType: 'danger',
+										okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+									});
+								}
+
+								
+							}}/>
 						</Flex>
 						<AddButton icon={<PlusIcon/>} hint='Add roles to role' onClick={() => {
 							setSubRolesBatch([]); //Reset the perm bactch to initial state
