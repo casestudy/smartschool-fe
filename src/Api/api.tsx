@@ -40,4 +40,7 @@ export const Post = {
 	removeRoleFromTole: (params: {}): Promise <any> => requests.post(`removerolefromrole`, params),
 	removeRolesFromTole: (params: {}): Promise <any> => requests.post(`removerolesfromrole`, params),
 	removeRole: (params: {}): Promise <any> => requests.post(`removerole`, params),
+
+	//Subjects APi
+	fetchSubjects: (params: {}): Promise <any> => requests.post(`getallsubjects`, params),
 }

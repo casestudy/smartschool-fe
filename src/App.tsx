@@ -10,6 +10,8 @@ import RoleScreen from './Screens/Roles/RoleScreen';
 import CreateRoleScreen from './Screens/Roles/CreateRoleScreen';
 import VisualizeRoleScreen from './Screens/Roles/VisualizeRoleScreen';
 
+import SubjectScreen from './Screens/Subjects/SubjectScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -25,6 +27,8 @@ const App = () => {
 					<Route path="/roles" element={loggedin === 'true'? <RoleScreen/> : <LoginScreen/>} />
 					<Route path="/roles/new" element={loggedin === 'true'? <CreateRoleScreen/> : <LoginScreen/>} />
 					<Route path="/roles/visualize" element={loggedin === 'true'? <VisualizeRoleScreen/> : <LoginScreen/>} />
+
+					<Route path="/subjects" element={loggedin === 'true'? <SubjectScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

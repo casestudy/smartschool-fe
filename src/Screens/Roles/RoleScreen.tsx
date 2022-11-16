@@ -208,8 +208,6 @@ const RoleScreen: React.FC<any> = () => {
     
 };
 const Flex = styled.div``;
-const Container = styled.div`
-    padding: "10px 20px 5px 5px",
-`;
+
 export default RoleScreen;
   

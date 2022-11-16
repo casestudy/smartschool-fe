@@ -2,7 +2,11 @@ import React from 'react';
 import Icon from '@ant-design/icons';
 import type { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon';
 
-const ThrashIcon: React.FC = () => {
+interface Prop {
+	color?: string;
+}
+
+const ThrashIcon: React.FC <Prop> = ({color}) => {
   const RedThrashSvg = () => (
     <svg width="25px" height="25px" style={{fontWeight: 'bolder'}} viewBox="0 0 72 72" id="emoji" xmlns="http://www.w3.org/2000/svg">
 		<g id="color">
@@ -15,11 +19,11 @@ const ThrashIcon: React.FC = () => {
 		<g id="skin"/>
 		<g id="skin-shadow"/>
 		<g id="line">
-			<polyline fill="none" stroke="#D83031" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2" points="31,16 31,12 41,12 41,16"/>
-			<path fill="none" stroke="#D83031" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2" d="M51,25v31c0,2.2091-1.7909,4-4,4H25c-2.2091,0-4-1.7909-4-4V25"/>
-			<rect x="17" y="16" width="38" height="4" fill="none" stroke="#D83031" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
-			<line x1="41" x2="41" y1="28.25" y2="55" fill="#D83031" stroke="#D83031" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
-			<line x1="31" x2="31" y1="28.25" y2="55" fill="none" stroke="#D83031" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
+			<polyline fill="none" stroke = {color !== undefined? color : "#D83031"} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2" points="31,16 31,12 41,12 41,16"/>
+			<path fill="none" stroke={color !== undefined? color : "#D83031"} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2" d="M51,25v31c0,2.2091-1.7909,4-4,4H25c-2.2091,0-4-1.7909-4-4V25"/>
+			<rect x="17" y="16" width="38" height="4" fill="none" stroke={color !== undefined? color : "#D83031"} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
+			<line x1="41" x2="41" y1="28.25" y2="55" fill={color !== undefined? color : "#D83031"} stroke={color !== undefined? color : "#D83031"} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
+			<line x1="31" x2="31" y1="28.25" y2="55" fill="none" stroke={color!== undefined? color : "#D83031"} strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2"/>
 		</g>
     </svg>
   );

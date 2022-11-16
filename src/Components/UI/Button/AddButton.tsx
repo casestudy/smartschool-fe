@@ -7,12 +7,12 @@ interface Prop {
     children?: React.ReactNode;
     top?: string,
     float?: any,
-    hint?: string
+    hint?: string,
+    color?: string
 }
 
-const AddButton: React.FC<Prop> = ({ children, icon, onClick, top, float, hint }) => {
+const AddButton: React.FC<Prop> = ({ children, icon, onClick, top, float, hint, color }) => {
     const text = <span>{hint}</span>;
-
     return (
         <>
             <Tooltip title={text}>
@@ -24,10 +24,10 @@ const AddButton: React.FC<Prop> = ({ children, icon, onClick, top, float, hint }
                         width: '40px',
                         height: '40px',
                         justifyContent: 'center',
-                        background: '#BC6470',
+                        background: color !== undefined? color : '#BC6470',
                         boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                         borderRadius: '8px',
-                        borderColor: '#BC6470',
+                        borderColor: color !== undefined? color : '#BC6470',
                         float: float,
                         marginTop: top
                     }}
