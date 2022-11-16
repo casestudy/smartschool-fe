@@ -39,4 +39,5 @@ export const Post = {
 	addRolesToTole: (params: {}): Promise <any> => requests.post(`addrolestorole`, params),
 	removeRoleFromTole: (params: {}): Promise <any> => requests.post(`removerolefromrole`, params),
 	removeRolesFromTole: (params: {}): Promise <any> => requests.post(`removerolesfromrole`, params),
+	removeRole: (params: {}): Promise <any> => requests.post(`removerole`, params),
 }

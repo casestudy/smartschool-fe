@@ -14,7 +14,7 @@ import { ThemeProvider } from 'styled-components';
 
 const App = () => {
 	let loggedin = localStorage.getItem("loggedin");
-	
+	console.log(loggedin);
 	return (
 		<ThemeProvider theme={Theme}>
 			<GlobalStyles />

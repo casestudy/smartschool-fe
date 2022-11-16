@@ -128,6 +128,7 @@ const LoginForm: React.FC = () => {
 			const result = value.payload ;
 
 			if(result.error === false) {
+				toggle(false);
 				localStorage.setItem("loggedin", "true");
 
 				const lln = result.result.value[0][0].lastlogin;
@@ -153,6 +154,7 @@ const LoginForm: React.FC = () => {
 				localStorage.setItem("lastlogin",ll);
 				localStorage.setItem("connid",appid);
 				
+				window.location.reload();
 				navigate('/dashboard');
 			} else { 
 				//Probably an error due to axios. check for status 400 first

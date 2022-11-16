@@ -9,13 +9,19 @@ import 'antd/dist/antd.css';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
+import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
 
 import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
 import AddButton from '../../Components/UI/Button/AddButton';
 
+import Title from '../../Components/UI/Messages/Title';
+import Message from '../../Components/UI/Messages/Message';
+
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchRolesAsync } from '../../../src/State/Thunks/RolesThunk';
+import { fetchRolesAsync, removeRoleAsync } from '../../../src/State/Thunks/RolesThunk';
+
+const { confirm, info } = Modal;
 
 const RoleScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
@@ -66,10 +72,74 @@ const RoleScreen: React.FC<any> = () => {
             dataIndex: 'visualize',
             key: 'visualize',
             width: '5%',
-			render: (text:any,row:any) => <Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => {
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}><Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => {
 				localStorage.setItem("role", JSON.stringify(row));
 				navigate('/roles/visualize');
-			}}><VisualizeIcon/></Button>
+			}}><VisualizeIcon/></Button> <Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick = {(() => {
+				confirm({
+					title: <Title value={'Delete Role'}/>,
+					icon: <Danger />,
+					width: '600px',
+					content: <Message value='Do you really want to delete the role' 
+										item={row.rname} msg='All users with this role will no longer be able to perform associated actions.'
+										warn='This cannot be undone.'/>,
+					okText: 'Yes',
+					okType: 'danger',
+					okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+					cancelText: 'Cancel',
+					cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+					onOk() {
+						toggle(true);
+						const data = {
+							connid: localStorage.getItem('connid'),
+							roleid: row.roleid
+						};
+
+						dispatch(removeRoleAsync(data)).then((value) => {
+							const result = value.payload ;
+							if(result.error === false) {
+								// We have the db results here
+								const dataSource = result.result.value;
+								setFilteredRoles(dataSource);
+								setOriginRoles(dataSource);
+
+								toggle(false);
+
+								Modal.success({
+									content: 'Role deleted successfully!',
+									okType: 'danger',
+									okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+								});
+							} else {
+								//An axios error
+								let msg = '';
+								let code = '';
+					
+								if(result.status === 400) {
+									msg = result.message;
+									code = result.code;
+								} else {
+									//It is error from the back end
+									msg = result.error.msg;
+									code = result.error.code;
+								}
+								const modal = Modal.error({
+									title: `Delete role`,
+									content: msg + ' (' + code + ')',
+									icon: <Danger/>
+								});
+					
+								modal.update({});
+								setLoading(false);
+							}
+						},(error) => {
+							console.log("Error");
+							console.log(error);
+						} );
+					}
+					
+				})
+			})} ><ThrashIcon/></Button></Flex>
         },
 		{
 			title: 'Role Id',

@@ -198,3 +198,17 @@ export const removeRolesFromRoleAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const removeRoleAsync = createAsyncThunk (
+	'removeRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.removeRole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
