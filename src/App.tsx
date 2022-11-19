@@ -11,6 +11,7 @@ import CreateRoleScreen from './Screens/Roles/CreateRoleScreen';
 import VisualizeRoleScreen from './Screens/Roles/VisualizeRoleScreen';
 
 import SubjectScreen from './Screens/Subjects/SubjectScreen';
+import CreateSubjectScreen from './Screens/Subjects/CreateSubjectScreen';
 
 import { ThemeProvider } from 'styled-components';
 
@@ -29,6 +30,7 @@ const App = () => {
 					<Route path="/roles/visualize" element={loggedin === 'true'? <VisualizeRoleScreen/> : <LoginScreen/>} />
 
 					<Route path="/subjects" element={loggedin === 'true'? <SubjectScreen/> : <LoginScreen/>} />
+					<Route path="/subjects/new" element={loggedin === 'true'? <CreateSubjectScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>
