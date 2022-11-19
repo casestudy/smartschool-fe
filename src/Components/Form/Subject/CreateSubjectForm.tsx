@@ -8,7 +8,7 @@ import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createRoleAsync, editRoleAsync } from '../../../State/Thunks/RolesThunk';
+import { createSubjectAsync, editSubjectAsync } from '../../../State/Thunks/SubjectsThunk';
 
 const { TextArea } = Input;
 
@@ -40,92 +40,95 @@ const CreateRoleForm: React.FC<Prop> = ({sname, code, coef, description, subject
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	if(typeof subjectid !== 'undefined') {
-		if(!(fields[1].value.length > 0)) {
-			//Don't read
-			setTimeout(() => {
-				setFields([{name: ['subjectid'], value: subjectid}, {name: ['name'] , value: sname}, {name: ['code'] , value: code}, {name: ['coef'] , value: coef}, {name: ['description'], value: description}]);
-				setDisabled(false);
-			},100);
+	useEffect(() => {
+		if(typeof subjectid !== 'undefined') {
+			if(!(fields[1].value > 0)) {
+				//Don't read
+				setTimeout(() => {
+					setFields([{name: ['subjectid'], value: subjectid}, {name: ['name'] , value: sname}, {name: ['code'] , value: code}, {name: ['coef'] , value: coef}, {name: ['description'], value: description}]);
+					setDisabled(false);
+				},100);
+			}
+		}
+	},[])
+
+	const onFinish = () => {
+		const data = {
+			subjectid: fields[0].value,
+			name: fields[1].value,
+			code: fields[2].value,
+			coef: fields[3].value,
+			descr: fields[4].value,
+			connid: localStorage.getItem('connid')
+		}
+
+		setLoading(true);
+
+		if (data.subjectid === '') {
+			// We are adding
+			console.log("Adding");
+			setLoadingMessage('Creating role...');
+			dispatch(createSubjectAsync(data)).then((value) => {
+	
+				const result = value.payload;
+	
+				if(result.error === false) {
+					navigate('/subjects');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Create Subject`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger/>
+					});
+	
+					modal.update({});
+				}
+				setLoading(false);
+			})
+		} else {
+			// We are updating the role
+			setLoadingMessage('Updating subject...');
+			dispatch(editSubjectAsync(data)).then((value) => {
+	
+				const result = value.payload;
+	
+				if(result.error === false) {
+					navigate('/subjects');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Modify Subject: `,
+						content: msg + ' (' + code + ')',
+						icon: <Danger/>
+					});
+	
+					modal.update({});
+				}
+			})
+			setLoading(false);
 		}
 	}
-
-	// const onFinish = () => {
-	// 	const data = {
-	// 		roleid: fields[0].value,
-	// 		rname: fields[1].value,
-	// 		descript: fields[2].value,
-	// 		connid: localStorage.getItem('connid')
-	// 	}
-
-	// 	setLoading(true);
-
-	// 	if (data.roleid === '') {
-	// 		// We are adding
-	// 		setLoadingMessage('Creating role...');
-	// 		dispatch(createRoleAsync(data)).then((value) => {
-	// 			console.log(value.payload);
-	
-	// 			const result = value.payload;
-	
-	// 			if(result.error === false) {
-	// 				navigate('/roles');
-	// 			} else {
-	// 				//Probably an error due to axios. check for status 400 first
-	// 				let msg = '';
-	// 				let code = '';
-	// 				if(result.status === 400) {
-	// 					msg = result.message;
-	// 					code = result.code;
-	// 				} else {
-	// 					//It is error from the back end
-	// 					msg = result.error.msg;
-	// 					code = result.error.code;
-	// 				}
-	// 				const modal = Modal.error({
-	// 					title: `Create Role`,
-	// 					content: msg + ' (' + code + ')',
-	// 					icon: <Danger/>
-	// 				});
-	
-	// 				modal.update({});
-	// 			}
-	// 			setLoading(false);
-	// 		})
-	// 	} else {
-	// 		// We are updating the role
-	// 		setLoadingMessage('Updating role: ' + data.rname + '...');
-	// 		dispatch(editRoleAsync(data)).then((value) => {
-	// 			console.log(value.payload);
-	
-	// 			const result = value.payload;
-	
-	// 			if(result.error === false) {
-	// 				navigate('/roles');
-	// 			} else {
-	// 				//Probably an error due to axios. check for status 400 first
-	// 				let msg = '';
-	// 				let code = '';
-	// 				if(result.status === 400) {
-	// 					msg = result.message;
-	// 					code = result.code;
-	// 				} else {
-	// 					//It is error from the back end
-	// 					msg = result.error.msg;
-	// 					code = result.error.code;
-	// 				}
-	// 				const modal = Modal.error({
-	// 					title: `Modify Role: ` + data.rname,
-	// 					content: msg + ' (' + code + ')',
-	// 					icon: <Danger/>
-	// 				});
-	
-	// 				modal.update({});
-	// 			}
-	// 		})
-	// 		setLoading(false);
-	// 	}
-	// }
 
 	return (
 		<>
@@ -137,7 +140,7 @@ const CreateRoleForm: React.FC<Prop> = ({sname, code, coef, description, subject
 						setFields(allFields);
 						if(fields[0].value === '') {
 							//We are adding a new role
-							if(fields[1].value.length > 0 && fields[2].value.length > 0) {
+							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0) {
 								setDisabled(false);
 							} else {
 								setDisabled(true);
@@ -195,7 +198,7 @@ const CreateRoleForm: React.FC<Prop> = ({sname, code, coef, description, subject
 						<InputRow>
 							<FormItem 
 								label='Coefficient:'
-								name='coefficient'
+								name='coef'
 								style={{width: '250px'}}
 								rules={[{required: true, message: ''}]}
 							>
@@ -233,10 +236,10 @@ const CreateRoleForm: React.FC<Prop> = ({sname, code, coef, description, subject
 					<Flex>
 						<InputRow>
 							<FormItem>
-								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/roles')}}/>
+								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/subjects')}}/>
 							</FormItem>
 							<FormItem>
-								<SaveButton title='Save' size='large' bgcolor='#BC6470' disabled={disabled} onClick={() => {}}/>
+								<SaveButton title='Save' size='large' bgcolor='#5E92A8' disabled={disabled} onClick={onFinish}/>
 							</FormItem>
 						</InputRow>
 					</Flex>

@@ -6,7 +6,6 @@ import { Row , Col, Button, Modal, Spin } from 'antd';
 import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
 import AddButton from '../../Components/UI/Button/AddButton';
-import ModalForm from '../../Components/UI/Modal/ModalForm';
 
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
@@ -17,11 +16,10 @@ import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchSubjectsAsync} from '../../../src/State/Thunks/SubjectsThunks';
+import { fetchSubjectsAsync} from '../../State/Thunks/SubjectsThunk';
 
 const SubjectScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
-	const [modalVisible, setModalVisible] = useState(false);
 	const [originalSubjects, setOriginalSubjects] = useState([]);
 	const [filteredSubjects, setFilteredSubjects] = useState([]);
 
@@ -31,7 +29,7 @@ const SubjectScreen: React.FC<any> = () => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalSubjects.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.descript.toLowerCase().includes(e.toLowerCase()));
+		const filt = originalSubjects.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.code.toString().includes(e) || x.descript.toLowerCase().includes(e.toLowerCase()));
 		setFilteredSubjects(filt);
 	};
 
@@ -78,8 +76,17 @@ const SubjectScreen: React.FC<any> = () => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						console.log("Edit modal");
-						setModalVisible(true);
+						//console.log(row.sname);
+						navigate('/subjects/new', {
+							state: {
+								title: 'Modify Subject', 
+								subjectid: row.subjectid,
+								subjectname: row.sname,
+								subjectcode: row.code,
+								subjectcoef: row.coefficient,
+								subjectdesc: row.descript
+							}
+						})
 					}}>
 					<PenIcon color='#5E92A8' size='18px' line='20px'/> 
 				</Button>
@@ -144,11 +151,6 @@ const SubjectScreen: React.FC<any> = () => {
 		} );
 	}, [])
 
-	const handleCancelAddSubject = () => {
-		setModalVisible(false);
-		//setPermsBatch([]);
-	};
-
     return (
         <Flex>
 			<Spin spinning={loading} tip="Fetching subjects...">
@@ -157,16 +159,12 @@ const SubjectScreen: React.FC<any> = () => {
 					<Col md={18}>
 						<div style={{padding: "5rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredSubjects} rowKey='subjectid' filter={filterTable}/>
-							<AddButton hint='Create new subject' icon={<PlusIcon/>} top='-50px' float='right' color='#5E92A8' onClick={() => {navigate('/subjects/new')}}/>
+							<AddButton hint='Create new subject' icon={<PlusIcon/>} top='-50px' float='right' color='#5E92A8' onClick={() => {navigate('/subjects/new', {state: {title: 'Create New Subject'}})}}/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>
 				</Row>
 			</Spin>
-
-			<ModalForm visible={modalVisible} title='Edit subject' okDisabled={true} 
-						onOk={() => {}} onCancel={handleCancelAddSubject} onClose={() => {}} 
-						onFilter='' spin={false} spinMessage=''/>
         </Flex>
     );
 };

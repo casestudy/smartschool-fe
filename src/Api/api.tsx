@@ -43,4 +43,6 @@ export const Post = {
 
 	//Subjects APi
 	fetchSubjects: (params: {}): Promise <any> => requests.post(`getallsubjects`, params),
+	createSubject: (params: {}): Promise <any> => requests.post(`createsubject`, params),
+	updateSubject: (params: {}): Promise <any> => requests.post(`modifysubject`, params),
 }

@@ -1,18 +1,20 @@
 import React from "react";
 import styled from "styled-components";
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import BackButton from '../../Components/UI/Button/BackButton';
 import BackIcon from '../../Components/UI/Icons/BackArrow';
 
 import Header from '../../Components/UI/Header/Header';
-import CreateRoleForm from '../../Components/Form/Subject/CreateSubjectForm';
+import CreateSubjectForm from '../../Components/Form/Subject/CreateSubjectForm';
 import { Col, Row } from "antd";
 
 const CreateSubjectScreen: React.FC<any> = () => {
     let ll: any = localStorage.getItem('lastlogin');
 	const navigate = useNavigate();
+
+    const { state } = useLocation();
 
     return (
         <>
@@ -22,15 +24,20 @@ const CreateSubjectScreen: React.FC<any> = () => {
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", display: "flex"}}>
 							<BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/roles')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/subjects')}}/>
 							</BackArrow>
 							<Flex style={{columnGap: '4rem'}}>
-								<Title>Create New Subject</Title>
+								<Title>{state.title}</Title>
 							</Flex>
                         </Flex>
 						<StyledFormBody style={{padding: "5rem 5rem 1px 5rem"}}>
 							<Filler/>
-							<CreateRoleForm disp="none"/>
+                            {(state.subjectid !== undefined)? 
+                                        <CreateSubjectForm disp="block" subjectid={state.subjectid} 
+                                                            sname={state.subjectname} code={state.subjectcode} 
+                                                            coef={state.subjectcoef} description={state.subjectdesc}/> : 
+                                        <CreateSubjectForm disp="none"/>}
+							
 						</StyledFormBody>
                     </Col>
                     <Col md={6}></Col>

@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import loginUserReducer from './Reducers/LoginReducer';
 import fetchRolesReducer from './Reducers/RolesReducer';
+import fetchSubjectsReducer from './Reducers/SubjectsReducer';
 
 export const Store = configureStore({
     middleware: (getDefaultMiddleware) => 
@@ -8,13 +9,15 @@ export const Store = configureStore({
 			serializableCheck: {
 				ignoredActions: [
 					'loginUser/fulfilled',
-					'fetchRoles/fulfilled'
+					'fetchRoles/fulfilled',
+					'fetchSubjects/fulfilled'
 				]
 			},
 		}),
 	reducer: {
 		loginUser: loginUserReducer,
-		fetchRoles: fetchRolesReducer
+		fetchRoles: fetchRolesReducer,
+		fetchSubjects: fetchSubjectsReducer
 	}, 
 });
 
