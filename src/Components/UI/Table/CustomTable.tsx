@@ -18,7 +18,8 @@ interface Prop {
 	rowKey?: any,
 	rowSelection?: any,
 	scroll?: any,
-	filter?: any
+	filter?: any,
+	searchIconColor?: string
 }
 
 const CustomTable: React.FC<Prop> = ({
@@ -31,7 +32,8 @@ const CustomTable: React.FC<Prop> = ({
 	showHeader,
 	rowKey,
 	scroll,
-	filter
+	filter,
+	searchIconColor
 }) => {
 	const [perPage, setPerPage] = useState(5);
 
@@ -47,7 +49,7 @@ const CustomTable: React.FC<Prop> = ({
 					<Select handleChange={handleChange}/>
 				</Col>
 				<Col md={8}>
-					<FormInput label={<Label value='Search  '/>} change={filter}/>
+					<FormInput label={<Label value='Search  '/>} icon={searchIconColor} change={filter}/>
 				</Col>
 			</Row>
 			<Row>

@@ -158,7 +158,7 @@ const SubjectScreen: React.FC<any> = () => {
 				<Row>
 					<Col md={18}>
 						<div style={{padding: "5rem 5rem 1px 5rem"}}>
-							<CustomTable columns={columns} source={filteredSubjects} rowKey='subjectid' filter={filterTable}/>
+							<CustomTable columns={columns} source={filteredSubjects} searchIconColor='#5E92A8' rowKey='subjectid' filter={filterTable}/>
 							<AddButton hint='Create new subject' icon={<PlusIcon/>} top='-50px' float='right' color='#5E92A8' onClick={() => {navigate('/subjects/new', {state: {title: 'Create New Subject'}})}}/>
 						</div>
 					</Col>
