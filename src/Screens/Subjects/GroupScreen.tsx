@@ -16,8 +16,13 @@ import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
+import Title from '../../Components/UI/Messages/Title';
+import Message from '../../Components/UI/Messages/Message';
+
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchGroupsAsync } from '../../State/Thunks/SubjectsThunk';
+import { fetchGroupsAsync, deleteGroupAsync } from '../../State/Thunks/SubjectsThunk';
+
+const { confirm, info } = Modal;
 
 const GroupScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
@@ -77,17 +82,79 @@ const GroupScreen: React.FC<any> = () => {
 
 				<Button type='text' style={{color: '351C75', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						console.log("Deleting now");
+						navigate('/groups/visualize', {
+							state: {
+								title: row.gname,
+								groupid: row.groupid
+							}
+						});
 					}}>
-					<ThrashIcon color='#351C75'/> 
+					<VisualizeIcon color='#351C75'/> 
 				</Button>
 
 				<Button type='text' style={{color: '351C75', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						localStorage.setItem("role", JSON.stringify(row));
-						navigate('/roles/visualize');
+						confirm({
+							title: <Title value={'Delete Subject Group'}/>,
+							icon: <Danger color='#351C75'/>,
+							width: '600px',
+							content: <Message value='Do you really want to delete the group' 
+												item={row.gname} msg='All subjects in this group will be removed.'
+												warn='This cannot be undone.'/>,
+							okText: 'Yes',
+							okType: 'danger',
+							okButtonProps:  {style: {backgroundColor: '#351C75', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+							cancelText: 'Cancel',
+							cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+							onOk() {
+								//toggle(true);
+								const data = {
+									connid: localStorage.getItem('connid'),
+									groupid: row.groupid
+								};
+		
+								dispatch(deleteGroupAsync(data)).then((value) => {
+									const result = value.payload ;
+									if(result.error === false) {
+										// We have the db results here
+										const dataSource = result.result.value;
+										setFilteredGroups(dataSource);
+										setOriginalGroups(dataSource);
+		
+										Modal.success({
+											content: 'Group deleted successfully!',
+											okType: 'danger',
+											okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+										});
+									} else {
+										//An axios error
+										let msg = '';
+										let code = '';
+							
+										if(result.status === 400) {
+											msg = result.message;
+											code = result.code;
+										} else {
+											//It is error from the back end
+											msg = result.error.msg;
+											code = result.error.code;
+										}
+										const modal = Modal.error({
+											title: `Delete group`,
+											content: msg + ' (' + code + ')',
+											icon: <Danger color='#351C75'/>
+										});
+							
+										modal.update({});
+									}
+								},(error) => {
+									console.log("Error");
+									console.log(error);
+								} );
+							}
+						})
 					}}>
-					<VisualizeIcon color='#351C75'/> 
+					<ThrashIcon color='#351C75'/> 
 				</Button>
 			</Flex>
 		},

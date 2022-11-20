@@ -84,3 +84,31 @@ export const editGroupAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const deleteGroupAsync = createAsyncThunk (
+	'deleteGroup',
+	async (postData: any) => {
+		try {
+			const response = await Post.deleteGroup(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const fetchGroupsubjectsAsync = createAsyncThunk (
+	'fetchGroupSubjects',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchGroupSubjects(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)

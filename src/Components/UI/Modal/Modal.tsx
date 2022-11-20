@@ -18,9 +18,11 @@ interface Prop {
 	onFilter: any,
 	spin: boolean,
 	spinMessage: string,
+	width?: number,
+	okColor?: string
 }
 
-const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage}) => {    
+const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage, width, okColor}) => {    
     return (
         <>
 				<ModalStyles/>
@@ -30,13 +32,14 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 						onCancel={onCancel}
 						okType='danger'
 						okText={okText}
-						okButtonProps = {{style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}, disabled: okDisabled}}
+						okButtonProps = {{style: {backgroundColor: okColor === undefined? '#BC6470' : okColor, borderRadius: '8px', fontWeight: 800, color: '#FFF'}, disabled: okDisabled}}
 						cancelButtonProps={{style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
 						destroyOnClose={true}
 						afterClose={onClose}
+						width={width}
 				>
 					<Spin spinning={spin} tip={spinMessage}>
-						{<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} />}
+						{<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} searchIconColor={okColor} />}
 					</Spin>
 					
 				</Modal>			

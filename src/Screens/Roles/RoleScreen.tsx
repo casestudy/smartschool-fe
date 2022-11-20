@@ -195,10 +195,10 @@ const RoleScreen: React.FC<any> = () => {
 				<Header title='Roles' loggedin={true} lastlogin={ll}></Header>
 				<Row>
 					<Col md={18}>
-						<div style={{padding: "5rem 5rem 1px 5rem"}}>
+						<Flex style={{padding: "5rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredRoles} rowKey='roleid' filter={filterTable}/>
 							<AddButton icon={<PlusIcon/>} top='-50px' float='right' onClick={() => {navigate('/roles/new')}}/>
-						</div>
+						</Flex>
 					</Col>
 					<Col md={6}>Notifications</Col>
 				</Row>
