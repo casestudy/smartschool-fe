@@ -45,4 +45,7 @@ export const Post = {
 	fetchSubjects: (params: {}): Promise <any> => requests.post(`getallsubjects`, params),
 	createSubject: (params: {}): Promise <any> => requests.post(`createsubject`, params),
 	updateSubject: (params: {}): Promise <any> => requests.post(`modifysubject`, params),
+	fetchGroups: (params: {}): Promise <any> => requests.post(`getgroups`, params),
+	createGroup: (params: {}): Promise <any> => requests.post(`creategroup`, params),
+	updateGroup: (params: {}): Promise <any> => requests.post(`editgroup`, params),
 }

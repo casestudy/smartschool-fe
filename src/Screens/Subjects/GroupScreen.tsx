@@ -7,21 +7,22 @@ import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
 import AddButton from '../../Components/UI/Button/AddButton';
 
-import styled from 'styled-components';
 import 'antd/dist/antd.css';
+import styled from 'styled-components';
 
 import PenIcon from '../../Components/UI/Icons/Pen';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
+import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchSubjectsAsync} from '../../State/Thunks/SubjectsThunk';
+import { fetchGroupsAsync } from '../../State/Thunks/SubjectsThunk';
 
-const SubjectScreen: React.FC<any> = () => {
+const GroupScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
-	const [originalSubjects, setOriginalSubjects] = useState([]);
-	const [filteredSubjects, setFilteredSubjects] = useState([]);
+	const [originalGroups, setOriginalGroups] = useState([]);
+	const [filteredGroups, setFilteredGroups] = useState([]);
 
 	let ll: any = localStorage.getItem('lastlogin');
 
@@ -29,8 +30,8 @@ const SubjectScreen: React.FC<any> = () => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalSubjects.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.code.toString().includes(e) || x.descript.toLowerCase().includes(e.toLowerCase()));
-		setFilteredSubjects(filt);
+		const filt = originalGroups.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.code.toString().includes(e) || x.descript.toLowerCase().includes(e.toLowerCase()));
+		setFilteredGroups(filt);
 	};
 
 	const columns = [
@@ -43,30 +44,16 @@ const SubjectScreen: React.FC<any> = () => {
         },
         {
 			title: 'Name',
-			dataIndex: 'sname',
-			key: 'sname',
+			dataIndex: 'gname',
+			key: 'gname',
 			width: '20%',
 			sorter: (a: any, b: any) => a.sname.localeCompare(b.sname)
-        },
-		{
-			title: 'Code',
-			dataIndex: 'code',
-			key: 'code',
-			width: '15%',
-			sorter: (a: any, b: any) => a.code.localeCompare(b.code)
-        },
-		{
-			title: 'Coefficient',
-			dataIndex: 'coefficient',
-			key: 'coefficient',
-			width: '15%',
-			sorter: (a: any, b: any) => a.coefficient.localeCompare(b.coefficient)
         },
         {
 			title: 'Description',
 			dataIndex: 'descript',
 			key: 'descript',
-			width: '30%'
+			width: '60%'
         },
 		{
             title: 'Actions',
@@ -74,36 +61,40 @@ const SubjectScreen: React.FC<any> = () => {
             key: 'action',
             width: '5%',
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
-				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+				<Button type='text' style={{color: '351C75', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						//console.log(row.sname);
-						navigate('/subjects/new', {
+						navigate('/groups/new', {
 							state: {
-								title: 'Modify Subject', 
-								subjectid: row.subjectid,
-								subjectname: row.sname,
-								subjectcode: row.code,
-								subjectcoef: row.coefficient,
-								subjectdesc: row.descript
+								title: 'Modify Subject Group', 
+								groupid: row.groupid,
+								groupname: row.gname,
+								groupdesc: row.descript
 							}
 						})
 					}}>
-					<PenIcon color='#5E92A8' size='18px' line='20px'/> 
+					<PenIcon color='#351C75' size='18px' line='20px'/> 
 				</Button>
 
-				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+				<Button type='text' style={{color: '351C75', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						console.log("Deleting now");
+					}}>
+					<ThrashIcon color='#351C75'/> 
+				</Button>
+
+				<Button type='text' style={{color: '351C75', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
 						localStorage.setItem("role", JSON.stringify(row));
 						navigate('/roles/visualize');
 					}}>
-					<ThrashIcon color='#5E92A8'/> 
+					<VisualizeIcon color='#351C75'/> 
 				</Button>
 			</Flex>
 		},
 		{
-			title: 'Subject Id',
-			dataIndex: 'subjectid',
-			key: 'subjectid',
+			title: 'Group Id',
+			dataIndex: 'groupid',
+			key: 'groupid',
 			width: '10%',
 			hidden: true
 		},
@@ -114,14 +105,14 @@ const SubjectScreen: React.FC<any> = () => {
 			connid: localStorage.getItem('connid'),
 		};
 
-		dispatch(fetchSubjectsAsync(data)).then((value) => {
+		dispatch(fetchGroupsAsync(data)).then((value) => {
 			const result = value.payload ;
 			//console.log(result);
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
-				setFilteredSubjects(dataSource);
-				setOriginalSubjects(dataSource);
+				setFilteredGroups(dataSource);
+				setOriginalGroups(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -137,9 +128,10 @@ const SubjectScreen: React.FC<any> = () => {
 					code = result.error.code;
 				}
 				const modal = Modal.error({
-					title: `Subjects`,
+					title: `Subject Groups`,
 					content: msg + ' (' + code + ')',
-					icon: <Danger/>
+                    okButtonProps: {style: {backgroundColor: '#351C75 !important'}, color: '#351C75 !important'},
+					icon: <Danger color='#351C75'/>
 				});
 	
 				modal.update({});
@@ -153,13 +145,13 @@ const SubjectScreen: React.FC<any> = () => {
 
     return (
         <Flex>
-			<Spin spinning={loading} tip="Fetching subjects...">
-				<Header title='Subjects' loggedin={true} lastlogin={ll}></Header>
+			<Spin spinning={loading} tip="Fetching subject groups...">
+				<Header title='Groups' loggedin={true} lastlogin={ll}></Header>
 				<Row>
 					<Col md={18}>
 						<div style={{padding: "5rem 5rem 1px 5rem"}}>
-							<CustomTable columns={columns} source={filteredSubjects} searchIconColor='#5E92A8' rowKey='subjectid' filter={filterTable}/>
-							<AddButton hint='Create new subject' icon={<PlusIcon/>} top='-50px' float='right' color='#5E92A8' onClick={() => {navigate('/subjects/new', {state: {title: 'Create New Subject'}})}}/>
+							<CustomTable columns={columns} source={filteredGroups} searchIconColor='#351C75' rowKey='groupid' filter={filterTable}/>
+							<AddButton hint='Create new subject group' icon={<PlusIcon/>} top='-50px' float='right' color='#351C75' onClick={() => {navigate('/groups/new', {state: {title: 'Create New Group'}})}}/>
 						</div>
 					</Col>
 					<Col md={6}>Notifications</Col>
@@ -171,4 +163,4 @@ const SubjectScreen: React.FC<any> = () => {
 
 const Flex = styled.div``;
 
-export default SubjectScreen;
+export default GroupScreen;

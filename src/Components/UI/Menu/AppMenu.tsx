@@ -17,6 +17,7 @@ import CalendarIcon from '../Icons/Calendar';
 import SettingsIcon from '../Icons/Settings';
 
 import './AppMenu.css';
+import styled from "styled-components";
   
 interface Prop {
 	height: string;
@@ -29,7 +30,7 @@ const styleLabel: React.CSSProperties = {textAlign: 'center', fontWeight: '500',
 const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
     return (
         <>
-            <div style={{
+            <Flex style={{
 					overflowY: "scroll", 
 					overflowX: "hidden",
 					position: "absolute", 
@@ -48,10 +49,10 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
                 <Row gutter={16}>
 					<Col span={8} className="gutter-row">
 						<Link to="/roles" className="app-menu-link">
-							<div className="app-menu-item-container">
+							<Flex className="app-menu-item-container">
 								<Row justify="center" align="middle" style={styleIcon}><AdminIcon/></Row>
 								<Row justify="center" style={styleLabel}>Administrators</Row>
-							</div>
+							</Flex>
 						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
@@ -70,25 +71,29 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Link to="/roles" className="app-menu-link">
-							<div className="app-menu-item-container">
+							<Flex className="app-menu-item-container">
 								<Row justify="center" align="middle" style={styleIcon}><RolesIcon/></Row>
 								<Row justify="center" style={styleLabel}>Roles</Row>
-							</div>
+							</Flex>
 						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Link to="/subjects" className="app-menu-link">
-							<div className="app-menu-item-container">
+							<Flex className="app-menu-item-container">
 								<Row justify="center" align="middle" style={styleIcon}><SubjectsIcon/></Row>
 								<Row justify="center" style={styleLabel}>Subjects</Row>
-							</div>
+							</Flex>
 						</Link>
 					</Col>
 				</Row>
 				<Row gutter={16}>
 					<Col span={8} className="gutter-row">
-						<Row justify="center" align="middle" style={styleIcon}><GroupsIcon/></Row>
-						<Row justify="center" style={styleLabel}>Groups</Row>
+						<Link to="/groups" className="app-menu-link">
+							<Flex className="app-menu-item-container">
+								<Row justify="center" align="middle" style={styleIcon}><GroupsIcon/></Row>
+								<Row justify="center" style={styleLabel}>Groups</Row>
+							</Flex>
+						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Row justify="center" align="middle" style={styleIcon}><ClassroomIcon/></Row>
@@ -113,9 +118,11 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 						<Row justify="center" style={styleLabel}>Settings</Row>
 					</Col>
 				</Row>
-            </div>
+            </Flex>
         </>
     );
 };
-    
+
+const Flex = styled.div``;
+
 export default LeftMenu;

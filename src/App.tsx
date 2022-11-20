@@ -13,6 +13,9 @@ import VisualizeRoleScreen from './Screens/Roles/VisualizeRoleScreen';
 import SubjectScreen from './Screens/Subjects/SubjectScreen';
 import CreateSubjectScreen from './Screens/Subjects/CreateSubjectScreen';
 
+import GroupScreen from './Screens/Subjects/GroupScreen';
+import CreateGroupScreen from './Screens/Subjects/CreateGroupScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -31,6 +34,9 @@ const App = () => {
 
 					<Route path="/subjects" element={loggedin === 'true'? <SubjectScreen/> : <LoginScreen/>} />
 					<Route path="/subjects/new" element={loggedin === 'true'? <CreateSubjectScreen/> : <LoginScreen/>} />
+
+					<Route path="/groups" element={loggedin === 'true'? <GroupScreen/> : <LoginScreen/>} />
+					<Route path="/groups/new" element={loggedin === 'true'? <CreateGroupScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

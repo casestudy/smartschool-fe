@@ -3,12 +3,13 @@ import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
 import { Form, Input, Modal, Spin } from 'antd';
+import { decode as base64_decode} from 'base-64';
 
 import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createSubjectAsync, editSubjectAsync } from '../../../State/Thunks/SubjectsThunk';
+import { createGroupAsync, editGroupAsync } from '../../../State/Thunks/SubjectsThunk';
 
 const { TextArea } = Input;
 
@@ -21,17 +22,15 @@ interface FieldData {
 }
 
 interface Prop {
-	sname?: string;
-	coef?: number;
-	code?: number;
-	description?: string;
+	gname?: string;
+	descript?: string;
 	disp?: string; //Is the id field displayed?
-	subjectid?: string;
+	groupid?: string;
 }
 
 
-const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subjectid, disp}) => {
-	const [fields, setFields] = useState<FieldData[]>([{name: ['subjectid'], value: ''}, { name: ['name'], value: '' }, { name: ['code'], value: '' }, { name: ['coef'], value: '' },{ name: ['description'], value: ''}]);
+const CreateGroupForm: React.FC<Prop> = ({gname, descript, groupid, disp}) => {
+	const [fields, setFields] = useState<FieldData[]>([{name: ['groupid'], value: ''}, { name: ['name'], value: '' }, { name: ['description'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
 
 	const [loading, setLoading] = useState(false);
@@ -41,11 +40,11 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		if(typeof subjectid !== 'undefined') {
+		if(typeof groupid !== 'undefined') {
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['subjectid'], value: subjectid}, {name: ['name'] , value: sname}, {name: ['code'] , value: code}, {name: ['coef'] , value: coef}, {name: ['description'], value: description}]);
+					setFields([{name: ['groupid'], value: groupid}, {name: ['name'] , value: gname}, {name: ['description'], value: descript}]);
 					setDisabled(false);
 				},100);
 			}
@@ -53,27 +52,30 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 	},[])
 
 	const onFinish = () => {
+        const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+        
 		const data = {
-			subjectid: fields[0].value,
+			groupid: fields[0].value,
 			name: fields[1].value,
-			code: fields[2].value,
-			coef: fields[3].value,
-			descr: fields[4].value,
-			connid: localStorage.getItem('connid')
+			descr: fields[2].value,
+			connid: localStorage.getItem('connid'),
+            locale: locale === null? 'en' : locale
 		}
 
 		setLoading(true);
 
-		if (data.subjectid === '') {
+		if (data.groupid === '') {
 			// We are adding
 			console.log("Adding");
-			setLoadingMessage('Creating role...');
-			dispatch(createSubjectAsync(data)).then((value) => {
+			setLoadingMessage('Creating subject group...');
+			dispatch(createGroupAsync(data)).then((value) => {
 	
 				const result = value.payload;
 	
 				if(result.error === false) {
-					navigate('/subjects');
+					navigate('/groups');
 				} else {
 					//Probably an error due to axios. check for status 400 first
 					let msg = '';
@@ -87,9 +89,9 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 						code = result.error.code;
 					}
 					const modal = Modal.error({
-						title: `Create Subject`,
+						title: `Create Subject Group`,
 						content: msg + ' (' + code + ')',
-						icon: <Danger/>
+						icon: <Danger color='#351C75'/>
 					});
 	
 					modal.update({});
@@ -97,14 +99,14 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 				setLoading(false);
 			})
 		} else {
-			// We are updating the role
-			setLoadingMessage('Updating subject...');
-			dispatch(editSubjectAsync(data)).then((value) => {
+			//We are updating the role
+			setLoadingMessage('Updating subject group...');
+			dispatch(editGroupAsync(data)).then((value) => {
 	
 				const result = value.payload;
 	
 				if(result.error === false) {
-					navigate('/subjects');
+					navigate('/groups');
 				} else {
 					//Probably an error due to axios. check for status 400 first
 					let msg = '';
@@ -118,9 +120,9 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 						code = result.error.code;
 					}
 					const modal = Modal.error({
-						title: `Modify Subject: `,
+						title: `Modify Subject Group: `,
 						content: msg + ' (' + code + ')',
-						icon: <Danger/>
+						icon: <Danger color='#351C75'/>
 					});
 	
 					modal.update({});
@@ -135,12 +137,12 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 			<Spin spinning={loading} tip={loadingMessage}>
 				<Form
 					fields={fields}
-					layout='inline'
+					layout='vertical'
 					onFieldsChange={(_, allFields) => {
 						setFields(allFields);
 						if(fields[0].value === '') {
 							//We are adding a new role
-							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0) {
+							if(fields[1].value.length > 0 && fields[2].value.length > 0) {
 								setDisabled(false);
 							} else {
 								setDisabled(true);
@@ -151,17 +153,17 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 					<Flex>
 						<InputRow style={{display: `${disp}`}}>
 							<FormItem 
-								label='Subject Id:'
-								name='subjectid'
+								label='Group Id:'
+								name='groupid'
 								style={{width: '250px'}}
 								rules={[{required: true, message: ''}]}
 							>
 								<Input 
 									type='text' 
-									placeholder='Subject Id' 
+									placeholder='Group Id' 
 									style={{borderRadius: 8}} 
 									readOnly={true}
-									value={subjectid}
+									value={groupid}
 								/>
 							</FormItem>
 						</InputRow>
@@ -174,44 +176,13 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 							>
 								<Input 
 									type='text' 
-									placeholder='Subject name' 
+									placeholder='Group name' 
 									style={{borderRadius: 8}} 
-									value={sname}
+									value={gname}
 								/>
 							</FormItem>
 						</InputRow>
-						<InputRow>
-							<FormItem 
-								label='Code:'
-								name='code'
-								style={{width: '250px'}}
-								rules={[{required: true, message: ''}]}
-							>
-								<Input 
-									type='number' 
-									placeholder='Subject code' 
-									style={{borderRadius: 8}} 
-									value={code}
-								/>
-							</FormItem>
-						</InputRow>
-						<InputRow>
-							<FormItem 
-								label='Coefficient:'
-								name='coef'
-								style={{width: '250px'}}
-								rules={[{required: true, message: ''}]}
-							>
-								<Input 
-									type='number' 
-									placeholder='Subject coefficient' 
-									style={{borderRadius: 8}} 
-									value={coef}
-								/>
-							</FormItem>
-						</InputRow>
-					</Flex>
-					<Flex style={{width: '100%'}}>
+
 						<InputRow>
 							<FormItem 
 								label='Description:'
@@ -220,7 +191,7 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 								rules={[{ required: true, message: '' }]}
 							>
 								<TextArea 
-									placeholder = 'Subject description' 
+									placeholder = 'Group description' 
 									autoSize={{ minRows:4, maxRows: 6 }} 
 									style={{
 										resize: 'none',
@@ -228,7 +199,7 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 										width: '100%',
 										borderRadius: 8
 									}}
-									value={description}
+									value={descript}
 								/>
 							</FormItem>
 						</InputRow>
@@ -239,7 +210,7 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/subjects')}}/>
 							</FormItem>
 							<FormItem>
-								<SaveButton title='Save' size='large' bgcolor='#5E92A8' disabled={disabled} onClick={onFinish}/>
+								<SaveButton title='Save' size='large' bgcolor='#351C75' disabled={disabled} onClick={onFinish}/>
 							</FormItem>
 						</InputRow>
 					</Flex>
@@ -250,7 +221,6 @@ const CreateSubjectForm: React.FC<Prop> = ({sname, code, coef, description, subj
 };
 
 const Flex = styled.div`
-	display: flex;
 `;
 const FormSection = styled.div``;
 const FormItem = styled(Form.Item)`
@@ -376,4 +346,4 @@ const InputRow = styled.div`;
 	flex-wrap: wrap;
 `;
 
-export default CreateSubjectForm;
+export default CreateGroupForm;
