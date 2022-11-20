@@ -363,9 +363,15 @@ const VisualizeGroupScreen: React.FC<any> = () => {
                                     dispatch(fetchSubjectsAsync(data)).then((value) => {
                                         const result = value.payload ;
                                         //console.log(result);
-                                        if(result.error === false) {
+                                        if(result.error === false) { 
                                             // We have the db results here
-                                            const dataSource = result.result.value;
+											let dataSource = result.result.value;
+
+											for (let i = 0; i < filteredSubjects.length; i++) {
+												const element: any = filteredSubjects[i];
+												dataSource = dataSource.filter((x:any) => x.subjectid !== element.subjectid) ;
+											}
+
                                             setFilteredAddSubjects(dataSource);
                                             setOriginalAddSubjects(dataSource);
                                             setModalLoading(false);
