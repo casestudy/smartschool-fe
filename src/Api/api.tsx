@@ -50,4 +50,6 @@ export const Post = {
 	updateGroup: (params: {}): Promise <any> => requests.post(`editgroup`, params),
 	deleteGroup: (params: {}): Promise <any> => requests.post(`removegroup`, params),
 	fetchGroupSubjects: (params: {}): Promise <any> => requests.post(`getgroupsubjects`, params),
+	addGroupSubject: (params: {}): Promise <any> => requests.post(`addgroupsubject`, params),
+	removeGroupSubject: (params: {}): Promise <any> => requests.post(`removegroupsubject`, params),
 }

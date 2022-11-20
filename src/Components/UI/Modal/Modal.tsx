@@ -20,9 +20,10 @@ interface Prop {
 	spinMessage: string,
 	width?: number,
 	okColor?: string
+	okDisplay?: string,
 }
 
-const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage, width, okColor}) => {    
+const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage, width, okColor, okDisplay}) => {    
     return (
         <>
 				<ModalStyles/>
@@ -32,7 +33,7 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 						onCancel={onCancel}
 						okType='danger'
 						okText={okText}
-						okButtonProps = {{style: {backgroundColor: okColor === undefined? '#BC6470' : okColor, borderRadius: '8px', fontWeight: 800, color: '#FFF'}, disabled: okDisabled}}
+						okButtonProps = {{style: {backgroundColor: okColor === undefined? '#BC6470' : okColor, borderRadius: '8px', fontWeight: 800, color: '#FFF', display: okDisplay === undefined? 'inline' : okDisplay}, disabled: okDisabled}}
 						cancelButtonProps={{style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
 						destroyOnClose={true}
 						afterClose={onClose}

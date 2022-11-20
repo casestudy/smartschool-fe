@@ -7,17 +7,23 @@ import BackButton from '../../Components/UI/Button/BackButton';
 import BackIcon from '../../Components/UI/Icons/BackArrow';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
+import ArrowUpIcon from '../../Components/UI/Icons/ArrowUp';
 
 import CustomTable from '../../Components/UI/Table/CustomTable';
 import AddButton from '../../Components/UI/Button/AddButton';
 
 import Header from '../../Components/UI/Header/Header';
 import CustomModal from '../../Components/UI/Modal/Modal';
+import ModalTitle from '../../Components/UI/Messages/Title';
+import Message from '../../Components/UI/Messages/Message';
 
-import { Col, Modal, Row, Spin } from "antd";
+import { Button, Col, Modal, Row, Spin } from "antd";
 
 import { useAppDispatch } from "../../State/Hooks";
-import { fetchGroupsubjectsAsync } from '../../State/Thunks/SubjectsThunk';
+import { fetchGroupsubjectsAsync, fetchSubjectsAsync, addGroupSubjectAsync, removeGroupSubjectAsync } from '../../State/Thunks/SubjectsThunk';
+import ThrashIcon from "../../Components/UI/Icons/ThrashIcon";
+
+const { confirm, info } = Modal;
 
 const VisualizeGroupScreen: React.FC<any> = () => {
     const [loading, setLoading] = useState(true);
@@ -101,24 +107,73 @@ const VisualizeGroupScreen: React.FC<any> = () => {
             dataIndex: 'action',
             key: 'action',
             width: '5%',
-			// render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
-			// 	<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
-			// 		onClick={() => {
-			// 			//console.log(row.sname);
-			// 			navigate('/subjects/new', {
-			// 				state: {
-			// 					title: 'Modify Subject', 
-			// 					subjectid: row.subjectid,
-			// 					subjectname: row.sname,
-			// 					subjectcode: row.code,
-			// 					subjectcoef: row.coefficient,
-			// 					subjectdesc: row.descript
-			// 				}
-			// 			})
-			// 		}}>
-			// 		<PenIcon color='#5E92A8' size='18px' line='20px'/> 
-			// 	</Button>
-			// </Flex>
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						confirm({
+							title: <ModalTitle value={'Remove Subject from Group: ' + state.title}/>,
+							icon: <Danger color='#351C75'/>,
+							width: '600px',
+							content: <Message value='Do you really want to remove the subject' 
+												item={row.sname} msg='This subject will not appear on the report sheet'
+												warn=''/>,
+							okText: 'Yes',
+							okType: 'danger',
+							okButtonProps:  {style: {backgroundColor: '#351C75', borderColor: '#351C75 !important', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+							cancelText: 'Cancel',
+							cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+							onOk() {
+								//toggle(true);
+								const data = {
+									connid: localStorage.getItem('connid'),
+									groupid: state.groupid,
+									subjectid: row.subjectid
+								};
+		
+								dispatch(removeGroupSubjectAsync(data)).then((value) => {
+									const result = value.payload ;
+									if(result.error === false) {
+										// We have the db results here
+										const dataSource = result.result.value;
+										setFilteredSubjects(dataSource);
+										setOriginalSubjects(dataSource);
+		
+										Modal.success({
+											content: 'Subject removed successfully!',
+											okType: 'danger',
+											okButtonProps:  {style: {backgroundColor: '#351C75', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+										});
+									} else {
+										//An axios error
+										let msg = '';
+										let code = '';
+							
+										if(result.status === 400) {
+											msg = result.message;
+											code = result.code;
+										} else {
+											//It is error from the back end
+											msg = result.error.msg;
+											code = result.error.code;
+										}
+										const modal = Modal.error({
+											title: `Delete group subject`,
+											content: msg + ' (' + code + ')',
+											icon: <Danger color='#351C75'/>
+										});
+							
+										modal.update({});
+									}
+								},(error) => {
+									console.log("Error");
+									console.log(error);
+								} );
+							}
+						})
+					}}>
+					<ThrashIcon color='#351C75'/> 
+				</Button>
+			</Flex>
 		},
 		{
 			title: 'Subject Id',
@@ -169,24 +224,60 @@ const VisualizeGroupScreen: React.FC<any> = () => {
             dataIndex: 'action',
             key: 'action',
             width: '5%',
-			// render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
-			// 	<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
-			// 		onClick={() => {
-			// 			//console.log(row.sname);
-			// 			navigate('/subjects/new', {
-			// 				state: {
-			// 					title: 'Modify Subject', 
-			// 					subjectid: row.subjectid,
-			// 					subjectname: row.sname,
-			// 					subjectcode: row.code,
-			// 					subjectcoef: row.coefficient,
-			// 					subjectdesc: row.descript
-			// 				}
-			// 			})
-			// 		}}>
-			// 		<PenIcon color='#5E92A8' size='18px' line='20px'/> 
-			// 	</Button>
-			// </Flex>
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+
+						setModalLoading(true);
+						setModalLoadingMessage('Adding subject to group...')
+						const data = {
+							connid: localStorage.getItem('connid'),
+							groupid: state.groupid,
+							subjectid: row.subjectid
+						};
+
+						dispatch(addGroupSubjectAsync(data)).then((value) => {
+							const result = value.payload ;
+							//console.log(result);
+							if(result.error === false) {
+
+								setFilteredAddSubjects(filteredAddSubjects.filter((x:any) => x.subjectid !== row.subjectid));
+
+								// We have the db results here
+								const dataSource = result.result.value;
+								setFilteredSubjects(dataSource);
+								setOriginalSubjects(dataSource);
+								setModalLoading(false);
+							} else {
+								//An axios error
+								let msg = '';
+								let code = '';
+					
+								if(result.status === 400) {
+									msg = result.message;
+									code = result.code;
+								} else {
+									//It is error from the back end
+									msg = result.error.msg;
+									code = result.error.code;
+								}
+								const modal = Modal.error({
+									title: `Subjects`,
+									content: msg + ' (' + code + ')',
+									icon: <Danger color="#351C75"/>
+								});
+					
+								modal.update({});
+								setModalLoading(false);
+							}
+						},(error) => {
+							console.log("Error");
+							console.log(error);
+						} );
+					}}>
+					<ArrowUpIcon color="#351C75"/>
+				</Button>
+			</Flex>
 		},
 		{
 			title: 'Subject Id',
@@ -261,6 +352,49 @@ const VisualizeGroupScreen: React.FC<any> = () => {
                                 <AddButton hint='Add subjects to group' icon={<PlusIcon/>} top='-50px' float='right' color='#351C75' onClick={() => {
                                     setSelectedSubjectsBatch([]); //Reset the subject bactch to initial state
                                     setIsAddSubjectsToGroupModalOpen(true);
+
+                                    setModalLoading(true);
+                                    setModalLoadingMessage('Fetching subjects...')
+
+                                    const data = {
+                                        connid: localStorage.getItem('connid'),
+                                    };
+                            
+                                    dispatch(fetchSubjectsAsync(data)).then((value) => {
+                                        const result = value.payload ;
+                                        //console.log(result);
+                                        if(result.error === false) {
+                                            // We have the db results here
+                                            const dataSource = result.result.value;
+                                            setFilteredAddSubjects(dataSource);
+                                            setOriginalAddSubjects(dataSource);
+                                            setModalLoading(false);
+                                        } else {
+                                            //An axios error
+                                            let msg = '';
+                                            let code = '';
+                                
+                                            if(result.status === 400) {
+                                                msg = result.message;
+                                                code = result.code;
+                                            } else {
+                                                //It is error from the back end
+                                                msg = result.error.msg;
+                                                code = result.error.code;
+                                            }
+                                            const modal = Modal.error({
+                                                title: `Subjects`,
+                                                content: msg + ' (' + code + ')',
+                                                icon: <Danger/>
+                                            });
+                                
+                                            modal.update({});
+                                            setModalLoading(false);
+                                        }
+                                    },(error) => {
+                                        console.log("Error");
+                                        console.log(error);
+                                    } );
                                 }}/>
                             </Flex>
                         </Spin>
@@ -268,7 +402,8 @@ const VisualizeGroupScreen: React.FC<any> = () => {
                         <CustomModal visible={isAddSubjectsToGroupModalOpen} title='All subjects' onClose={handleOnCloseAddGroupSubjectsModal}
                                         columns={addSubjectscolumns} source={filteredAddSubjects} okText='Add selected subjects' tableKey='subjectid'
                                         spin={modalLoading} spinMessage={modalLoadingMessage} onFilter={filterAddTable} onOk={handleOkAddGroupSubjects} 
-                                        okDisabled={selectedSubjectsBatch.length > 0? false : true} onCancel={handleCancelAddGroupSubjects} width={1000} okColor='#351C75'/>
+                                        okDisabled={selectedSubjectsBatch.length > 0? false : true} onCancel={handleCancelAddGroupSubjects} width={1000} 
+                                        okColor='#351C75' okDisplay='none'/>
                     </Col>
                     <Col md={6}></Col>
                 </Row>
