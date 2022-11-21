@@ -17,6 +17,9 @@ import GroupScreen from './Screens/Subjects/GroupScreen';
 import CreateGroupScreen from './Screens/Subjects/CreateGroupScreen';
 import VisualizeGroupScreen from './Screens/Subjects/VisualizeGroupScreen';
 
+import ClassroomScreen from './Screens/Classrooms/ClassroomScreen';
+import CreateClassroomScreen from './Screens/Classrooms/CreateClassroomScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -39,6 +42,9 @@ const App = () => {
 					<Route path="/groups" element={loggedin === 'true'? <GroupScreen/> : <LoginScreen/>} />
 					<Route path="/groups/new" element={loggedin === 'true'? <CreateGroupScreen/> : <LoginScreen/>} />
 					<Route path="/groups/visualize" element={loggedin === 'true'? <VisualizeGroupScreen/> : <LoginScreen/>} />
+
+					<Route path="/classrooms" element={loggedin === 'true'? <ClassroomScreen/> : <LoginScreen/>} />
+					<Route path="/classrooms/new" element={loggedin === 'true'? <CreateClassroomScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

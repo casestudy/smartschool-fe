@@ -52,4 +52,8 @@ export const Post = {
 	fetchGroupSubjects: (params: {}): Promise <any> => requests.post(`getgroupsubjects`, params),
 	addGroupSubject: (params: {}): Promise <any> => requests.post(`addgroupsubject`, params),
 	removeGroupSubject: (params: {}): Promise <any> => requests.post(`removegroupsubject`, params),
+
+	//Classrooms API
+	fetchClassrooms: (params: {}): Promise <any> => requests.post(`getallclassrooms`, params),
+	createClassroom: (params: {}): Promise <any> => requests.post(`createclassroom`, params),
 }
