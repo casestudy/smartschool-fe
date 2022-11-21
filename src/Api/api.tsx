@@ -56,4 +56,5 @@ export const Post = {
 	//Classrooms API
 	fetchClassrooms: (params: {}): Promise <any> => requests.post(`getallclassrooms`, params),
 	createClassroom: (params: {}): Promise <any> => requests.post(`createclassroom`, params),
+	updateClassroom: (params: {}): Promise <any> => requests.post(`modifyclassroom`, params),
 }

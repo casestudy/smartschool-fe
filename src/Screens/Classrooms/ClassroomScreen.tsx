@@ -52,14 +52,14 @@ const ClassroomScreen: React.FC<any> = () => {
 			title: 'Abbreviation',
 			dataIndex: 'abbreviation',
 			key: 'abbreviation',
-			width: '10%',
+			width: '5%',
 			sorter: (a: any, b: any) => a.abbreviation.localeCompare(b.abbreviation)
         },
 		{
 			title: 'Description',
 			dataIndex: 'descript',
 			key: 'descript',
-			width: '20%',
+			width: '25%',
 			sorter: (a: any, b: any) => a.descript.localeCompare(b.descript)
         },
         {
@@ -82,7 +82,6 @@ const ClassroomScreen: React.FC<any> = () => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						console.log(row.cname);
 						navigate('/classrooms/new', {
 							state: {
 								title: 'Modify Classroom', 

@@ -8,7 +8,7 @@ import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createSubjectAsync, editSubjectAsync } from '../../../State/Thunks/SubjectsThunk';
+import { createclassroomAsync, editclassroomAsync } from '../../../State/Thunks/ClassroomsThunk';
 
 const { TextArea } = Input;
 
@@ -45,7 +45,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['classroomid'], value: classid}, {name: ['name'] , value: cname}, {name: ['abbreviation'] , value: abbreviation}, {name: ['description'], value: description}]);
+					setFields([{name: ['classid'], value: classid}, {name: ['name'] , value: cname}, {name: ['abbreviation'] , value: abbreviation}, {name: ['description'], value: description}]);
 					setDisabled(false);
 				},100);
 			}
@@ -53,81 +53,81 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 	},[])
 
 	const onFinish = () => {
-		// const data = {
-		// 	subjectid: fields[0].value,
-		// 	name: fields[1].value,
-		// 	code: fields[2].value,
-		// 	coef: fields[3].value,
-		// 	descr: fields[4].value,
-		// 	connid: localStorage.getItem('connid')
-		// }
+		const data = {
+			classid: fields[0].value,
+			name: fields[1].value,
+			abbrev: fields[2].value,
+			descr: fields[3].value,
+			connid: localStorage.getItem('connid')
+		}
 
-		// setLoading(true);
+		setLoading(true);
 
-		// if (data.subjectid === '') {
-		// 	// We are adding
-		// 	console.log("Adding");
-		// 	setLoadingMessage('Creating classroom...');
-		// 	dispatch(createSubjectAsync(data)).then((value) => {
+		if (data.classid === '') {
+			// We are adding
+			console.log("Adding");
+			setLoadingMessage('Creating classroom...');
+			dispatch(createclassroomAsync(data)).then((value) => {
 	
-		// 		const result = value.payload;
+				const result = value.payload;
 	
-		// 		if(result.error === false) {
-		// 			navigate('/subjects');
-		// 		} else {
-		// 			//Probably an error due to axios. check for status 400 first
-		// 			let msg = '';
-		// 			let code = '';
-		// 			if(result.status === 400) {
-		// 				msg = result.message;
-		// 				code = result.code;
-		// 			} else {
-		// 				//It is error from the back end
-		// 				msg = result.error.msg;
-		// 				code = result.error.code;
-		// 			}
-		// 			const modal = Modal.error({
-		// 				title: `Create Subject`,
-		// 				content: msg + ' (' + code + ')',
-		// 				icon: <Danger/>
-		// 			});
+				if(result.error === false) {
+					navigate('/subjects');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Create Subject`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger color='#D07515'/>
+					});
 	
-		// 			modal.update({});
-		// 		}
-		// 		setLoading(false);
-		// 	})
-		// } else {
-		// 	// We are updating the role
-		// 	setLoadingMessage('Updating subject...');
-		// 	dispatch(editSubjectAsync(data)).then((value) => {
+					modal.update({});
+				}
+				setLoading(false);
+			})
+		} else {
+			// We are updating the role
+			setLoadingMessage('Updating classroom...');
+			dispatch(editclassroomAsync(data)).then((value) => {
 	
-		// 		const result = value.payload;
+				const result = value.payload;
 	
-		// 		if(result.error === false) {
-		// 			navigate('/subjects');
-		// 		} else {
-		// 			//Probably an error due to axios. check for status 400 first
-		// 			let msg = '';
-		// 			let code = '';
-		// 			if(result.status === 400) {
-		// 				msg = result.message;
-		// 				code = result.code;
-		// 			} else {
-		// 				//It is error from the back end
-		// 				msg = result.error.msg;
-		// 				code = result.error.code;
-		// 			}
-		// 			const modal = Modal.error({
-		// 				title: `Modify Subject: `,
-		// 				content: msg + ' (' + code + ')',
-		// 				icon: <Danger/>
-		// 			});
+				if(result.error === false) {
+					navigate('/classrooms');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Modify Classroom: `,
+						content: msg + ' (' + code + ')',
+                        okType: 'text',
+						icon: <Danger color='#D07515'/>
+					});
 	
-		// 			modal.update({});
-		// 		}
-		// 	})
-		// 	setLoading(false);
-		// }
+					modal.update({});
+				}
+			})
+			setLoading(false);
+		}
 	}
 
 	return (
@@ -140,7 +140,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 						setFields(allFields);
 						if(fields[0].value === '') {
 							//We are adding a new role
-							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0) {
+							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0) {
 								setDisabled(false);
 							} else {
 								setDisabled(true);
@@ -152,7 +152,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 						<InputRow style={{display: `${disp}`}}>
 							<FormItem 
 								label='Classroom Id:'
-								name='classroomid'
+								name='classid'
 								style={{width: '250px'}}
 								rules={[{required: true, message: ''}]}
 							>
