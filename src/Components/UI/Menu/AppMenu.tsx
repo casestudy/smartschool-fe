@@ -56,8 +56,12 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
-						<Row justify="center" align="middle" style={styleIcon}><TeacherIcon/></Row>
-						<Row justify="center" style={styleLabel}>Teachers</Row>
+						<Link to="/teachers" className="app-menu-link">
+							<Flex className="app-menu-item-container">
+								<Row justify="center" align="middle" style={styleIcon}><TeacherIcon/></Row>
+								<Row justify="center" style={styleLabel}>Teachers</Row>
+							</Flex>
+						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Row justify="center" align="middle" style={styleIcon}><StudentIcon/></Row>

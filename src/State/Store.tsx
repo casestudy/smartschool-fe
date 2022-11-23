@@ -3,6 +3,7 @@ import loginUserReducer from './Reducers/LoginReducer';
 import fetchRolesReducer from './Reducers/RolesReducer';
 import fetchSubjectsReducer from './Reducers/SubjectsReducer';
 import fetchClassroomsReducer from './Reducers/ClassroomsReducers';
+import fetchUsersReducer from './Reducers/UsersReducers';
 
 export const Store = configureStore({
     middleware: (getDefaultMiddleware) => 
@@ -12,7 +13,8 @@ export const Store = configureStore({
 					'loginUser/fulfilled',
 					'fetchRoles/fulfilled',
 					'fetchSubjects/fulfilled',
-					'fetchClassrooms/fulfilled'
+					'fetchClassrooms/fulfilled',
+					'fetchUsers/fulfilled'
 				]
 			},
 		}),
@@ -20,7 +22,8 @@ export const Store = configureStore({
 		loginUser: loginUserReducer,
 		fetchRoles: fetchRolesReducer,
 		fetchSubjects: fetchSubjectsReducer,
-		fetchClassrooms: fetchClassroomsReducer
+		fetchClassrooms: fetchClassroomsReducer,
+		fetchUsers: fetchUsersReducer
 	}, 
 });
 

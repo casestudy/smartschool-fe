@@ -116,6 +116,8 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 		color = Color.groups;
 	} else if (title.toLocaleLowerCase() === 'classrooms') {
 		color = Color.classrooms;
+	} else if (title.toLocaleLowerCase() === 'teachers') {
+		color = Color.teachers;
 	}
 
     return (

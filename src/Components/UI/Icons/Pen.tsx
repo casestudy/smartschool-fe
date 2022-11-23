@@ -16,8 +16,6 @@ const PenIcon: React.FC<Prop> = ({color, size, line}) => {
                 fontStyle: "normal",
                 fontWeight: 800,
                 fontSize: `${size}`,
-                lineHeight: `${line}`,
-                padding: "0.5rem 0 0 0"
             }}
         />	
   );

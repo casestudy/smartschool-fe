@@ -58,4 +58,8 @@ export const Post = {
 	createClassroom: (params: {}): Promise <any> => requests.post(`createclassroom`, params),
 	updateClassroom: (params: {}): Promise <any> => requests.post(`modifyclassroom`, params),
 	fetchClassroomTeacher: (params: {}): Promise <any> => requests.post(`getclassroomteachers`, params),
+
+	//Users API
+	fetchUsers: (params: {}): Promise <any> => requests.post(`getallusers`, params),
+	createUser: (params: {}): Promise <any> => requests.post(`createuser`, params),
 }
