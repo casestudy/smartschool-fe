@@ -8,7 +8,7 @@ import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createclassroomAsync, editclassroomAsync } from '../../../State/Thunks/ClassroomsThunk';
+import { createClassroomAsync, editclassroomAsync } from '../../../State/Thunks/ClassroomsThunk';
 
 const { TextArea } = Input;
 
@@ -65,14 +65,13 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 
 		if (data.classid === '') {
 			// We are adding
-			console.log("Adding");
 			setLoadingMessage('Creating classroom...');
-			dispatch(createclassroomAsync(data)).then((value) => {
+			dispatch(createClassroomAsync(data)).then((value) => {
 	
 				const result = value.payload;
 	
 				if(result.error === false) {
-					navigate('/subjects');
+					navigate('/classrooms');
 				} else {
 					//Probably an error due to axios. check for status 400 first
 					let msg = '';

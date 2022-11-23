@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Post } from '../../Api/api';
 
-export const fetchaClassroomsAsync = createAsyncThunk (
+export const fetchClassroomsAsync = createAsyncThunk (
 	'fetchClassrooms',
 	async (postData: any) => {
 		try {
@@ -15,11 +15,25 @@ export const fetchaClassroomsAsync = createAsyncThunk (
 	}
 )
 
-export const createclassroomAsync = createAsyncThunk (
+export const createClassroomAsync = createAsyncThunk (
 	'createClassroom',
 	async (postData: any) => {
 		try {
 			const response = await Post.createClassroom(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const fetchClassroomTeachersAsync = createAsyncThunk (
+	'fetchClassroomTeacher',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchClassroomTeacher(postData);
 			return response;
 		} catch(error){
 			const err = JSON.stringify(error);

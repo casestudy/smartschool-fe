@@ -1,17 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../Store';
-import { fetchaClassroomsAsync, createclassroomAsync } from '../Thunks/ClassroomsThunk'
+import { fetchClassroomsAsync, createClassroomAsync, fetchClassroomTeachersAsync } from '../Thunks/ClassroomsThunk'
 
-interface RolesMap {
+interface ClassroomsMap {
     [key: string]: any;
 }
 
-export interface Roles {
-    roles: RolesMap;
+export interface Classrooms {
+    classroom: ClassroomsMap;
 }
 
-const initialState: Roles = {
-    roles: {
+const initialState: Classrooms = {
+    classroom: {
         connid: '',
     },
 };
@@ -22,26 +22,33 @@ export const fetchClassroomsSlice = createSlice({
     
     reducers: {
         performFetchClassrooms: (state, action: PayloadAction<Array<any>>) => {
-            state.roles = action.payload;
+            state.classroom = action.payload;
         },
         performCreateClassroom: (state, action: PayloadAction<Array<any>>) => {
-            state.roles = action.payload;
+            state.classroom = action.payload;
+        },
+        performFetchClassroomTeacher: (state, action: PayloadAction<Array<any>>) => {
+            state.classroom = action.payload;
         }
     },
     extraReducers(builder) {
-        builder.addCase(fetchaClassroomsAsync.fulfilled, (state, action) => {
+        builder.addCase(fetchClassroomsAsync.fulfilled, (state, action) => {
             // console.log(action.payload);
             // console.log(state);
         });
-        builder.addCase(createclassroomAsync.fulfilled, (state, action) => {
+        builder.addCase(createClassroomAsync.fulfilled, (state, action) => {
             // console.log(action.payload);
             // console.log(state);
+        });
+        builder.addCase(fetchClassroomTeachersAsync.fulfilled, (state, action) => {
+            console.log(action.payload);
+            console.log(state);
         });
     },
 });
 
-export const { performFetchClassrooms, performCreateClassroom } = fetchClassroomsSlice.actions;
+export const { performFetchClassrooms, performCreateClassroom, performFetchClassroomTeacher } = fetchClassroomsSlice.actions;
 
-export const fetchSubjects = (state: RootState) => state.fetchRoles.roles;
+export const fetchClassrooms = (state: RootState) => state.fetchClassrooms.classroom;
 
 export default fetchClassroomsSlice.reducer;

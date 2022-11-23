@@ -9,8 +9,8 @@ interface Prop {
 const VisualizeIcon: React.FC<Prop> = ({color}) => {
   const ClockSvg = () => (
     <svg
-      width="19"
-      height="18"
+      width="16"
+      height="15"
       viewBox="0 0 19 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

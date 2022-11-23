@@ -14,9 +14,10 @@ import PenIcon from '../../Components/UI/Icons/Pen';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
+import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchaClassroomsAsync } from '../../State/Thunks/ClassroomsThunk';
+import { fetchClassroomsAsync } from '../../State/Thunks/ClassroomsThunk';
 
 const ClassroomScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
@@ -94,13 +95,12 @@ const ClassroomScreen: React.FC<any> = () => {
 					}}>
 					<PenIcon color='#D07515' size='18px' line='20px'/> 
 				</Button>
-
+				
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						localStorage.setItem("role", JSON.stringify(row));
-						navigate('/roles/visualize');
+						navigate('/classroom/visualize', {state: {title: row.cname, classid: row.classid}});
 					}}>
-					<ThrashIcon color='#D07515'/> 
+					<VisualizeIcon color='#D07515'/> 
 				</Button>
 			</Flex>
 		},
@@ -118,7 +118,7 @@ const ClassroomScreen: React.FC<any> = () => {
 			connid: localStorage.getItem('connid'),
 		};
 
-		dispatch(fetchaClassroomsAsync(data)).then((value) => {
+		dispatch(fetchClassroomsAsync(data)).then((value) => {
 			const result = value.payload ;
 			//console.log(result);
 			if(result.error === false) {
