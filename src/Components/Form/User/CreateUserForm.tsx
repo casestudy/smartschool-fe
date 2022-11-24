@@ -5,14 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Input, Modal, Select, Spin, DatePicker} from 'antd';
 import { decode as base64_decode} from 'base-64';
 import moment from 'moment';
-import dayjs from 'dayjs';
 
 import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 import Color from '../../UI/Header/Theme.json';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { createUsersAsync } from '../../../State/Thunks/UsersThunks';
+import { createUsersAsync, editUsersAsync } from '../../../State/Thunks/UsersThunks';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -111,6 +110,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 			onidle: fields[9].value,
 			locale: fields[10].value,
 			localee: locale,
+			position: fields[1].value === 'teacher'? `` : fields[11].value,
 			connid: localStorage.getItem('connid')
 		}
 
@@ -141,7 +141,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 						code = result.error.code;
 					}
 					const modal = Modal.error({
-						title: `Create Teacher`,
+						title: data.utype === 'teacher'? `Create : Teacher` : `Create : Administrator`,
 						content: msg + ' (' + code + ')',
 						cancelButtonProps: {style: {backgroundColor: Color.teachers}},
 						icon: <Danger color={data.utype === 'teacher'? Color.teachers : Color.teachers}/>
@@ -152,36 +152,36 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 				setLoading(false);
 			})
 		} else {
-			// We are updating the role
-			// setLoadingMessage('Updating subject...');
-			// dispatch(editSubjectAsync(data)).then((value) => {
+			//We are updating the user
+			setLoadingMessage('Updating user...');
+			dispatch(editUsersAsync(data)).then((value) => {
 	
-			// 	const result = value.payload;
+				const result = value.payload;
 	
-			// 	if(result.error === false) {
-			// 		navigate('/subjects');
-			// 	} else {
-			// 		//Probably an error due to axios. check for status 400 first
-			// 		let msg = '';
-			// 		let code = '';
-			// 		if(result.status === 400) {
-			// 			msg = result.message;
-			// 			code = result.code;
-			// 		} else {
-			// 			//It is error from the back end
-			// 			msg = result.error.msg;
-			// 			code = result.error.code;
-			// 		}
-			// 		const modal = Modal.error({
-			// 			title: `Modify Subject: `,
-			// 			content: msg + ' (' + code + ')',
-			// 			icon: <Danger/>
-			// 		});
+				if(result.error === false) {
+					data.utype === 'teacher'? navigate('/teachers') : navigate('/administrators');
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: data.utype === 'teacher'? `Modify : Teacher` : `Modify : Administrator`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger/>
+					});
 	
-			// 		modal.update({});
-			// 	}
-			// })
-			// setLoading(false);
+					modal.update({});
+				}
+			})
+			setLoading(false);
 		}
 	}
 
@@ -209,14 +209,14 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 					<Flex>
 						<InputRow style={{display: `${disp}`}}>
 							<FormItem 
-								label='Subject Id:'
+								label='User Id:'
 								name='userid'
 								style={{width: '250px'}}
 								rules={[{required: true, message: ''}]}
 							>
 								<Input 
 									type='text' 
-									placeholder='Subject Id' 
+									placeholder='User Id' 
 									style={{borderRadius: 8}} 
 									readOnly={true}
 									value={userid}

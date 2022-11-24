@@ -27,10 +27,10 @@ const Male: React.FC<Prop> = ({color}) => {
         </g>
     </svg>
   );
-  const DangerIcon = (props: Partial<CustomIconComponentProps>) => (
+  const MaleIcon = (props: Partial<CustomIconComponentProps>) => (
     <Icon component={MaleSvg} {...props} />
   );
-  return <DangerIcon style={{ backgroundColor: 'transparent', borderRadius: "50px"}} />;
+  return <MaleIcon style={{ backgroundColor: 'transparent', borderRadius: "50px"}} />;
 };
 
 export default Male;
