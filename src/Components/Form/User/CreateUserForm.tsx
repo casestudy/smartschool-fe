@@ -80,8 +80,16 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['userid'], value: userid }, { name: ['utype'], value: utype }, { name: ['username'], value: username }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: ['emailaddress'], value: emailaddress },{ name: ['phonenumber'], value: phonenumber }, { name: 'gender', value: gender }, { name: 'dob', value: moment(dob)}, { name: 'onidle', value: idle }, { name: 'locale', value: locale }]);
-					setDisabled(false);
+					if(phonenumber !== undefined) {
+						const phone = phonenumber.split(" ");
+						const code = phone[0];
+						const phonev = phone[1];
+
+						setCountryCode(code);
+						setFields([{name: ['userid'], value: userid }, { name: ['utype'], value: utype }, { name: ['username'], value: username }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: ['emailaddress'], value: emailaddress },{ name: ['phonenumber'], value: phonev }, { name: 'gender', value: gender }, { name: 'dob', value: moment(dob)}, { name: 'onidle', value: idle }, { name: 'locale', value: locale }]);
+						setDisabled(false);
+					}
+					
 				},100);
 			}
 		} else {
@@ -104,7 +112,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 			surname: fields[3].value,
 			othernames: fields[4].value,
 			emailaddress: fields[5].value,
-			phonenumber: countryCode + fields[6].value,
+			phonenumber: countryCode + ' ' + fields[6].value,
 			gender: fields[7].value,
 			dob: fields[8].value.format('YYYY-MM-DD'),
 			onidle: fields[9].value,
@@ -113,8 +121,6 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 			position: fields[1].value === 'teacher'? `` : fields[11].value,
 			connid: localStorage.getItem('connid')
 		}
-
-		console.log(data);
 
 		setLoading(true);
 

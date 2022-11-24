@@ -18,7 +18,7 @@ import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import MaleIcon from '../../Components/UI/Icons/Male';
 import FemaleIcon from '../../Components/UI/Icons/Female';
-import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
+import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
 import { fetchUsersAsync } from '../../State/Thunks/UsersThunks';
@@ -102,7 +102,6 @@ const TeacherScreen: React.FC<any> = () => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						console.log(row.onidle);
 						navigate('/user/new', {
 							state: {
 								title: 'Modify Teacher', 
@@ -125,10 +124,10 @@ const TeacherScreen: React.FC<any> = () => {
 
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						localStorage.setItem("role", JSON.stringify(row));
-						navigate('/roles/visualize');
+						//localStorage.setItem("role", JSON.stringify(row));
+						navigate('/user/visualize', {state: {usertype: 'teacher', row: row}});
 					}}>
-					<ThrashIcon color = {Color.teachers}/> 
+					<VisualizeIcon color = {Color.teachers}/> 
 				</Button>
 			</Flex>
 		},
