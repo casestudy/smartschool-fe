@@ -63,4 +63,5 @@ export const Post = {
 	fetchUsers: (params: {}): Promise <any> => requests.post(`getallusers`, params),
 	createUser: (params: {}): Promise <any> => requests.post(`createuser`, params),
 	editUser: (params: {}): Promise <any> => requests.post(`modifyuser`, params),
+	getUserRoles: (params: {}): Promise <any> => requests.post(`getuserroles`, params),
 }

@@ -9,7 +9,7 @@ import BackIcon from '../../Components/UI/Icons/BackArrow';
 
 import Header from '../../Components/UI/Header/Header';
 import Color from '../../Components/UI/Header/Theme.json';
-// import ModifyRole from './Tabs/ModifyRoleTab';
+import UserRole from './Tabs/UserRolesTab';
 // import RolePrivileges from './Tabs/RolePrivilegesTab';
 // import SubRoles from './Tabs/SubRolesTab';
 import { Col, Row } from "antd";
@@ -26,8 +26,6 @@ const VisualizeUserScreen: React.FC<any> = () => {
     const store : any = base64_decode(b64) ;
     const loggedinUser = JSON.parse(store).result.value[0][0].usertype;
 
-	console.log(loggedinUser);
-
 	const navigate = useNavigate();
 
     const { state } = useLocation();
@@ -40,13 +38,11 @@ const VisualizeUserScreen: React.FC<any> = () => {
             setCurrentTitle('Administrators');
             setCurrentTitleS('Administrator');
         }
-		// if(currentTab === 'Role') {
-		// 	setCurrentTabView(<ModifyRole/>);
-		// } else if(currentTab === 'SubRoles') {
-		// 	setCurrentTabView(<SubRoles/>);
-		// } else if(currentTab === 'Privileges') {
-		// 	setCurrentTabView(<RolePrivileges/>);
-		// } 
+		if(currentTab === 'Roles') {
+			setCurrentTabView(<UserRole usertype={state.usertype} userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames}/>);
+		} else {
+			setCurrentTabView(<></>);
+		}
 	}, [currentTab]);
 
     return (
@@ -57,7 +53,7 @@ const VisualizeUserScreen: React.FC<any> = () => {
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", fontWeight: 700, fontSize: "1.2rem", alignItems: "center", marginBottom: 0, display: "flex"}}>
                             <BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/roles')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {state.usertype === 'teacher'? navigate('/teachers') : navigate('/administrators')}}/>
 							</BackArrow>
                             <Flex style={{columnGap: '1rem', display: 'flex'}}>
 								<Title>{titleS}</Title> <Title style={{textTransform: 'lowercase'}}>"{state.row.username}"</Title> <Title>Details</Title>
