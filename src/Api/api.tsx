@@ -64,4 +64,6 @@ export const Post = {
 	createUser: (params: {}): Promise <any> => requests.post(`createuser`, params),
 	editUser: (params: {}): Promise <any> => requests.post(`modifyuser`, params),
 	getUserRoles: (params: {}): Promise <any> => requests.post(`getuserroles`, params),
+	removeUserRole: (params: {}): Promise <any> => requests.post(`removeuserrole`, params),
+	removeUserRoles: (params: {}): Promise <any> => requests.post(`removeuserroles`, params),
 }

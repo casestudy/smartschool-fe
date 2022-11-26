@@ -4,20 +4,23 @@ import { Row , Col, Button, Modal, Spin } from 'antd';
 
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
+import { decode as base64_decode} from 'base-64';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import AddButton from '../../../Components/UI/Button/AddButton';
 
 import Danger from '../../../Components/UI/Icons/Danger';
-import ArrowUpIcon from '../../../Components/UI/Icons/ArrowUp';
 import ThrashIcon from '../../../Components/UI/Icons/ThrashIcon';
+import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
+import MinusIcon from '../../../Components/UI/Icons/MinusIcon';
 
 import Title from '../../../Components/UI/Messages/Title';
 import Message from '../../../Components/UI/Messages/Message';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 import { useAppDispatch } from '../../../State/Hooks';
-import { getUserRolesAsync } from '../../../State/Thunks/UsersThunks';
+import { getUserRolesAsync, deleteUserRoleAsync, deleteUserRolesAsync } from '../../../State/Thunks/UsersThunks';
+import CheckboxField from '../../../Components/UI/Input/CheckBox';
 
 
 interface Prop {
@@ -33,8 +36,18 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
     const [loading, setLoading] = useState(true);
 	const [originalUserRoles, setOriginalUserRoles] = useState([]);
 	const [filteredUserRoles, setFilteredUserRoles] = useState([]);
+	const [userRolesBatch, setUserRolesBatch] = useState<string[]>([]);
 
     const dispatch = useAppDispatch();
+
+	const b64 : any = localStorage.getItem('data');
+	const store : any = base64_decode(b64) ;
+	const locale = JSON.parse(store).result.value[0][0].locale;
+
+	const filterTable = (e: any) => {
+		const filt = originalUserRoles.filter((x:any) => x.rname.toLowerCase().includes(e.toLowerCase()) || x.descript.toLowerCase().includes(e.toLowerCase()));
+		setFilteredUserRoles(filt);
+	};
 
     const columns = [
         {
@@ -76,10 +89,59 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 					cancelText: 'Cancel',
 					cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
 					onOk() {
-						console.log("Deleting user role now");
+						const data = {
+							connid: localStorage.getItem('connid'),
+							userid: userid,
+							roleid: row.roleid,
+							locale: locale
+						};
+
+						dispatch(deleteUserRoleAsync(data)).then((value) => {
+							const result = value.payload ;
+							//console.log(result);
+							if(result.error === false) {
+								// We have the db results here
+								const dataSource = result.result.value;
+								setFilteredUserRoles(dataSource);
+								setOriginalUserRoles(dataSource);
+								setLoading(false);
+							} else {
+								//An axios error
+								let msg = '';
+								let code = '';
+					
+								if(result.status === 400) {
+									msg = result.message;
+									code = result.code;
+								} else {
+									//It is error from the back end
+									msg = result.error.msg;
+									code = result.error.code;
+								}
+								const modal = Modal.error({
+									title: usertype === 'teacher'? `Teachers` : `Administrators`,
+									content: msg + ' (' + code + ')',
+									icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+								});
+					
+								modal.update({});
+								setLoading(false);
+							}
+						},(error) => {
+							console.log("Error");
+							console.log(error);
+						} );
+
 					}
 				})
-			})} ><ThrashIcon color={usertype === 'teacher'? Color.teachers : Color.subjects}/></Button></Flex>
+			})} ><ThrashIcon color={usertype === 'teacher'? Color.teachers : Color.subjects}/></Button><CheckboxField onChange={(e:any) => {
+				
+				if(e.target.checked) {
+					setUserRolesBatch(perm => [...perm, row.roleid]);
+				} else {
+					userRolesBatch.splice(userRolesBatch.indexOf(row.roleid),1)
+				}
+			}}/></Flex>
         },
 		{
 			title: 'Role Id',
@@ -93,7 +155,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
     useEffect(() => {
         const data = {
 			connid: localStorage.getItem('connid'),
-            userid: userid
+            userid: userid,
 		};
 
         dispatch(getUserRolesAsync(data)).then((value) => {
@@ -131,11 +193,62 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 			console.log("Error");
 			console.log(error);
 		} );
-
     },[])
+
+	const removeSelectedRoles = () => {
+		const data = {
+			connid: localStorage.getItem('connid'),
+            userid: userid,
+			roleids: userRolesBatch,
+			locale: locale
+		};
+
+		dispatch(deleteUserRolesAsync(data)).then((value) => {
+			const result = value.payload ;
+			//console.log(result);
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setFilteredUserRoles(dataSource);
+				setOriginalUserRoles(dataSource);
+				setLoading(false);
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: usertype === 'teacher'? `Teachers` : `Administrators`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+				});
+	
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+	}
+
     return (
         <>
-			<CustomTable columns={columns} source={filteredUserRoles} rowKey='roleid' searchIconColor={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+			<CustomTable columns={columns} source={filteredUserRoles} rowKey='roleid' searchIconColor={usertype === 'teacher'? Color.teachers : Color.subjects} filter={filterTable}/>
+			<Flex style={{marginTop: '-50px', float:'right', display: 'flex'}}>
+				<Flex style={{paddingRight: '15px'}}>
+					<AddButton icon={<MinusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.subjects} hint='Remove selected roles from user' onClick={removeSelectedRoles} />
+				</Flex>
+				<AddButton icon={<PlusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.subjects} hint='Add roles to user'/>
+			</Flex>
 		</>
     );
 };
