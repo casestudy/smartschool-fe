@@ -24,7 +24,7 @@ import { useAppDispatch, useAppSelector} from '../../State/Hooks';
 import { fetchUsersAsync } from '../../State/Thunks/UsersThunks';
 
 const TeacherScreen: React.FC<any> = () => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [originalTeachers, setOriginalTeachers] = useState([]);
 	const [filteredTeachers, setFilteredTeachers] = useState([]);
 
