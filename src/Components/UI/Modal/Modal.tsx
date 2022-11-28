@@ -33,7 +33,7 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 						onCancel={onCancel}
 						okType='danger'
 						okText={okText}
-						okButtonProps = {{style: {backgroundColor: okColor === undefined? '#BC6470' : okColor, borderRadius: '8px', fontWeight: 800, color: '#FFF', display: okDisplay === undefined? 'inline' : okDisplay}, disabled: okDisabled}}
+						okButtonProps = {{style: {backgroundColor: okColor === undefined? '#BC6470' : okColor, borderColor: okColor === undefined? '#BC6470' : okColor, borderRadius: '8px', fontWeight: 800, color: '#FFF', display: okDisplay === undefined? 'inline' : okDisplay}, disabled: okDisabled}}
 						cancelButtonProps={{style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}}}
 						destroyOnClose={true}
 						afterClose={onClose}

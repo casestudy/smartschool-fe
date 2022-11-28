@@ -84,3 +84,31 @@ export const deleteUserRolesAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const addUserRoleAsync = createAsyncThunk (
+	'addUserRole',
+	async (postData: any) => {
+		try {
+			const response = await Post.addUserRole(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const addUserRolesAsync = createAsyncThunk (
+	'addUserRoles',
+	async (postData: any) => {
+		try {
+			const response = await Post.addUserRoles(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)

@@ -21,7 +21,7 @@ import Message from '../../../Components/UI/Messages/Message';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 import { useAppDispatch } from '../../../State/Hooks';
-import { getUserRolesAsync, deleteUserRoleAsync, deleteUserRolesAsync } from '../../../State/Thunks/UsersThunks';
+import { getUserRolesAsync, deleteUserRoleAsync, deleteUserRolesAsync, addUserRoleAsync, addUserRolesAsync } from '../../../State/Thunks/UsersThunks';
 import { fetchRolesAsync } from '../../../State/Thunks/RolesThunk';
 import CheckboxField from '../../../Components/UI/Input/CheckBox';
 
@@ -194,7 +194,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
             key: 'add',
             width: '5%',
 			render: (text:any,row:any, index: any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
-				<Button type='text' style={{color: '#BC6470', fontSize: '1rem', fontWeight: '600'}}>
+				<Button type='text' style={{color: '#BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => handleOkAddUserRole(row)}>
 					<ArrowUpIcon color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
 				</Button>
 				<CheckboxField onChange={(e:any) => {
@@ -318,10 +318,136 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 	const handleCancelAddUserRole = () => {
 		setIsAddUserRoleModalOpen(false);
 		setUserRolesBatch([]);
+		setFilteredAllRoles([]);
+		setAllRoles([]);
+		setAllRolesBatch([]);
 	};
 
-	const handleOkAddUserRole = () => {
-		
+	const handleOkAddUserRole = (row: any) => {		
+		setModalLoading(true);
+		setModalLoadingMessage('Adding role to user...');
+
+		const data = {
+			connid: localStorage.getItem('connid'),
+			userid: userid,
+			roleid: row.roleid,
+			locale: locale
+		};
+
+		dispatch(addUserRoleAsync(data)).then((value) => {
+			const result = value.payload ;
+			//console.log(result);
+			if(result.error === false) {
+				// We have the db results here
+
+				let filt = filteredAllRoles.filter((x:any) => x.roleid !== row.roleid) ;
+				setFilteredAllRoles(filt);
+				setAllRoles(filt);
+
+				const dataSource = result.result.value;
+
+				setFilteredUserRoles(dataSource);
+				setOriginalUserRoles(dataSource);
+				setModalLoading(false);
+
+				Modal.success({
+					content: 'Role added to role successfully!',
+					okType: 'danger',
+					okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+				});
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: usertype === 'teacher'? `Teachers` : `Administrators`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+				});
+	
+				modal.update({});
+				setModalLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+	};
+
+	const handleOkAddUserRoleBatch = () => {
+		setModalLoading(true);
+		setModalLoadingMessage('Adding roles to user...');
+
+		console.log(allRolesBatch);
+
+		const data = {
+			connid: localStorage.getItem('connid'),
+			userid: userid,
+			roleids: allRolesBatch
+		};
+
+		dispatch(addUserRolesAsync(data)).then((value) => {
+			const result = value.payload ;
+			//console.log(result);
+			if(result.error === false) {
+				// We have the db results here
+				let filt = filteredAllRoles;
+				
+				for (let i = 0; i < allRolesBatch.length; i++) {
+					const element = allRolesBatch[i];
+					
+					filt = filt.filter((x:any) => x.roleid !== element) ;
+				}
+
+				setAllRoles(filt);
+				setFilteredAllRoles(filt);
+
+				const dataSource = result.result.value;
+
+				setFilteredUserRoles(dataSource);
+				setOriginalUserRoles(dataSource);
+				setModalLoading(false);
+
+				Modal.success({
+					content: 'Roles added to role successfully!',
+					okType: 'danger',
+					okButtonProps:  {style: {backgroundColor: '#BC6470', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+				});
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: usertype === 'teacher'? `Teachers` : `Administrators`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+				});
+	
+				modal.update({});
+				setModalLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
 	};
 
 	const handleFetchRolesForAddToUser = () => {
@@ -344,7 +470,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 					const element: any = filteredUserRoles[i];
 					dataSource = dataSource.filter((x:any) => x.roleid !== element.roleid) ;
 				}
-				
+
 				setFilteredAllRoles(dataSource);
 				setAllRoles(dataSource);
 				setModalLoading(false);
@@ -389,7 +515,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 			</Spin>
 			
 			<CustomModal visible={isAddUserRoleModalOpen} title='All Roles' 
-								okText='Add selected roles' onOk={handleOkAddUserRole} onCancel={handleCancelAddUserRole} 
+								okText='Add selected roles' onOk={handleOkAddUserRoleBatch} onCancel={handleCancelAddUserRole} 
 								columns={allRolesColumns} source={filteredAllRoles} tableKey='roleid' onFilter={filterAllRolesTable} onClose={handleCancelAddUserRole}
 								okDisabled={allRolesBatch.length > 0? false : true} spin={modalLoading} spinMessage={modalLoadingMessage} width={1000}
 								okColor={usertype === 'teacher'? Color.teachers : Color.subjects}/>
