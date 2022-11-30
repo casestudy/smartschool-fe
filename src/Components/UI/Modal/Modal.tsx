@@ -1,8 +1,9 @@
 import React, { MouseEventHandler, ReactNode, useEffect, useState } from 'react';
-import { Modal, Spin, Table } from 'antd';
+import { Divider, Modal, Radio, RadioChangeEvent, Space, Spin, Table, Typography } from 'antd';
 import { ModalStyles } from './Styles';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
+import styled from 'styled-components';
 
 interface Prop {
     visible: boolean,
@@ -21,9 +22,19 @@ interface Prop {
 	width?: number,
 	okColor?: string
 	okDisplay?: string,
+
+	display?: string,
+	columnsC?: any,
+	sourceC?: any,
+	tableKeyC?: string
+	onFilterC?: any,
+	radio?: boolean,
+	radioChanged?: any
 }
 
-const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage, width, okColor, okDisplay}) => {    
+const { Title } = Typography;
+
+const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onCancel, onClose, source, tableKey, onFilter, okDisabled, spin, spinMessage, width, okColor, okDisplay, columnsC, sourceC, onFilterC, tableKeyC, display, radio, radioChanged}) => {    
     return (
         <>
 				<ModalStyles/>
@@ -40,13 +51,37 @@ const CustomModal: React.FC<Prop> = ({visible, title, okText, columns, onOk, onC
 						width={width}
 				>
 					<Spin spinning={spin} tip={spinMessage}>
-						{<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} searchIconColor={okColor} />}
+							<Flex>
+								{((radio === undefined) || !radio)? 
+									<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} searchIconColor={okColor} />
+								:
+									<Radio.Group onChange={radioChanged} style={{width: '100%'}}>
+										<Space direction="vertical" style={{width: '100%'}}>
+											<CustomTable columns={columns} source={source} rowKey={tableKey} filter={onFilter} searchIconColor={okColor} />
+										</Space>
+									</Radio.Group>
+								}
+							</Flex>
+
+							<Flex style={{display: display === undefined? 'none': display}}>
+								<Divider
+									type="horizontal"
+									style={{
+										backgroundColor: okColor,
+										height: "0.1rem",
+										marginTop: "2rem",
+									}}
+								/>
+								<Title style={{fontSize: '1.2rem', fontWeight: '700', paddingBottom: '2rem'}}>Select Clasrooms</Title>
+								{<CustomTable columns={columnsC} source={sourceC} rowKey={tableKeyC} filter={onFilterC} searchIconColor={okColor}/>}
+							</Flex>
 					</Spin>
-					
 				</Modal>			
         </>
         
     );
 };
-    
+
+const Flex = styled.div``
+
 export default CustomModal;
