@@ -94,14 +94,14 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}><Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} onClick = {(() => {
 				confirm({
 					title: <Title value={'Revoke Role'}/>,
-					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>,
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>,
 					width: '600px',
-					content: <Message value='Do you really want to revoke this role from user: ' 
+					content: <Message value='Do you really want to revoke this role from user ' 
 										item={userfullname} msg='He will no longer be able to perform actions associated to this role.'
 										warn=''/>,
 					okText: 'Yes',
 					okType: 'danger',
-					okButtonProps:  {style: {backgroundColor: usertype === 'teacher'? Color.teachers : Color.subjects, borderRadius: '8px', borderColor: usertype === 'teacher'? Color.teachers : Color.subjects, fontWeight: 800, color: '#FFF'}},
+					okButtonProps:  {style: {backgroundColor: usertype === 'teacher'? Color.teachers : Color.administrators, borderRadius: '8px', borderColor: usertype === 'teacher'? Color.teachers : Color.administrators, fontWeight: 800, color: '#FFF'}},
 					cancelText: 'Cancel',
 					cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
 					onOk() {
@@ -137,7 +137,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 								const modal = Modal.error({
 									title: usertype === 'teacher'? `Teachers` : `Administrators`,
 									content: msg + ' (' + code + ')',
-									icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+									icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 								});
 					
 								modal.update({});
@@ -149,7 +149,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 						} );
 					}
 				})
-			})} ><ThrashIcon color={usertype === 'teacher'? Color.teachers : Color.subjects}/></Button><CheckboxField onChange={(e:any) => {
+			})} ><ThrashIcon color={usertype === 'teacher'? Color.teachers : Color.administrators}/></Button><CheckboxField onChange={(e:any) => {
 				
 				if(e.target.checked) {
 					setUserRolesBatch(role => [...role, row.roleid]);
@@ -195,7 +195,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
             width: '5%',
 			render: (text:any,row:any, index: any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: '#BC6470', fontSize: '1rem', fontWeight: '600'}} onClick={() => handleOkAddUserRole(row)}>
-					<ArrowUpIcon color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+					<ArrowUpIcon color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 				</Button>
 				<CheckboxField onChange={(e:any) => {
 				
@@ -247,7 +247,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 				const modal = Modal.error({
 					title: usertype === 'teacher'? `Teachers` : `Administrators`,
 					content: msg + ' (' + code + ')',
-					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 				});
 	
 				modal.update({});
@@ -294,7 +294,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 					const modal = Modal.error({
 						title: usertype === 'teacher'? `Teachers` : `Administrators`,
 						content: msg + ' (' + code + ')',
-						icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+						icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 					});
 		
 					modal.update({});
@@ -371,7 +371,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 				const modal = Modal.error({
 					title: usertype === 'teacher'? `Teachers` : `Administrators`,
 					content: msg + ' (' + code + ')',
-					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 				});
 	
 				modal.update({});
@@ -438,7 +438,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 				const modal = Modal.error({
 					title: usertype === 'teacher'? `Teachers` : `Administrators`,
 					content: msg + ' (' + code + ')',
-					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 				});
 	
 				modal.update({});
@@ -490,7 +490,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 				const modal = Modal.error({
 					title: usertype === 'teacher'? `Teachers` : `Administrators`,
 					content: msg + ' (' + code + ')',
-					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+					icon: <Danger color={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 				});
 	
 				modal.update({});
@@ -505,12 +505,12 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
     return (
         <>
 			<Spin spinning={loading} tip='Fetching user roles...'>
-				<CustomTable columns={columns} source={filteredUserRoles} rowKey='roleid' searchIconColor={usertype === 'teacher'? Color.teachers : Color.subjects} filter={filterTable}/>
+				<CustomTable columns={columns} source={filteredUserRoles} rowKey='roleid' searchIconColor={usertype === 'teacher'? Color.teachers : Color.administrators} filter={filterTable}/>
 				<Flex style={{marginTop: '-50px', float:'right', display: 'flex'}}>
 					<Flex style={{paddingRight: '15px'}}>
-						<AddButton icon={<MinusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.subjects} hint='Remove selected roles from user' onClick={removeSelectedRoles} />
+						<AddButton icon={<MinusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.administrators} hint='Remove selected roles from user' onClick={removeSelectedRoles} />
 					</Flex>
-					<AddButton icon={<PlusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.subjects} hint='Add roles to user' onClick={handleFetchRolesForAddToUser}/>
+					<AddButton icon={<PlusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.administrators} hint='Add roles to user' onClick={handleFetchRolesForAddToUser}/>
 				</Flex>
 			</Spin>
 			
@@ -518,7 +518,7 @@ const UserRole: React.FC<Prop> = ({userid, usertype, userfullname}) => {
 								okText='Add selected roles' onOk={handleOkAddUserRoleBatch} onCancel={handleCancelAddUserRole} 
 								columns={allRolesColumns} source={filteredAllRoles} tableKey='roleid' onFilter={filterAllRolesTable} onClose={handleCancelAddUserRole}
 								okDisabled={allRolesBatch.length > 0? false : true} spin={modalLoading} spinMessage={modalLoadingMessage} width={1000}
-								okColor={usertype === 'teacher'? Color.teachers : Color.subjects}/>
+								okColor={usertype === 'teacher'? Color.teachers : Color.administrators}/>
 		</>
     );
 };

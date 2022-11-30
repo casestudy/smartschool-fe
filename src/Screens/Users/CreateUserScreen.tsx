@@ -24,7 +24,7 @@ const CreateUserScreen: React.FC<any> = () => {
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", display: "flex"}}>
 							<BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/teachers')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {state.usertype === 'teacher'? navigate('/teachers') : navigate('/administrators')}}/>
 							</BackArrow>
 							<Flex style={{columnGap: '4rem'}}>
 								<Title>{state.title}</Title>
@@ -36,7 +36,8 @@ const CreateUserScreen: React.FC<any> = () => {
                                         <CreateUserForm disp="block" userid={state.userid} utype={state.usertype} username={state.username}
                                             surname={state.surname} othernames={state.othernames} emailaddress={state.emailaddress} 
                                             phonenumber={state.phonenumber} gender={state.gender} idle={state.onidle}
-                                            locale={state.locale} dob={state.dob}/> : 
+                                            locale={state.locale} dob={state.dob} position={state.usertype === 'administrator'? state.position: ''}/> 
+                                    : 
                                         <CreateUserForm disp="none" utype={state.usertype}/>}
 							
 						</StyledFormBody>

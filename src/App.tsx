@@ -25,6 +25,8 @@ import TeacherScreen from './Screens/Teachers/TeacherScreen';
 import CreateUserScreen from './Screens/Users/CreateUserScreen';
 import VisualizeUserScreen from './Screens/Users/VisualizeUserScreen';
 
+import AdministratorScreen from './Screens/Administrators/AdministratorScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -54,6 +56,8 @@ const App = () => {
 					<Route path="/teachers" element={loggedin === 'true'? <TeacherScreen/> : <LoginScreen/>} />
 					<Route path="/user/new" element={loggedin === 'true'? <CreateUserScreen/> : <LoginScreen/>} />
 					<Route path="/user/visualize" element={loggedin === 'true'? <VisualizeUserScreen/> : <LoginScreen/>} />
+
+					<Route path="/administrators" element={loggedin === 'true'? <AdministratorScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

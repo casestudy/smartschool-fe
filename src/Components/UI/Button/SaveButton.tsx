@@ -22,6 +22,7 @@ const SaveButton: React.FC<Prop> = ({ title, disabled, size, onClick, bgcolor, i
                     alignItems: 'center',
                     color: '#FFF',
                     backgroundColor: `${bgcolor}`,
+                    borderColor: `${bgcolor}`,
                     borderRadius: '8px',
                     width: '100%',
                     textAlign: 'center',

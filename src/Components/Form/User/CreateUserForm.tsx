@@ -35,13 +35,14 @@ interface Prop {
     idle?: string;
     locale?: string;
     utype?: string;
+	position?: string;
 	disp?: string; //Is the id field displayed?
 	userid?: string;
 }
 
 
-const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, emailaddress, phonenumber, gender, dob, idle, locale, utype, userid, disp}) => {
-	const [fields, setFields] = useState<FieldData[]>([{name: ['userid'], value: ''}, { name: ['username'], value: '' }, { name: ['utype'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' }, { name: ['emailaddress'], value: '' },{ name: ['phonenumber'], value: ''}, {name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'idle', value: ''}, {name: 'locale', value: ''}]);
+const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, emailaddress, phonenumber, gender, dob, idle, locale, utype, userid, disp, position}) => {
+	const [fields, setFields] = useState<FieldData[]>([{name: ['userid'], value: ''}, { name: ['username'], value: '' }, { name: ['utype'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' }, { name: ['emailaddress'], value: '' },{ name: ['phonenumber'], value: ''}, {name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'idle', value: ''}, {name: 'locale', value: ''},{name: 'position', value: ''}]);
 	const [countryCode, setCountryCode] = useState('+237');
 	const [disabled, setDisabled] = useState(true);
 
@@ -81,12 +82,21 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 				//Don't read
 				setTimeout(() => {
 					if(phonenumber !== undefined) {
-						const phone = phonenumber.split(" ");
-						const code = phone[0];
-						const phonev = phone[1];
+						let phone: string[] = [];
+						let code = '';
+						let phonev = '';
+
+						if(phonenumber.charAt(0) !== '+') {
+							phonev = phonenumber;
+							code = '+237';
+						} else {
+							phone = phonenumber.split(" ");
+							code = phone[0];
+							phonev = phone[1];
+						}
 
 						setCountryCode(code);
-						setFields([{name: ['userid'], value: userid }, { name: ['utype'], value: utype }, { name: ['username'], value: username }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: ['emailaddress'], value: emailaddress },{ name: ['phonenumber'], value: phonev }, { name: 'gender', value: gender }, { name: 'dob', value: moment(dob)}, { name: 'onidle', value: idle }, { name: 'locale', value: locale }]);
+						setFields([{name: ['userid'], value: userid }, { name: ['utype'], value: utype }, { name: ['username'], value: username }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: ['emailaddress'], value: emailaddress },{ name: ['phonenumber'], value: phonev }, { name: 'gender', value: gender }, { name: 'dob', value: dob !== null? moment(dob) : ''}, { name: 'onidle', value: idle }, { name: 'locale', value: locale }, {name: 'position', value: position}]);
 						setDisabled(false);
 					}
 					
@@ -95,7 +105,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 		} else {
             //Userid is not set
             setTimeout(() => {
-                setFields([{name: ['userid'], value: ''}, { name: ['utype'], value: utype }, { name: ['username'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' }, { name: ['emailaddress'], value: '' },{ name: ['phonenumber'], value: ''}, {name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'idle', value: ''}, {name: 'locale', value: ''}]);
+                setFields([{name: ['userid'], value: ''}, { name: ['utype'], value: utype }, { name: ['username'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' }, { name: ['emailaddress'], value: '' },{ name: ['phonenumber'], value: ''}, {name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'idle', value: ''}, {name: 'locale', value: ''}, {name: 'position', value: ''}]);
             }, 100)
         }
 	},[])
@@ -150,7 +160,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 						title: data.utype === 'teacher'? `Create : Teacher` : `Create : Administrator`,
 						content: msg + ' (' + code + ')',
 						cancelButtonProps: {style: {backgroundColor: Color.teachers}},
-						icon: <Danger color={data.utype === 'teacher'? Color.teachers : Color.teachers}/>
+						icon: <Danger color={data.utype === 'teacher'? Color.teachers : Color.administrators}/>
 					});
 	
 					modal.update({});
@@ -159,6 +169,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 			})
 		} else {
 			//We are updating the user
+			console.log(data);
 			setLoadingMessage('Updating user...');
 			dispatch(editUsersAsync(data)).then((value) => {
 	
@@ -181,7 +192,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 					const modal = Modal.error({
 						title: data.utype === 'teacher'? `Modify : Teacher` : `Modify : Administrator`,
 						content: msg + ' (' + code + ')',
-						icon: <Danger/>
+						icon: <Danger color={data.utype === 'teacher'? Color.teachers : Color.administrators}/>
 					});
 	
 					modal.update({});
@@ -350,7 +361,7 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 								label='On Idle:'
 								name='onidle'
 								style={{width: '250px'}}
-								rules={[{ required: true, message: 'On Idle' }]}
+								rules={[{ required: true, message: 'On Idle is required' }]}
 							>
 								<Select style={{borderRadius: 8}} options={idleOptions} value={idle}></Select>
 							</FormItem>
@@ -365,14 +376,32 @@ const CreateSubjectForm: React.FC<Prop> = ({username, surname, othernames, email
 								<Select style={{borderRadius: 8}} options={localeOptions} value={locale}></Select>
 							</FormItem>
 						</InputRow>
+						{utype === 'administrator'?
+							<InputRow>
+								<FormItem 
+									label='Position:'
+									name='position'
+									style={{width: '250px'}}
+									rules={[{ required: true, message: 'Position is required' }]}
+								>
+									<Input 
+										type='text' 
+										placeholder='Position' 
+										style={{borderRadius: 8}} 
+										value={phonenumber}
+									/>
+								</FormItem>
+							</InputRow>
+						: ''
+						}
 					</Flex>
 					<Flex>
 						<InputRow>
 							<FormItem>
-								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/teachers')}}/>
+								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {utype === 'teacher'? navigate('/teachers') : navigate('/administrators')}}/>
 							</FormItem>
 							<FormItem>
-								<SaveButton title='Save' size='large' bgcolor={Color.teachers} disabled={disabled} onClick={onFinish}/>
+								<SaveButton title='Save' size='large' bgcolor={utype === 'teacher'? Color.teachers: Color.administrators} disabled={disabled} onClick={onFinish}/>
 							</FormItem>
 						</InputRow>
 					</Flex>

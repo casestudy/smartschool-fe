@@ -65,44 +65,45 @@ const VisualizeUserScreen: React.FC<any> = () => {
 								key={`user-details-roles`}
 								style={{ 
 									paddingLeft: "4rem", 
-									color: currentTab === 'Roles' ? state.usertype === 'teacher'? Color.teachers : Color.subjects : '#000'
+									color: currentTab === 'Roles' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
 								}}
 								onClick={() => {setCurrentTab('Roles')}}
 							>
                                 {'Roles'}
 								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-									<Line style={{ visibility: currentTab === 'Roles' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.subjects}}/>
+									<Line style={{ visibility: currentTab === 'Roles' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
 								</Flex>
 								
                             </TabHeader>
-
-							<TabHeader
-								key={`user-details-teaches`}
-								style={{ 
-									paddingLeft: "4rem", 
-									color: currentTab === 'Teaches' ? state.usertype === 'teacher'? Color.teachers : Color.subjects : '#000'
-								}}
-								onClick={() => {setCurrentTab('Teaches')}}
-							>
-                                {'Teaches'}
-								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-									<Line style={{ visibility: currentTab === 'Teaches' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.subjects}}/>
-								</Flex>
-                            </TabHeader>
-
+							{state.usertype === 'teacher' ? 
+									<TabHeader
+										key={`user-details-teaches`}
+										style={{ 
+											paddingLeft: "4rem", 
+											color: currentTab === 'Teaches' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
+										}}
+										onClick={() => {setCurrentTab('Teaches')}}
+									>
+										{'Teaches'}
+										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+											<Line style={{ visibility: currentTab === 'Teaches' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
+										</Flex>
+									</TabHeader>
+								
+								: ''}
 							{
-								loggedinUser === 'administrator' ?
+								loggedinUser === 'administrator' && state.usertype === 'teacher' ?
 									<TabHeader
 										key={`user-details-assistance`}
 										style={{ 
 											paddingLeft: "4rem", 
-											color: currentTab === 'Assistance' ? state.usertype === 'teacher'? Color.teachers : Color.subjects : '#000'
+											color: currentTab === 'Assistance' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
 										}}
 										onClick={() => {setCurrentTab('Assistance')}}
 									>
 										{'Assistance'}
 										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'Assistance' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.subjects}}/>
+											<Line style={{ visibility: currentTab === 'Assistance' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
 										</Flex>
 										
 									</TabHeader>
@@ -116,13 +117,13 @@ const VisualizeUserScreen: React.FC<any> = () => {
 										key={`user-details-documents`}
 										style={{ 
 											paddingLeft: "4rem", 
-											color: currentTab === 'MyDocuments' ? state.usertype === 'teacher'? Color.teachers : Color.subjects : '#000'
+											color: currentTab === 'MyDocuments' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
 										}}
 										onClick={() => {setCurrentTab('MyDocuments')}}
 									>
 										{'My Documents'}
 										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'MyDocuments' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.subjects}}/>
+											<Line style={{ visibility: currentTab === 'MyDocuments' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
 										</Flex>
 										
 									</TabHeader>
@@ -130,18 +131,18 @@ const VisualizeUserScreen: React.FC<any> = () => {
 							}
                             
 							{
-								(loggedinUser === 'parent' || loggedinUser === 'administrator') ?
+								((loggedinUser === 'parent' || loggedinUser === 'administrator') && state.usertype === 'parent') ?
 									<TabHeader
 										key={`user-details-children`}
 										style={{ 
 											paddingLeft: "4rem", 
-											color: currentTab === 'MyChildren' ? state.usertype === 'teacher'? Color.teachers : Color.subjects : '#000'
+											color: currentTab === 'MyChildren' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
 										}}
 										onClick={() => {setCurrentTab('MyChildren')}}
 									>
 										{'My Children'}
 										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'MyChildren' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.subjects}}/>
+											<Line style={{ visibility: currentTab === 'MyChildren' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
 										</Flex>
 										
 									</TabHeader>

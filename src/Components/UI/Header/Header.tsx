@@ -119,6 +119,9 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 	} else if (title.toLocaleLowerCase() === 'teachers') {
 		color = Color.teachers;
 	}
+	else if (title.toLocaleLowerCase() === 'administrators') {
+		color = Color.administrators;
+	}
 
     return (
         <HeaderContainer>
