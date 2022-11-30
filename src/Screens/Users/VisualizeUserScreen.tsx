@@ -10,6 +10,7 @@ import BackIcon from '../../Components/UI/Icons/BackArrow';
 import Header from '../../Components/UI/Header/Header';
 import Color from '../../Components/UI/Header/Theme.json';
 import UserRole from './Tabs/UserRolesTab';
+import TeacherClasses from './Tabs/TeacherClassesTab';
 // import RolePrivileges from './Tabs/RolePrivilegesTab';
 // import SubRoles from './Tabs/SubRolesTab';
 import { Col, Row } from "antd";
@@ -40,6 +41,8 @@ const VisualizeUserScreen: React.FC<any> = () => {
         }
 		if(currentTab === 'Roles') {
 			setCurrentTabView(<UserRole usertype={state.usertype} userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames}/>);
+		} else if(currentTab === 'Teaches') {
+			setCurrentTabView(<><TeacherClasses usertype={state.usertype} userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames}/></>);
 		} else {
 			setCurrentTabView(<></>);
 		}

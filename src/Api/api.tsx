@@ -68,4 +68,7 @@ export const Post = {
 	removeUserRoles: (params: {}): Promise <any> => requests.post(`removeuserroles`, params),
 	addUserRole: (params: {}): Promise <any> => requests.post(`addroletouser`, params),
 	addUserRoles: (params: {}): Promise <any> => requests.post(`addrolestouser`, params),
+
+	//Teachers API
+	fetchTeacherSubjects: (params: {}): Promise <any> => requests.post(`getclassroomteachers`, params),
 }
