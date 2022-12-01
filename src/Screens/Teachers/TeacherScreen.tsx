@@ -20,7 +20,7 @@ import MaleIcon from '../../Components/UI/Icons/Male';
 import FemaleIcon from '../../Components/UI/Icons/Female';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
-import { useAppDispatch, useAppSelector} from '../../State/Hooks';
+import { useAppDispatch } from '../../State/Hooks';
 import { fetchUsersAsync } from '../../State/Thunks/UsersThunks';
 
 const TeacherScreen: React.FC<any> = () => {

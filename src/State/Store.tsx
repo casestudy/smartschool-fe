@@ -5,6 +5,7 @@ import fetchSubjectsReducer from './Reducers/SubjectsReducer';
 import fetchClassroomsReducer from './Reducers/ClassroomsReducers';
 import fetchUsersReducer from './Reducers/UsersReducers';
 import fetchTeachersReducer from './Reducers/TeachersReducers';
+import fetchStudentsReducer from './Reducers/StudentsReducer';
 
 export const Store = configureStore({
     middleware: (getDefaultMiddleware) => 
@@ -16,7 +17,8 @@ export const Store = configureStore({
 					'fetchSubjects/fulfilled',
 					'fetchClassrooms/fulfilled',
 					'fetchUsers/fulfilled',
-					'fetchTeachers/fulfilled'
+					'fetchTeachers/fulfilled',
+					'fetchStudents/fulfilled'
 				]
 			},
 		}),
@@ -26,7 +28,8 @@ export const Store = configureStore({
 		fetchSubjects: fetchSubjectsReducer,
 		fetchClassrooms: fetchClassroomsReducer,
 		fetchUsers: fetchUsersReducer,
-		fetchTeachers: fetchTeachersReducer
+		fetchTeachers: fetchTeachersReducer,
+		fetchStudents: fetchStudentsReducer
 	}, 
 });
 
