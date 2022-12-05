@@ -202,12 +202,11 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 					layout='inline'
 					onFieldsChange={(_, allFields) => {
 						setFields(allFields);
-						if(fields[0].value === '') {
+						if(fields[0].value === '' && fields[1].value === '') {
 							//We are adding a new role
-							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && 
-								fields[4].value.length > 0 && fields[5].value.length > 0 && fields[6].value.length > 0 && 
-								fields[7].value !== '' && fields[8].value !== '' && fields[9].value !== '' && 
-								fields[10].value !== '') {
+							if(fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0 && 
+								fields[5].value !== '' && fields[6].value.length > 0 && fields[7].value !== '' 
+							) {
 								setDisabled(false);
 							} else {
 								setDisabled(true);
