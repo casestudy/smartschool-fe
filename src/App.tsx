@@ -28,6 +28,7 @@ import VisualizeUserScreen from './Screens/Users/VisualizeUserScreen';
 import AdministratorScreen from './Screens/Administrators/AdministratorScreen';
 
 import StudentScreen from './Screens/Students/StudentScreen';
+import CreateStudentScreen from './Screens/Students/CreateStudentScreen';
 
 import { ThemeProvider } from 'styled-components';
 
@@ -62,6 +63,7 @@ const App = () => {
 					<Route path="/administrators" element={loggedin === 'true'? <AdministratorScreen/> : <LoginScreen/>} />
 
 					<Route path="/students" element={loggedin === 'true'? <StudentScreen/> : <LoginScreen/>} />
+					<Route path="/student/new" element={loggedin === 'true'? <CreateStudentScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

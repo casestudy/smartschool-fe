@@ -117,51 +117,50 @@ const StudentScreen: React.FC<any> = () => {
     ].filter(item => !item.hidden);
 
 	useEffect(() => {
-        // const b64 : any = localStorage.getItem('data');
-        // const store : any = base64_decode(b64) ;
-        // const locale = JSON.parse(store).result.value[0][0].locale;
+        const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
 
-		// const data = {
-		// 	connid: localStorage.getItem('connid'),
-        //     utype: 'teacher',
-        //     locale: locale
-		// };
+		const data = {
+			connid: localStorage.getItem('connid'),
+			locale: locale
+		};
 
-		// dispatch(fetchUsersAsync(data)).then((value) => {
-		// 	const result = value.payload ;
-		// 	//console.log(result);
-		// 	if(result.error === false) {
-		// 		// We have the db results here
-		// 		const dataSource = result.result.value;
-		// 		setFilteredTeachers(dataSource);
-		// 		setOriginalTeachers(dataSource);
-		// 		setLoading(false);
-		// 	} else {
-		// 		//An axios error
-		// 		let msg = '';
-		// 		let code = '';
+		dispatch(fetchStudentsAsync(data)).then((value) => {
+			const result = value.payload ;
+			//console.log(result);
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setFilteredStudents(dataSource);
+				setOriginalStudents(dataSource);
+				setLoading(false);
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
 	
-		// 		if(result.status === 400) {
-		// 			msg = result.message;
-		// 			code = result.code;
-		// 		} else {
-		// 			//It is error from the back end
-		// 			msg = result.error.msg;
-		// 			code = result.error.code;
-		// 		}
-		// 		const modal = Modal.error({
-		// 			title: `Teachers`,
-		// 			content: msg + ' (' + code + ')',
-		// 			icon: <Danger color={Color.teachers}/>
-		// 		});
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Students`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.students}/>
+				});
 	
-		// 		modal.update({});
-		// 		setLoading(false);
-		// 	}
-		// },(error) => {
-		// 	console.log("Error");
-		// 	console.log(error);
-		// } );
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
 	}, [])
 
     return (
@@ -172,7 +171,7 @@ const StudentScreen: React.FC<any> = () => {
 					<Col md={18}>
 						<Flex style={{padding: "5rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredStudents} searchIconColor={Color.students} rowKey='userid' filter={filterTable}/>
-							<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/user/new', {state: {title: 'Create New Student', usertype: 'student'}})}}/>
+							<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/student/new', {state: {title: 'Create New Student'}})}}/>
 						</Flex>
 					</Col>
 					<Col md={6}>Notifications</Col>
