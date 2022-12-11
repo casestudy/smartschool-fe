@@ -57,14 +57,14 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['userid'], value: userid }, { name: ['matricule'], value: matricule }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: 'gender', value: gender }, { name: 'dob', value: dob !== null? moment(dob) : ''}, { name: 'pob', value: pob }]);
+					setFields([{name: ['userid'], value: userid }, { name: ['matricule'], value: matricule }, { name: ['surname'], value: surname }, { name: ['othernames'], value: othernames }, { name: 'gender', value: gender }, { name: 'dob', value: dob !== null? moment(dob) : ''}, { name: 'pob', value: pob }, { name: 'classid', value: classid }]);
 					setDisabled(false);
 				},100);
 			}
 		} else {
             //Userid is not set
             setTimeout(() => {
-                setFields([{name: ['userid'], value: ''}, { name: ['matricule'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' },{name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'pob', value: ''}]);
+                setFields([{name: ['userid'], value: ''}, { name: ['matricule'], value: '' }, { name: ['surname'], value: '' }, { name: ['othernames'], value: '' },{name: 'gender', value: ''}, {name: 'dob', value: ''}, {name: 'pob', value: ''}, { name: 'classid', value: '' }]);
             }, 100)
         }
 
@@ -120,6 +120,7 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			gender: fields[4].value,
 			dob: fields[5].value.format('YYYY-MM-DD'),
 			pob: fields[6].value,
+            classid: fields[7].value,
 			localee: locale,
 			connid: localStorage.getItem('connid')
 		}
@@ -202,11 +203,14 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 					layout='inline'
 					onFieldsChange={(_, allFields) => {
 						setFields(allFields);
+                        
 						if(fields[0].value === '' && fields[1].value === '') {
+                            console.log(fields);
 							//We are adding a new role
 							if(fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0 && 
-								fields[5].value !== '' && fields[6].value.length > 0 && fields[7].value !== '' 
+								fields[5].value !== '' && fields[6].value.length > 0 && fields[7].value !== ''
 							) {
+                                console.log(fields[2].value);
 								setDisabled(false);
 							} else {
 								setDisabled(true);
@@ -234,7 +238,7 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 						<InputRow style={{display: `${disp}`}}>
 							<FormItem 
 								label='Matricule:'
-								name='utype'
+								name='matricule'
 								style={{width: '250px'}}
 								rules={[{required: true, message: ''}]}
 							>
