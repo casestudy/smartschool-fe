@@ -24,7 +24,7 @@ const CreateStudentScreen: React.FC<any> = () => {
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", display: "flex"}}>
 							<BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {state.usertype === 'teacher'? navigate('/teachers') : navigate('/administrators')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/students')}}/>
 							</BackArrow>
 							<Flex style={{columnGap: '4rem'}}>
 								<Title>{state.title}</Title>
@@ -35,7 +35,7 @@ const CreateStudentScreen: React.FC<any> = () => {
                             {(state.userid !== undefined)? 
                                         <CreateStudentForm disp="block" userid={state.userid} matricule={state.matricule}
                                             surname={state.surname} othernames={state.othernames} gender={state.gender}
-                                           dob={state.dob} pob={state.pob}/> 
+                                           dob={state.dob} pob={state.pob} classid={state.classid}/> 
                                     : 
                                         <CreateStudentForm disp="none"/>}
 							

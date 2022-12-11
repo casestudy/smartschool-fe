@@ -134,7 +134,6 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			dispatch(createStudentAsync(data)).then((value) => {
 	
 				const result = value.payload;
-				console.log(result);
 	
 				if(result.error === false) {
 					navigate('/students');
@@ -163,7 +162,6 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			})
 		} else {
 			//We are updating the user
-			console.log(data);
 			setLoadingMessage('Updating student...');
 			dispatch(editStudentAsync(data)).then((value) => {
 	

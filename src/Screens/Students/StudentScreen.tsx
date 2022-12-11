@@ -79,19 +79,19 @@ const StudentScreen: React.FC<any> = () => {
 			title: 'DOB',
 			dataIndex: 'dob',
 			key: 'dob',
-			width: '10%'
+			width: '11%'
         },
         {
 			title: 'DOE',
 			dataIndex: 'doe',
 			key: 'doe',
-			width: '10%'
+			width: '11%'
         },
         {
 			title: 'Class',
 			dataIndex: 'cabbrev',
 			key: 'class',
-			width: '13%',
+			width: '10%',
 			sorter: (a: any, b: any) => a.class.localeCompare(b.class)
         },
         {
@@ -105,12 +105,48 @@ const StudentScreen: React.FC<any> = () => {
             title: 'Actions',
             dataIndex: 'action',
             key: 'action',
-            width: '5%'
+            width: '5%',
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						navigate('/student/new', {
+							state: {
+								title: 'Modify Student', 
+								userid: row.userid,
+								username: row.username,
+								surname: row.surname,
+								othernames: row.othernames,
+								gender: row.gender,
+								dob: row.dob,
+								pob: row.pob,
+								matricule: row.matricule,
+								classid: row.classid
+							}
+						})
+					}}>
+					<PenIcon color={Color.students} size='18px' line='20px'/> 
+				</Button>
+
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						//localStorage.setItem("role", JSON.stringify(row));
+						navigate('/user/visualize', {state: {usertype: 'teacher', row: row}});
+					}}>
+					<VisualizeIcon color = {Color.students}/> 
+				</Button>
+			</Flex>
 		},
 		{
 			title: 'User Id',
 			dataIndex: 'userid',
 			key: 'userid',
+			width: '1%',
+			hidden: true
+		},
+		{
+			title: 'Class Id',
+			dataIndex: 'classid',
+			key: 'classid',
 			width: '1%',
 			hidden: true
 		}
