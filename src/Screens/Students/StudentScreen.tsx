@@ -89,16 +89,16 @@ const StudentScreen: React.FC<any> = () => {
         },
         {
 			title: 'Class',
-			dataIndex: 'class',
+			dataIndex: 'cabbrev',
 			key: 'class',
-			width: '15%',
+			width: '13%',
 			sorter: (a: any, b: any) => a.class.localeCompare(b.class)
         },
         {
 			title: 'Status',
-			dataIndex: 'status',
+			dataIndex: 'descript',
 			key: 'status',
-			width: '10%',
+			width: '12%',
 			sorter: (a: any, b: any) => a.status.localeCompare(b.status)
         },
 		{
