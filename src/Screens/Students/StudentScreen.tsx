@@ -171,7 +171,7 @@ const StudentScreen: React.FC<any> = () => {
 					<Col md={18}>
 						<Flex style={{padding: "5rem 5rem 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredStudents} searchIconColor={Color.students} rowKey='userid' filter={filterTable}/>
-							<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/user/new', {state: {title: 'Create New Student', usertype: 'student'}})}}/>
+							<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/student/new', {state: {title: 'Create New Student'}})}}/>
 						</Flex>
 					</Col>
 					<Col md={6}>Notifications</Col>

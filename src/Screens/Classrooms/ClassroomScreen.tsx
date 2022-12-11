@@ -13,7 +13,6 @@ import 'antd/dist/antd.css';
 import PenIcon from '../../Components/UI/Icons/Pen';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
-import ThrashIcon from '../../Components/UI/Icons/ThrashIcon';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';

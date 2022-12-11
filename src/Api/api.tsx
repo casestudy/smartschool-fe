@@ -75,4 +75,6 @@ export const Post = {
 
 	//Students API
 	fetchStudents: (params: {}): Promise <any> => requests.post(`getallstudents`, params),
+	createStudent: (params: {}): Promise <any> => requests.post(`createstudent`, params),
+	editStudent: (params: {}): Promise <any> => requests.post(`modifystudent`, params),
 }
