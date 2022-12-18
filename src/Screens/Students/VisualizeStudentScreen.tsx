@@ -9,14 +9,14 @@ import BackIcon from '../../Components/UI/Icons/BackArrow';
 
 import Header from '../../Components/UI/Header/Header';
 import Color from '../../Components/UI/Header/Theme.json';
-// import UserRole from './Tabs/UserRolesTab';
+import StudentParents from './Tabs/StudentParentsTab';
 // import TeacherClasses from './Tabs/TeacherClassesTab';
 // import RolePrivileges from './Tabs/RolePrivilegesTab';
 // import SubRoles from './Tabs/SubRolesTab';
 import { Col, Row } from "antd";
 
 const VisualizeStudentScreen: React.FC<any> = () => {
-	const [currentTab, setCurrentTab] = useState('Roles');
+	const [currentTab, setCurrentTab] = useState('Parents');
 	const [currentTabView, setCurrentTabView] = useState(<></>);
 	const [title, setCurrentTitle] = useState('');
     const [titleS, setCurrentTitleS] = useState('');
@@ -32,116 +32,67 @@ const VisualizeStudentScreen: React.FC<any> = () => {
     const { state } = useLocation();
 
 	useEffect(() => {
-		// if(currentTab === 'Roles') {
-		// 	setCurrentTabView(<UserRole usertype={state.usertype} userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames}/>);
-		// } else if(currentTab === 'Teaches') {
-		// 	setCurrentTabView(<><TeacherClasses usertype={state.usertype} userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames}/></>);
-		// } else {
-		// 	setCurrentTabView(<></>);
-		// }
+		if(currentTab === 'Parents') {
+			setCurrentTabView(<StudentParents userid={state.row.userid} />);
+		} else {
+			setCurrentTabView(<></>);
+		}
 	}, [currentTab]);
 
     return (
         <>
 			<Flex>
-                <Header title = {title} loggedin={true} lastlogin={ll}></Header>
+                <Header title = 'Students' loggedin={true} lastlogin={ll}></Header>
                 <Row>
                     <Col md={18}>
                         <Flex style={{padding: "5rem 5rem 1px 5rem", fontWeight: 700, fontSize: "1.2rem", alignItems: "center", marginBottom: 0, display: "flex"}}>
                             <BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {state.usertype === 'teacher'? navigate('/teachers') : navigate('/administrators')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/students')}}/>
 							</BackArrow>
                             <Flex style={{columnGap: '1rem', display: 'flex'}}>
-								<Title>{titleS}</Title> <Title style={{textTransform: 'lowercase'}}>"{state.row.username}"</Title> <Title>Details</Title>
+								<Title>Student</Title> <Title style={{textTransform: 'initial'}}>"{state.row.surname+' '+ state.row.othernames}"</Title> <Title>Details</Title>
 							</Flex>
 							<TabHeader 
-								key={`user-details-roles`}
+								key={`student-details-parents`}
 								style={{ 
 									paddingLeft: "4rem", 
-									color: currentTab === 'Roles' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
+									color: currentTab === 'Parents'? Color.students : '#000'
 								}}
-								onClick={() => {setCurrentTab('Roles')}}
+								onClick={() => {setCurrentTab('Parents')}}
 							>
-                                {'Roles'}
+                                {'Parents'}
 								<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-									<Line style={{ visibility: currentTab === 'Roles' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
+									<Line style={{ visibility: currentTab === 'Parents' ? 'visible' : 'hidden', border: '2px solid ' + Color.students}}/>
 								</Flex>
 								
                             </TabHeader>
-							{state.usertype === 'teacher' ? 
-									<TabHeader
-										key={`user-details-teaches`}
-										style={{ 
-											paddingLeft: "4rem", 
-											color: currentTab === 'Teaches' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
-										}}
-										onClick={() => {setCurrentTab('Teaches')}}
-									>
-										{'Teaches'}
-										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'Teaches' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
-										</Flex>
-									</TabHeader>
-								
-								: ''}
-							{
-								loggedinUser === 'administrator' && state.usertype === 'teacher' ?
-									<TabHeader
-										key={`user-details-assistance`}
-										style={{ 
-											paddingLeft: "4rem", 
-											color: currentTab === 'Assistance' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
-										}}
-										onClick={() => {setCurrentTab('Assistance')}}
-									>
-										{'Assistance'}
-										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'Assistance' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
-										</Flex>
-										
-									</TabHeader>
-
-								: ''
-							}
-
-							{
-								loggedinUser === 'teacher' ?
-									<TabHeader
-										key={`user-details-documents`}
-										style={{ 
-											paddingLeft: "4rem", 
-											color: currentTab === 'MyDocuments' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
-										}}
-										onClick={() => {setCurrentTab('MyDocuments')}}
-									>
-										{'My Documents'}
-										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'MyDocuments' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
-										</Flex>
-										
-									</TabHeader>
-								: ''
-							}
-                            
-							{
-								((loggedinUser === 'parent' || loggedinUser === 'administrator') && state.usertype === 'parent') ?
-									<TabHeader
-										key={`user-details-children`}
-										style={{ 
-											paddingLeft: "4rem", 
-											color: currentTab === 'MyChildren' ? state.usertype === 'teacher'? Color.teachers : Color.administrators : '#000'
-										}}
-										onClick={() => {setCurrentTab('MyChildren')}}
-									>
-										{'My Children'}
-										<Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-											<Line style={{ visibility: currentTab === 'MyChildren' ? 'visible' : 'hidden', border: state.usertype === 'teacher'? '2px solid ' + Color.teachers : '2px solid ' + Color.administrators}}/>
-										</Flex>
-										
-									</TabHeader>
-								: ''
-							}
-                            
+							<TabHeader
+                                key={`student-details-fees`}
+                                style={{ 
+                                    paddingLeft: "4rem", 
+                                    color: currentTab === 'Fees' ? Color.students : '#000'
+                                }}
+                                onClick={() => {setCurrentTab('Fees')}}
+                            >
+                                {'Fees'}
+                                <Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                    <Line style={{ visibility: currentTab === 'Fees' ? 'visible' : 'hidden', border: '2px solid ' + Color.students}}/>
+                                </Flex>
+                            </TabHeader>
+							<TabHeader
+                                key={`student-details-picture`}
+                                style={{ 
+                                    paddingLeft: "4rem", 
+                                    color: currentTab === 'Picture' ? Color.students : '#000'
+                                }}
+                                onClick={() => {setCurrentTab('Picture')}}
+                            >
+                                {'Picture'}
+                                <Flex style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                    <Line style={{ visibility: currentTab === 'Picture' ? 'visible' : 'hidden', border: '2px solid ' + Color.students}}/>
+                                </Flex>
+                                
+                            </TabHeader>
                         </Flex>
 						<StyledTabPane style={{padding: "2rem 5rem 1px 5rem"}}>
 							<Filler />
