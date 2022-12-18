@@ -78,4 +78,6 @@ export const Post = {
 	createStudent: (params: {}): Promise <any> => requests.post(`createstudent`, params),
 	editStudent: (params: {}): Promise <any> => requests.post(`modifystudent`, params),
 	fetchStudentParents: (params: {}): Promise <any> => requests.post(`getstudentparents`, params),
+	removeStudentParent: (params: {}): Promise <any> => requests.post(`removestudentparent`, params),
+	addStudentParent: (params: {}): Promise <any> => requests.post(`addstudentparent`, params),
 }

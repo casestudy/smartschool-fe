@@ -33,7 +33,7 @@ const VisualizeStudentScreen: React.FC<any> = () => {
 
 	useEffect(() => {
 		if(currentTab === 'Parents') {
-			setCurrentTabView(<StudentParents userid={state.row.userid} />);
+			setCurrentTabView(<StudentParents userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
 		} else {
 			setCurrentTabView(<></>);
 		}

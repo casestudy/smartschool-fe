@@ -62,7 +62,6 @@ const RoleSubRoles: React.FC<any> = ({}) => {
 	};
 
 	const handleOkAddSubRoles = () => {
-		console.log(subRolesBatch);
 		const data = {
 			connid: localStorage.getItem('connid'),
 			owner: roleDetails.roleid,
