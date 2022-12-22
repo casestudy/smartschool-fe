@@ -23,7 +23,7 @@ import { fetchUsersAsync } from '../../../State/Thunks/UsersThunks';
 import Title from '../../../Components/UI/Messages/Title';
 import Message from '../../../Components/UI/Messages/Message';
 
-const { confirm, info } = Modal;
+const { confirm } = Modal;
 
 interface Prop {
 	userid?: number,
