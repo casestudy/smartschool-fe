@@ -84,3 +84,31 @@ export const addStudentParentAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const fetchFeeTypesAsync = createAsyncThunk (
+	'fetchFeeTypes',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchFeeTypes(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const fetchPaymentMethodsAsync = createAsyncThunk (
+	'fetchPaymentMethods',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchPaymentMethods(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)

@@ -80,4 +80,8 @@ export const Post = {
 	fetchStudentParents: (params: {}): Promise <any> => requests.post(`getstudentparents`, params),
 	removeStudentParent: (params: {}): Promise <any> => requests.post(`removestudentparent`, params),
 	addStudentParent: (params: {}): Promise <any> => requests.post(`addstudentparent`, params),
+
+	//Fees API
+	fetchFeeTypes: (params: {}): Promise <any> => requests.post(`getfeetypes`, params),
+	fetchPaymentMethods: (params: {}): Promise <any> => requests.post(`getpaymethods`, params),
 }

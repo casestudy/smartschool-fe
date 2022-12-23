@@ -1,12 +1,14 @@
-import  React, { useEffect, useState } from 'react';
+import  React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button, Modal, Spin } from 'antd';
+import { Spin } from 'antd';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import AddButton from '../../../Components/UI/Button/AddButton';
-import CustomModal from '../../../Components/UI/Modal/Modal';
+
+import ModalForm from '../../../Components/UI/Modal/ModalForm';
+import CreateStudentFeeForm from '../../../Components/Form/Student/CreateStudentFeeForm'
 
 import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
 
@@ -20,6 +22,9 @@ interface Prop {
 const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 	const [loading, setLoading] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState('');
+	const [loadingModal, setLoadingModal] = useState(false);
+	const [loadingModalMessage, setLoadingModalMessage] = useState('');
+	const [modalVisible, setModalVisible] = useState(false);
 	const [filteredStudentFees, setFilteredStudentFees] = useState([]);
 	const [originalStudentFees, setOriginalStudentFees] = useState([]);
 
@@ -29,6 +34,12 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 		const filt = originalStudentFees.filter((x:any) => x.surname.toLowerCase().includes(e.toLowerCase()) || x.othernames.toLowerCase().includes(e.toLowerCase()));
 		setFilteredStudentFees(filt);
 	};
+
+	const handleOkAddFee = () => {}
+
+	const handleCancelAddFee = () => {
+		setModalVisible(false);
+	}
 
 	// Columns definition start
 	const columns = [
@@ -96,8 +107,9 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 						filter={filterTable}
 						searchIconColor={Color.students}
 					/>
-					<AddButton hint='Add student fee' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/student/visualize/fees/add', {state: {title: 'Create New Student Fee'}})}}/>
+					<AddButton hint='Add student fee' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {setModalVisible(true)}}/>
 				</Spin>
+				<ModalForm form={<CreateStudentFeeForm/>} visible={modalVisible} title='Add student fee' onOk={handleOkAddFee} onCancel={handleCancelAddFee} onClose={handleCancelAddFee} spin={loadingModal} spinMessage={loadingModalMessage} okDisabled={true}/>
             </Flex>
 		</>
     );
