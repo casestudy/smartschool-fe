@@ -86,4 +86,5 @@ export const Post = {
 	fetchPaymentMethods: (params: {}): Promise <any> => requests.post(`getpaymethods`, params),
 	fetchStudentFees: (params: {}): Promise <any> => requests.post(`getstudentfees`, params),
 	addStudentFee: (params: {}): Promise <any> => requests.post(`addstudentfee`, params),
+	editStudentFee: (params: {}): Promise <any> => requests.post(`editstudentfee`, params),
 }

@@ -52,14 +52,14 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['feeid'], value: feeid}, { name: ['ftype'], value: ftype }, { name: ['fmethod'], value: fmethod }, { name: ['amount'], value: amount }, { name: 'reference', value: reference }]);
+					setFields([{name: ['feeid'], value: feeid}, { name: ['ftype'], value: ftype }, { name: ['fmethod'], value: fmethod }, { name: ['amount'], value: amount }, { name: ['reference'], value: reference }]);
 					setModalDisabled(false);
 				},100);
 			}
 		} else {
             //feeid is not set
             setTimeout(() => {
-                setFields([{name: ['feeid'], value: '' }, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, { name: 'reference', value: '' }]);
+                setFields([{name: ['feeid'], value: '' }, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, { name: ['reference'], value: '' }]);
             }, 100)
         }
 
@@ -69,10 +69,13 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 
 		dispatch(fetchFeeTypesAsync(data)).then((value) => {
 			const result = value.payload ;
-			//console.log(result);
 			if(result.error === false) {
 				// We have the db results here
 				let dataSource = result.result.value;
+
+				const filt = dataSource.filter((x:any) => x.descript === ftype) ;
+				fields[1].value = filt[0].ftype;
+
 				dataSource = [{ftype: '', descript:'--'}].concat(dataSource);
                 setFeeTypeOptions(dataSource);
 
@@ -82,6 +85,12 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 					if(result.error === false) {
 						// We have the db results here
 						let dataSource = result.result.value;
+						
+						const filt = dataSource.filter((x:any) => x.descript === fmethod) ;
+						fields[2].value = filt[0].method;
+
+						setFields(fields);
+
 						dataSource = [{method: '', descript:'--'}].concat(dataSource);
 						setFeePayOptions(dataSource);
 					} else {
@@ -150,7 +159,7 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 						setFields(allFields);
                         
 						if(fields[0].value === '') {
-                            //console.log(fields);
+							//setFields(fields);
 							//We are adding a new role
 							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0 
 							) {
@@ -195,7 +204,7 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 						<Select style={{borderRadius: 8}} options={feePayOptions.map((option: any) => ({
                                     value: option.method,
                                     label: option.descript
-                                }))} value={fmethod}></Select>
+                                }))} value={fmethod} ></Select>
 					</FormItem>
 					<FormItem 
 						label='Fee Amount:'

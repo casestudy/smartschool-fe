@@ -21,7 +21,7 @@ import Color from '../../../Components/UI/Header/Theme.json';
 import { decode as base64_decode} from 'base-64';
 
 import { useAppDispatch } from '../../../State/Hooks';
-import { addStudentFeeAsync, fetchStudentFeesAsync } from '../../../State/Thunks/StudentsThunks';
+import { addStudentFeeAsync, fetchStudentFeesAsync, updateStudentFeeAsync } from '../../../State/Thunks/StudentsThunks';
 
 interface Prop {
 	userid?: number,
@@ -75,14 +75,8 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 			if(result.error === false) {
 				// We have the db results here
 				let dataSource = result.result.value;
-
-				for (let i = 0; i < filteredStudentFees.length; i++) {
-					const element: any = filteredStudentFees[i];
-					dataSource = dataSource.filter((x:any) => x.mode !== element.mode) ;
-				}
-
+				
 				setFilteredStudentFees(dataSource);
-				//setOriginalStudentFees(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -123,6 +117,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 
 		const data = {
 			connid: localStorage.getItem('connid'),
+			feeid: fields[0].value,
 			type: fields[1].value,
 			method: fields[2].value,
 			amount: fields[3].value,
@@ -131,41 +126,79 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 			locale: locale
 		};
 
-		dispatch(addStudentFeeAsync(data)).then((value) => {
-			const result = value.payload ;
-			//console.log(result);
-			if(result.error === false) {
-				// We have the db results here
-				const dataSource = result.result.value;
-				console.log(dataSource);
-				setOriginalStudentFees(dataSource);
-				setLoadingModal(false);
-			} else {
-				//An axios error
-				let msg = '';
-				let code = '';
-	
-				if(result.status === 400) {
-					msg = result.message;
-					code = result.code;
+		if(data.feeid !== '') {
+			//We are updating
+			dispatch(updateStudentFeeAsync(data)).then((value) => {
+				const result = value.payload ;
+				if(result.error === false) {
+					// We have the db results here
+					const dataSource = result.result.value;
+					setFilteredStudentFees(dataSource.result.value);
+					setLoadingModal(false);
+					setModalVisible(false);
 				} else {
-					//It is error from the back end
-					msg = result.error.msg;
-					code = result.error.code;
+					//An axios error
+					let msg = '';
+					let code = '';
+		
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Fees`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger color={Color.students}/>
+					});
+		
+					modal.update({});
+					setLoadingModal(false);
 				}
-				const modal = Modal.error({
-					title: `Fees`,
-					content: msg + ' (' + code + ')',
-					icon: <Danger color={Color.students}/>
-				});
-	
-				modal.update({});
-				setLoadingModal(false);
-			}
-		},(error) => {
-			console.log("Error");
-			console.log(error);
-		} );
+			},(error) => {
+				console.log("Error");
+				console.log(error);
+			} );
+		} else {
+			//We are adding  a fee
+			dispatch(addStudentFeeAsync(data)).then((value) => {
+				const result = value.payload ;
+				if(result.error === false) {
+					// We have the db results here
+					const dataSource = result.result.value;
+					setFilteredStudentFees(dataSource.result.value);
+					setLoadingModal(false);
+					setModalVisible(false);
+				} else {
+					//An axios error
+					let msg = '';
+					let code = '';
+		
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Fees`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger color={Color.students}/>
+					});
+		
+					modal.update({});
+					setLoadingModal(false);
+				}
+			},(error) => {
+				console.log("Error");
+				console.log(error);
+			} );
+		}
 	}
 
 	const handleCancelAddFee = () => {
@@ -227,7 +260,6 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						console.log(row);
 						setFields([{name: ['feeid'], value: row.feeid}, { name: ['ftype'], value: row.descript }, { name: ['fmethod'], value: row.method }, { name: ['amount'], value: row.amount }, {name: ['reference'], value: row.reference}]);
 						setModalVisible(true);
 					}}>
@@ -265,7 +297,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 					/>
 					<AddButton hint='Add student fee' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {setModalVisible(true)}}/>
 				</Spin>
-				<ModalForm form={<CreateStudentFeeForm disp={fields[0].value === ''? 'none' : 'block'} fields={fields} setFields={setFields} feeid={fields[0].value} amount={fields[3].value} reference={fields[4].value} modalDisabled={modalOkDisabled} setModalDisabled={setModalOkDisabled}/>} okColor={Color.students} visible={modalVisible} title={fields[0].value === ''? 'Add student fee' : 'Edit student fee'} onOk={handleOkAddFee} onCancel={handleCancelAddFee} onClose={handleCancelAddFee} spin={loadingModal} spinMessage={loadingModalMessage} okDisabled={modalOkDisabled}/>
+				<ModalForm form={<CreateStudentFeeForm disp={fields[0].value === ''? 'none' : 'block'} fields={fields} setFields={setFields} feeid={fields[0].value} ftype={fields[1].value} fmethod={fields[2].value} amount={fields[3].value} reference={fields[4].value} modalDisabled={modalOkDisabled} setModalDisabled={setModalOkDisabled}/>} okColor={Color.students} visible={modalVisible} title={fields[0].value === ''? 'Add student fee' : 'Edit student fee'} onOk={handleOkAddFee} onCancel={handleCancelAddFee} onClose={handleCancelAddFee} spin={loadingModal} spinMessage={loadingModalMessage} okDisabled={modalOkDisabled}/>
             </Flex>
 		</>
     );
