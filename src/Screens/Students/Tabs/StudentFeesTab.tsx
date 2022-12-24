@@ -20,8 +20,13 @@ import Color from '../../../Components/UI/Header/Theme.json';
 
 import { decode as base64_decode} from 'base-64';
 
+import Title from '../../../Components/UI/Messages/Title';
+import Message from '../../../Components/UI/Messages/Message';
+
 import { useAppDispatch } from '../../../State/Hooks';
-import { addStudentFeeAsync, fetchStudentFeesAsync, updateStudentFeeAsync } from '../../../State/Thunks/StudentsThunks';
+import { addStudentFeeAsync, fetchStudentFeesAsync, updateStudentFeeAsync, deleteStudentFeeAsync } from '../../../State/Thunks/StudentsThunks';
+
+const { confirm, info } = Modal;
 
 interface Prop {
 	userid?: number,
@@ -54,7 +59,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalStudentFees.filter((x:any) => x.descript.toLowerCase().includes(e.toLowerCase()) || x.method.toLowerCase().includes(e.toLowerCase()));
+		const filt = originalStudentFees.filter((x:any) => x.descript.toLowerCase().includes(e.toLowerCase()));
 		setFilteredStudentFees(filt);
 	};
 
@@ -77,6 +82,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 				let dataSource = result.result.value;
 				
 				setFilteredStudentFees(dataSource);
+				setOriginalStudentFees(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -268,7 +274,63 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						//localStorage.setItem("role", JSON.stringify(row));
+						confirm({
+							title: <Title value={'Delete Student fee'}/>,
+							icon: <Danger color={Color.students}/>,
+							width: '400px',
+							content: <Message value='Do you really want to delete this fee?' 
+												item={''} msg=''
+												warn='This cannot be undone.'/>,
+							okText: 'Yes',
+							okType: 'danger',
+							okButtonProps:  {style: {backgroundColor: Color.students, borderRadius: '8px', borderColor: Color.students, fontWeight: 800, color: '#FFF'}},
+							cancelText: 'Cancel',
+							cancelButtonProps: {style: {backgroundColor: '#8C8C8C', borderRadius: '8px', fontWeight: 800, color: '#FFF'}},
+							onOk() {
+								setLoading(true);
+								setLoadingMessage('Delete Student Fee');
+								const data = {
+									connid: localStorage.getItem('connid'),
+									feeid: row.feeid,
+									userid: userid,
+								};
+
+								dispatch(deleteStudentFeeAsync(data)).then((value) => {
+									const result = value.payload ;
+									if(result.error === false) {
+										// We have the db results here
+										const dataSource = result.result.value;
+										console.log(dataSource);
+										setFilteredStudentFees(dataSource.result.value);
+										setLoading(false);
+									} else {
+										//An axios error
+										let msg = '';
+										let code = '';
+							
+										if(result.status === 400) {
+											msg = result.message;
+											code = result.code;
+										} else {
+											//It is error from the back end
+											msg = result.error.msg;
+											code = result.error.code;
+										}
+										const modal = Modal.error({
+											title: `Fees`,
+											content: msg + ' (' + code + ')',
+											icon: <Danger color={Color.students}/>
+										});
+							
+										modal.update({});
+										setLoading(false);
+									}
+								},(error) => {
+									console.log("Error");
+									console.log(error);
+								} );
+							}
+						})
 						
 					}}>
 					<ThrashIcon color = {Color.students}/> 

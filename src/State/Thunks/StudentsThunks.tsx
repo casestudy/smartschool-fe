@@ -154,3 +154,17 @@ export const updateStudentFeeAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const deleteStudentFeeAsync = createAsyncThunk (
+	'deletestudentFee',
+	async (postData: any) => {
+		try {
+			const response = await Post.deleteStudentFee(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
