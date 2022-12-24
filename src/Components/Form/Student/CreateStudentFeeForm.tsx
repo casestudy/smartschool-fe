@@ -28,11 +28,15 @@ interface Prop {
     reference?: any;
 	disp?: string; //Is the id field displayed?
 	feeid?: string;
+	fields: any;
+	setFields: any;
+	modalDisabled: boolean;
+	setModalDisabled: any;
 }
 
-const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference, feeid, disp}) => { 
-	const [fields, setFields] = useState<FieldData[]>([{name: ['feeid'], value: ''}, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, {name: 'reference', value: ''}, {name: 'feeid', value: ''}]);
-	const [disabled, setDisabled] = useState(true);
+const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference, feeid, disp, fields, setFields, modalDisabled, setModalDisabled}) => { 
+	//const [fields, setFields] = useState<FieldData[]>([{name: ['feeid'], value: ''}, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, {name: 'reference', value: ''}]);
+	//const [disabled, setDisabled] = useState(true);
 
 	const [loading, setLoading] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState('');
@@ -40,16 +44,25 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 	const [feeTypeOptions, setFeeTypeOptions] = useState([]);
 	const [feePayOptions, setFeePayOptions] = useState([]);
 
-	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	const options=[
-		{ value: '', label: '--' },
-        { value: true, label: 'Male' },
-		{ value: false, label: 'Female' },
-    ];
 
 	useEffect(() => {
+		if(typeof feeid !== 'undefined') {
+			if(!(fields[1].value > 0)) {
+				//Don't read
+				setTimeout(() => {
+					setFields([{name: ['feeid'], value: feeid}, { name: ['ftype'], value: ftype }, { name: ['fmethod'], value: fmethod }, { name: ['amount'], value: amount }, { name: 'reference', value: reference }]);
+					setModalDisabled(false);
+				},100);
+			}
+		} else {
+            //feeid is not set
+            setTimeout(() => {
+                setFields([{name: ['feeid'], value: '' }, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, { name: 'reference', value: '' }]);
+            }, 100)
+        }
+
         const data = {
 			connid: localStorage.getItem('connid'),
 		};
@@ -59,7 +72,8 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 			//console.log(result);
 			if(result.error === false) {
 				// We have the db results here
-				const dataSource = result.result.value;
+				let dataSource = result.result.value;
+				dataSource = [{ftype: '', descript:'--'}].concat(dataSource);
                 setFeeTypeOptions(dataSource);
 
 				dispatch(fetchPaymentMethodsAsync(data)).then((value) => {
@@ -67,7 +81,8 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 					//console.log(result);
 					if(result.error === false) {
 						// We have the db results here
-						const dataSource = result.result.value;
+						let dataSource = result.result.value;
+						dataSource = [{method: '', descript:'--'}].concat(dataSource);
 						setFeePayOptions(dataSource);
 					} else {
 						//An axios error
@@ -137,12 +152,11 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 						if(fields[0].value === '') {
                             //console.log(fields);
 							//We are adding a new role
-							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && 
-								fields[5].value.length > 0
+							if(fields[1].value.length > 0 && fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0 
 							) {
-								setDisabled(false);
+								setModalDisabled(false);
 							} else {
-								setDisabled(true);
+								setModalDisabled(true);
 							}
 						}	
 					}}
@@ -165,49 +179,47 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 						label='Fee Type:'
 						name='ftype'
 						style={{width: '450px'}}
-						rules={[{required: true, message: ''}]}
+						rules={[{required: true, message: 'Fee type is required'}]}
 					>
 						<Select style={{borderRadius: 8}} options={feeTypeOptions.map((option: any) => ({
                                     value: option.ftype,
                                     label: option.descript
-                                }))}></Select>
+                                }))} value={ftype}></Select>
 					</FormItem>
 					<FormItem 
 						label='Payment Method:'
-						name='ftype'
+						name='fmethod'
 						style={{width: '450px'}}
-						rules={[{required: true, message: ''}]}
+						rules={[{required: true, message: 'Payment Method is required'}]}
 					>
 						<Select style={{borderRadius: 8}} options={feePayOptions.map((option: any) => ({
                                     value: option.method,
                                     label: option.descript
-                                }))}></Select>
+                                }))} value={fmethod}></Select>
 					</FormItem>
 					<FormItem 
 						label='Fee Amount:'
 						name='amount'
 						style={{width: '450px'}}
-						rules={[{required: true, message: ''}]}
+						rules={[{required: true, message: 'Fee Amount is required'}]}
 					>
 						<Input 
 							type='text' 
 							placeholder='Amount paid' 
 							style={{borderRadius: 8}} 
-							readOnly={true}
 							value={amount}
 						/>
 					</FormItem>
 					<FormItem 
 						label='Payment Reference:'
-						name='amount'
+						name='reference'
 						style={{width: '450px'}}
-						rules={[{required: true, message: ''}]}
+						rules={[{required: true, message: 'Payment Reference is required'}]}
 					>
 						<Input 
 							type='text' 
 							placeholder='Reference number' 
 							style={{borderRadius: 8}} 
-							readOnly={true}
 							value={reference}
 						/>
 					</FormItem>
@@ -217,17 +229,12 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 	);
 };
 
-const Flex = styled.div`
-	display: flex;
-	align-items: center;
-`;
-const FormSection = styled.div``;
 const FormItem = styled(Form.Item)`
 flex-direction: column !important;
 align-items: flex-start;
 justify-content: center;
 min-width: 8rem;
-margin-bottom: 3rem !important;
+margin-bottom: 2rem !important;
 margin-top: 0rem !important;
 row-gap: 1rem;
 
@@ -354,11 +361,6 @@ font-size: 14px !important;
 	border: solid 1px #8c8c8c;
 	border-radius: 0px 8px 8px 0px !important;
 }
-`;
-const InputRow = styled.div`;
-	display: flex;
-	column-gap: 1rem;
-	flex-wrap: wrap;
 `;
 
 export default CreateStudentFeeForm;

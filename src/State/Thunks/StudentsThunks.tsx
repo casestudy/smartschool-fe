@@ -85,6 +85,20 @@ export const addStudentParentAsync = createAsyncThunk (
 	}
 )
 
+export const fetchStudentFeesAsync = createAsyncThunk (
+	'fetchstudentFee',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchStudentFees(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
 export const fetchFeeTypesAsync = createAsyncThunk (
 	'fetchFeeTypes',
 	async (postData: any) => {
@@ -104,6 +118,20 @@ export const fetchPaymentMethodsAsync = createAsyncThunk (
 	async (postData: any) => {
 		try {
 			const response = await Post.fetchPaymentMethods(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const addStudentFeeAsync = createAsyncThunk (
+	'addstudentFee',
+	async (postData: any) => {
+		try {
+			const response = await Post.addStudentFee(postData);
 			return response;
 		} catch(error){
 			const err = JSON.stringify(error);
