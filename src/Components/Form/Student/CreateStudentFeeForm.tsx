@@ -204,7 +204,7 @@ const CreateStudentFeeForm: React.FC<Prop> = ({ftype, fmethod, amount, reference
 						rules={[{required: true, message: 'Fee Amount is required'}]}
 					>
 						<Input 
-							type='text' 
+							type='number' 
 							placeholder='Amount paid' 
 							style={{borderRadius: 8}} 
 							value={amount}

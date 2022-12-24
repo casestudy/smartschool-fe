@@ -1,8 +1,9 @@
 import  React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { format } from 'date-fns';
 
-import { Modal, Spin } from 'antd';
+import { Button, Modal, Spin } from 'antd';
 
 import CustomTable from '../../../Components/UI/Table/CustomTable';
 import AddButton from '../../../Components/UI/Button/AddButton';
@@ -12,6 +13,8 @@ import CreateStudentFeeForm from '../../../Components/Form/Student/CreateStudent
 
 import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
 import Danger from '../../../Components/UI/Icons/Danger';
+import PenIcon from '../../../Components/UI/Icons/Pen';
+import ThrashIcon from '../../../Components/UI/Icons/ThrashIcon';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 
@@ -51,7 +54,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalStudentFees.filter((x:any) => x.surname.toLowerCase().includes(e.toLowerCase()) || x.othernames.toLowerCase().includes(e.toLowerCase()));
+		const filt = originalStudentFees.filter((x:any) => x.descript.toLowerCase().includes(e.toLowerCase()) || x.method.toLowerCase().includes(e.toLowerCase()));
 		setFilteredStudentFees(filt);
 	};
 
@@ -79,7 +82,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 				}
 
 				setFilteredStudentFees(dataSource);
-				setOriginalStudentFees(dataSource);
+				//setOriginalStudentFees(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -114,8 +117,18 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 		setLoadingModal(true);
 		setLoadingModalMessage('Adding student fee.');
 
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+
 		const data = {
 			connid: localStorage.getItem('connid'),
+			type: fields[1].value,
+			method: fields[2].value,
+			amount: fields[3].value,
+			reference: fields[4].value,
+			userid: userid,
+			locale: locale
 		};
 
 		dispatch(addStudentFeeAsync(data)).then((value) => {
@@ -124,7 +137,9 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
+				console.log(dataSource);
 				setOriginalStudentFees(dataSource);
+				setLoadingModal(false);
 			} else {
 				//An axios error
 				let msg = '';
@@ -145,7 +160,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 				});
 	
 				modal.update({});
-				setLoading(false);
+				setLoadingModal(false);
 			}
 		},(error) => {
 			console.log("Error");
@@ -155,6 +170,8 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 
 	const handleCancelAddFee = () => {
 		setModalVisible(false);
+		setLoadingModal(false);
+		setFields([{name: ['feeid'], value: ''}, { name: ['ftype'], value: '' }, { name: ['fmethod'], value: '' }, { name: ['amount'], value: '' }, {name: 'reference', value: ''}]);
 	}
 
 	// Columns definition start
@@ -168,8 +185,8 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
         },
         {
 			title: 'Fee',
-			dataIndex: 'fee',
-			key: 'fee',
+			dataIndex: 'descript',
+			key: 'descript',
 			width: '10%',
 			sorter: (a: any, b: any) => a.rname.localeCompare(b.surname)
         },
@@ -181,15 +198,20 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
         },
         {
             title: 'Paid By',
-            dataIndex: 'paidby',
-            key: 'paidby',
+            dataIndex: 'method',
+            key: 'methood',
             width: '10%'
 		},
 		{
             title: 'Paid On',
             dataIndex: 'paidon',
             key: 'paidon',
-            width: '10%'
+            width: '15%',
+			render: (text:any,row:any) => {
+				var date = new Date(text);
+				var formattedDate = format(date, "MMMM do, yyyy");
+				return <Flex>{formattedDate}</Flex>
+			}
 		},
 		{
             title: 'Reference',
@@ -197,17 +219,35 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
             key: 'reference',
             width: '10%',
 		},
-		// {
-        //     title: 'Action',
-        //     dataIndex: 'action',
-        //     key: 'action',
-        //     width: '15%',
-		// },
+		{
+            title: 'Action',
+            dataIndex: 'action',
+            key: 'action',
+            width: '5%',
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						console.log(row);
+						setFields([{name: ['feeid'], value: row.feeid}, { name: ['ftype'], value: row.descript }, { name: ['fmethod'], value: row.method }, { name: ['amount'], value: row.amount }, {name: ['reference'], value: row.reference}]);
+						setModalVisible(true);
+					}}>
+					<PenIcon color={Color.students} size='18px' line='20px'/> 
+				</Button>
+
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						//localStorage.setItem("role", JSON.stringify(row));
+						
+					}}>
+					<ThrashIcon color = {Color.students}/> 
+				</Button>
+			</Flex>
+		},
 		{
 			title: 'Fee Id',
 			dataIndex: 'feeid',
 			key: 'feeid',
-			width: '45%',
+			width: '35%',
 			hidden: true
 		},
     ].filter(item => !item.hidden);
@@ -225,7 +265,7 @@ const StudentFees: React.FC<Prop> = ({userid, userfullname}) => {
 					/>
 					<AddButton hint='Add student fee' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {setModalVisible(true)}}/>
 				</Spin>
-				<ModalForm form={<CreateStudentFeeForm disp='none' fields={fields} setFields={setFields} modalDisabled={modalOkDisabled} setModalDisabled={setModalOkDisabled}/>} okColor={Color.students} visible={modalVisible} title='Add student fee' onOk={handleOkAddFee} onCancel={handleCancelAddFee} onClose={handleCancelAddFee} spin={loadingModal} spinMessage={loadingModalMessage} okDisabled={modalOkDisabled}/>
+				<ModalForm form={<CreateStudentFeeForm disp={fields[0].value === ''? 'none' : 'block'} fields={fields} setFields={setFields} feeid={fields[0].value} amount={fields[3].value} reference={fields[4].value} modalDisabled={modalOkDisabled} setModalDisabled={setModalOkDisabled}/>} okColor={Color.students} visible={modalVisible} title={fields[0].value === ''? 'Add student fee' : 'Edit student fee'} onOk={handleOkAddFee} onCancel={handleCancelAddFee} onClose={handleCancelAddFee} spin={loadingModal} spinMessage={loadingModalMessage} okDisabled={modalOkDisabled}/>
             </Flex>
 		</>
     );
