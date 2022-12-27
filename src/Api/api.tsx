@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+
 import { PostType} from './Models/Post.interface';
 import { baseURL } from '../AppEnv';
 import { url } from 'inspector';
@@ -19,6 +20,7 @@ const requests = {
 	post: (url: string, body: {}) => instance.post(url, body, { headers }).then(responseBody),
 	put: (url: string, body: {}) => instance.put(url, body, { headers }).then(responseBody),
 	delete: ( url: string) => instance.delete(url).then(responseBody), 
+	file: (url: string, data: any) => axios.post(baseURL+url, data).then(responseBody),
 };
 
 export const Post = {
@@ -88,4 +90,5 @@ export const Post = {
 	addStudentFee: (params: {}): Promise <any> => requests.post(`addstudentfee`, params),
 	editStudentFee: (params: {}): Promise <any> => requests.post(`editstudentfee`, params),
 	deleteStudentFee: (params: {}): Promise <any> => requests.post(`deletestudentfee`, params),
+	uploadStudentPhoto: (params: {}): Promise <any> => requests.file(`uploadstudentphoto`, params),
 }

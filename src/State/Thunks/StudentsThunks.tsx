@@ -156,10 +156,38 @@ export const updateStudentFeeAsync = createAsyncThunk (
 )
 
 export const deleteStudentFeeAsync = createAsyncThunk (
-	'deletestudentFee',
+	'deleteStudentFee',
 	async (postData: any) => {
 		try {
 			const response = await Post.deleteStudentFee(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+// export const getStudentPhotoAsync = createAsyncThunk (
+// 	'getStudentPhoto',
+// 	async (postData: any) => {
+// 		try {
+// 			const response = await Post.deleteStudentFee(postData);
+// 			return response;
+// 		} catch(error){
+// 			const err = JSON.stringify(error);
+// 			const errj = JSON.parse(err);
+// 			return { status: 400, message: errj.message, code: errj.code};
+// 		}
+// 	}
+// )
+
+export const uploadStudentPhotoAsync = createAsyncThunk (
+	'uploadStudentPhoto',
+	async (postData: any) => {
+		try {
+			const response = await Post.uploadStudentPhoto(postData);
 			return response;
 		} catch(error){
 			const err = JSON.stringify(error);

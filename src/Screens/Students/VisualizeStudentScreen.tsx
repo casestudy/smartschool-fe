@@ -11,6 +11,7 @@ import Header from '../../Components/UI/Header/Header';
 import Color from '../../Components/UI/Header/Theme.json';
 import StudentParents from './Tabs/StudentParentsTab';
 import StudentFees from './Tabs/StudentFeesTab';
+import StudentPicture from './Tabs/StudentPictureTab';
 // import RolePrivileges from './Tabs/RolePrivilegesTab';
 // import SubRoles from './Tabs/SubRolesTab';
 import { Col, Row } from "antd";
@@ -36,7 +37,9 @@ const VisualizeStudentScreen: React.FC<any> = () => {
 			setCurrentTabView(<StudentParents userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
 		} else if (currentTab === 'Fees') {
             setCurrentTabView(<StudentFees userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
-        }else {
+        } else if(currentTab === 'Picture') {
+            setCurrentTabView(<StudentPicture userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
+		} else {
 			setCurrentTabView(<></>);
 		}
 	}, [currentTab]);

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
-import { useNavigate } from 'react-router-dom';
 
-import { Form, Input, Modal, Select, Spin, DatePicker} from 'antd';
-import { decode as base64_decode} from 'base-64';
-import moment from 'moment';
+import { Form, Input, Modal, Select, Spin} from 'antd';
 
-import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
 import Color from '../../UI/Header/Theme.json';
 
