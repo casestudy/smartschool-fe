@@ -38,7 +38,7 @@ const VisualizeStudentScreen: React.FC<any> = () => {
 		} else if (currentTab === 'Fees') {
             setCurrentTabView(<StudentFees userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
         } else if(currentTab === 'Picture') {
-            setCurrentTabView(<StudentPicture userid={state.row.userid} userfullname={state.row.surname + ' ' + state.row.othernames} />);
+            setCurrentTabView(<StudentPicture userid={state.row.userid} matricule={state.row.matricule} userfullname={state.row.surname + ' ' + state.row.othernames} />);
 		} else {
 			setCurrentTabView(<></>);
 		}

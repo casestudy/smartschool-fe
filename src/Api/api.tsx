@@ -82,6 +82,8 @@ export const Post = {
 	fetchStudentParents: (params: {}): Promise <any> => requests.post(`getstudentparents`, params),
 	removeStudentParent: (params: {}): Promise <any> => requests.post(`removestudentparent`, params),
 	addStudentParent: (params: {}): Promise <any> => requests.post(`addstudentparent`, params),
+	uploadStudentPhoto: (params: {}): Promise <any> => requests.file(`uploadstudentphoto`, params),
+	getStudentPhoto: (params: {}): Promise <any> => requests.file(`getstudentphoto`, params),
 
 	//Fees API
 	fetchFeeTypes: (params: {}): Promise <any> => requests.post(`getfeetypes`, params),
@@ -90,5 +92,4 @@ export const Post = {
 	addStudentFee: (params: {}): Promise <any> => requests.post(`addstudentfee`, params),
 	editStudentFee: (params: {}): Promise <any> => requests.post(`editstudentfee`, params),
 	deleteStudentFee: (params: {}): Promise <any> => requests.post(`deletestudentfee`, params),
-	uploadStudentPhoto: (params: {}): Promise <any> => requests.file(`uploadstudentphoto`, params),
 }

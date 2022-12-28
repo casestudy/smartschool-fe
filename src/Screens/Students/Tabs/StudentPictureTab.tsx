@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import type { UploadProps } from 'antd';
 import { Col, Modal, Row, Image, Upload, message } from 'antd';
+import Compressor from 'compressorjs';
 
 import Danger from '../../../Components/UI/Icons/Danger';
 import { InboxOutlined } from '@ant-design/icons';
@@ -12,7 +13,7 @@ import Color from '../../../Components/UI/Header/Theme.json';
 import { decode as base64_decode, encode as base64_encode } from 'base-64';
 
 import { useAppDispatch } from '../../../State/Hooks';
-import { uploadStudentPhotoAsync } from '../../../State/Thunks/StudentsThunks';
+import { uploadStudentPhotoAsync, getStudentPhotoAsync } from '../../../State/Thunks/StudentsThunks';
 import Axios , {AxiosResponse, AxiosError} from 'axios';
 
 const { Dragger } = Upload;
@@ -22,58 +23,65 @@ const { confirm, info } = Modal;
 interface Prop {
 	userid?: number,
 	userfullname?: string,
+	matricule?: string
 }
 
-const StudentPicture: React.FC<Prop> = ({userid}) => {
+const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 	const [loading, setLoading] = useState(true);
 	const [loadingMessage, setLoadingMessage] = useState('');
 	const [img, setImg] = useState('');
 	const dispatch = useAppDispatch();
 
-	// useEffect(() => {
-	// 	setLoadingMessage('Fetching student fees');
-	// 	const b64 : any = localStorage.getItem('data');
-    //     const store : any = base64_decode(b64) ;
-    //     const locale = JSON.parse(store).result.value[0][0].locale;
+	useEffect(() => {
+		setLoadingMessage('Fetching student fees');
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
 
-    //     const data = {
-	// 		connid: localStorage.getItem('connid'),
-    //         userid: userid,
-	// 		locale: locale
-	// 	};
+        const uid: any = userid;
+		const connid: any = localStorage.getItem('connid');
 
-	// 	dispatch(fetchStudentFeesAsync(data)).then((value) => {
-	// 		const result = value.payload ;
-	// 		if(result.error === false) {
-	// 			// We have the db results here
+		const data = new FormData();
+		data.append("userid", uid);
+		data.append("connid", connid);
+		data.append("locale", locale);
+		data.append("picture", '');
+
+		// Axios.post("http://192.168.8.102:3000/getstudentphoto", data)
+		// 		.then(res => console.log(res))
+		// 		.catch(err => console.log(err));
+		dispatch(getStudentPhotoAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
 				
-	// 		} else {
-	// 			//An axios error
-	// 			let msg = '';
-	// 			let code = '';
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
 	
-	// 			if(result.status === 400) {
-	// 				msg = result.message;
-	// 				code = result.code;
-	// 			} else {
-	// 				//It is error from the back end
-	// 				msg = result.error.msg;
-	// 				code = result.error.code;
-	// 			}
-	// 			const modal = Modal.error({
-	// 				title: 'Students',
-	// 				content: msg + ' (' + code + ')',
-	// 				icon: <Danger color={Color.students}/>
-	// 			});
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: 'Students',
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.students}/>
+				});
 	
-	// 			modal.update({});
-	// 			setLoading(false);
-	// 		}
-	// 	},(error) => {
-	// 		console.log("Error");
-	// 		console.log(error);
-	// 	} );
-    // },[])
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+    },[])
 
 	const props: UploadProps = {
 		name: 'file',
@@ -95,56 +103,6 @@ const StudentPicture: React.FC<Prop> = ({userid}) => {
 				modal.update({});
 				return false;
 			}
-			
-			var reader = new FileReader();
-			reader.readAsDataURL(file); 
-			reader.onloadend = function() {
-				var base64data: any = reader.result;                
-				console.log(base64data);
-				setImg(base64data.toString());
-			}
-			const data = new FormData();
-			data.append("name", "Test name");
-			data.append("file", file);
-
-			console.log(data);
-			//http://192.168.8.101:3000/uploadstudentphoto https://httpbin.org/anything
-			// Axios.post("http://192.168.8.101:3000/uploadstudentphoto", data)
-			// 	.then(res => console.log(res))
-			// 	.catch(err => console.log(err));
-			
-			dispatch(uploadStudentPhotoAsync(data)).then((value) => {
-				const result = value.payload ;
-				console.log(result);
-				if(result.error === false) {
-					// We have the db results here
-					
-				} else {
-					//An axios error
-					let msg = '';
-					let code = '';
-		
-					if(result.status === 400) {
-						msg = result.message;
-						code = result.code;
-					} else {
-						//It is error from the back end
-						msg = result.error.msg;
-						code = result.error.code;
-					}
-					const modal = Modal.error({
-						title: 'Students',
-						content: msg + ' (' + code + ')',
-						icon: <Danger color={Color.students}/>
-					});
-		
-					modal.update({});
-					setLoading(false);
-				}
-			},(error) => {
-				console.log("Error");
-				console.log(error);
-			} );
 
 			// const size = file.size;
 			
@@ -159,60 +117,79 @@ const StudentPicture: React.FC<Prop> = ({userid}) => {
 			// 	return false;
 			// }
 
-			return false;
-		},
-		// customRequest(options) {
-		// 	console.log(options.file);
-		// },
-		onChange({file, fileList}) {
-			//console.log(info.file);
-			console.log(file);
+			new Compressor(file, {
+				quality: 0.5, // 0.6 can also be used, but its not recommended to go below.
+				success: (compressedResult) => {
+				  	// compressedResult has the compressed file.
+				  	// Use the compressed file to upload the images to your server.        
+					const mat: any = matricule;
+					const uid: any = userid;
+					const connid: any = localStorage.getItem('connid');
 
-			// const data = new FormData();
-			// data.append("name", "Test name");
-			// data.append("file", info.file);
+					const b64 : any = localStorage.getItem('data');
+					const store : any = base64_decode(b64) ;
+					const locale = JSON.parse(store).result.value[0][0].locale;
 
-			//console.log(data);
+					const data = new FormData();
+					data.append("matricule", mat);
+					data.append("userid", uid);
+					data.append("connid", connid);
+					data.append("locale", locale);
+					data.append("picture", compressedResult);
 
+					dispatch(uploadStudentPhotoAsync(data)).then((value) => {
+						const result = value.payload ;
+						if(result.error === false) {
+							// We have the db results here
+							const reader = new FileReader();
+							reader.readAsDataURL(compressedResult); 
+							reader.onloadend = function() {
+								var base64data: any = reader.result;                
+								setImg(base64data.toString());
+
+								const modal = Modal.info({
+									title: 'Students',
+									content: 'Student photo uploaded successfully!',
+								});
+
+								modal.update({});
+								setLoading(false);
+							}
+						} else {
+							//An axios error
+							let msg = '';
+							let code = '';
+				
+							if(result.status === 400) {
+								msg = result.message;
+								code = result.code;
+							} else {
+								//It is error from the back end
+								msg = result.error.msg;
+								code = result.error.code;
+							}
+							const modal = Modal.error({
+								title: 'Students',
+								content: msg + ' (' + code + ')',
+								icon: <Danger color={Color.students}/>
+							});
+				
+							modal.update({});
+							setLoading(false);
+						}
+					},(error) => {
+						console.log("Error");
+						console.log(error);
+					} );
+				},
+			});
+			
+			//http://192.168.8.101:3000/uploadstudentphoto https://httpbin.org/anything
 			// Axios.post("http://192.168.8.101:3000/uploadstudentphoto", data)
 			// 	.then(res => console.log(res))
 			// 	.catch(err => console.log(err));
-
-			// dispatch(uploadStudentPhotoAsync(data)).then((value) => {
-			// 	const result = value.payload ;
-			// 	console.log(result);
-			// 	if(result.error === false) {
-			// 		// We have the db results here
-					
-			// 	} else {
-			// 		//An axios error
-			// 		let msg = '';
-			// 		let code = '';
-		
-			// 		if(result.status === 400) {
-			// 			msg = result.message;
-			// 			code = result.code;
-			// 		} else {
-			// 			//It is error from the back end
-			// 			msg = result.error.msg;
-			// 			code = result.error.code;
-			// 		}
-			// 		const modal = Modal.error({
-			// 			title: 'Students',
-			// 			content: msg + ' (' + code + ')',
-			// 			icon: <Danger color={Color.students}/>
-			// 		});
-		
-			// 		modal.update({});
-			// 		setLoading(false);
-			// 	}
-			// },(error) => {
-			// 	console.log("Error");
-			// 	console.log(error);
-			// } );
+			return false;
 		},
-		onDrop(e) {
-		}
 	};
 	
     return (
