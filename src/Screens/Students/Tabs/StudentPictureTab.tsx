@@ -54,7 +54,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 			const result = value.payload ;
 			if(result.error === false) {
 				// We have the db results here
-				
+				setImg(result.result.value[0].picture);
 			} else {
 				//An axios error
 				let msg = '';
@@ -144,7 +144,8 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 							const reader = new FileReader();
 							reader.readAsDataURL(compressedResult); 
 							reader.onloadend = function() {
-								var base64data: any = reader.result;                
+								var base64data: any = reader.result; 
+								//console.log(base64data.toString());               
 								setImg(base64data.toString());
 
 								const modal = Modal.info({
@@ -209,7 +210,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 					</Col>
 					<Col md={2}></Col>
 					<Col md={6}>
-						<Image src={img}/>
+						<Image src={img} style={{border: "1px solid black", borderRadius: "5px"}}/>
 					</Col>
 				</Row>
             </Flex>
