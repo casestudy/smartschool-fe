@@ -1,8 +1,9 @@
 import  React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import type { UploadProps } from 'antd';
-import { Col, Modal, Row, Image, Upload, message } from 'antd';
+//import type { UploadFile, UploadProps } from 'antd';
+import { Col, Modal, Row, Image, Upload, message, Spin } from 'antd';
+import ImgCrop from 'antd-img-crop';
 import Compressor from 'compressorjs';
 
 import Danger from '../../../Components/UI/Icons/Danger';
@@ -15,6 +16,7 @@ import { decode as base64_decode, encode as base64_encode } from 'base-64';
 import { useAppDispatch } from '../../../State/Hooks';
 import { uploadStudentPhotoAsync, getStudentPhotoAsync } from '../../../State/Thunks/StudentsThunks';
 import Axios , {AxiosResponse, AxiosError} from 'axios';
+import { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 
 const { Dragger } = Upload;
 
@@ -33,7 +35,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		setLoadingMessage('Fetching student fees');
+		setLoadingMessage('Fetching student picture');
 		const b64 : any = localStorage.getItem('data');
         const store : any = base64_decode(b64) ;
         const locale = JSON.parse(store).result.value[0][0].locale;
@@ -55,6 +57,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 			if(result.error === false) {
 				// We have the db results here
 				setImg(result.result.value[0].picture);
+				setLoading(false);
 			} else {
 				//An axios error
 				let msg = '';
@@ -81,7 +84,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 			console.log("Error");
 			console.log(error);
 		} );
-    },[])
+    },[]) ;
 
 	const props: UploadProps = {
 		name: 'file',
@@ -89,6 +92,7 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 		showUploadList: false,
 		listType: 'picture',
 		maxCount: 1,
+		
 		beforeUpload(file, FileList) {
 			const type = file.type;
 			const extension = type.split('/')[1];
@@ -104,18 +108,17 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 				return false;
 			}
 
-			// const size = file.size;
-			
-			// if(size > 300000) {
-			// 	const modal = Modal.error({
-			// 		title: 'File too large',
-			// 		content: 'The file you selected is too large. Maximum size is 1MB.',
-			// 		icon: <Danger color={Color.students}/>
-			// 	});
+			const size = file.size;
+			if(size > 500000) {
+				const modal = Modal.error({
+					title: 'File too large',
+					content: 'The file you selected is too large. Maximum size is 500KB.',
+					icon: <Danger color={Color.students}/>
+				});
 	
-			// 	modal.update({});
-			// 	return false;
-			// }
+				modal.update({});
+				return false;
+			}
 
 			new Compressor(file, {
 				quality: 0.5, // 0.6 can also be used, but its not recommended to go below.
@@ -191,28 +194,36 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 			// 	.catch(err => console.log(err));
 			return false;
 		},
-	};
+		onPreview(file) {
+			
+		},
+	};	
 	
     return (
         <>
 			<Flex>
-				<Row>
-					<Col md={16}>
-						<Dragger {...props}>
-							<p className="ant-upload-drag-icon">
-								<InboxOutlined />
-							</p>
-							<p className="ant-upload-text">Just drag and drop the file here or click to select a file</p>
-							<p className="ant-upload-hint" style={{color: Color.students}}>
-								Maximum size is 1MB, only png, jpg and jpeg files are accepted
-							</p>
-						</Dragger>
-					</Col>
-					<Col md={2}></Col>
-					<Col md={6}>
-						<Image src={img} style={{border: "1px solid black", borderRadius: "5px"}}/>
-					</Col>
-				</Row>
+				<Spin spinning={loading} tip={loadingMessage}>
+					<Row>
+						<Col md={16}>
+							<ImgCrop rotate>
+								<Dragger {...props}>
+									<p className="ant-upload-drag-icon">
+										<InboxOutlined />
+									</p>
+									<p className="ant-upload-text">Just drag and drop the file here or click to select a file</p>
+									<p className="ant-upload-hint" style={{color: Color.students}}>
+										Maximum size is 1MB, only png, jpg and jpeg files are accepted
+									</p>
+								</Dragger>
+							</ImgCrop>
+						</Col>
+						<Col md={2}></Col>
+						<Col md={6}>
+							<Image src={img} style={{border: "1px solid black", borderRadius: "5px"}}/>
+						</Col>
+					</Row>
+				</Spin>
+				
             </Flex>
 		</>
     );
