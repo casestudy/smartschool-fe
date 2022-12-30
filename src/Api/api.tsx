@@ -84,6 +84,7 @@ export const Post = {
 	addStudentParent: (params: {}): Promise <any> => requests.post(`addstudentparent`, params),
 	uploadStudentPhoto: (params: {}): Promise <any> => requests.file(`uploadstudentphoto`, params),
 	getStudentPhoto: (params: {}): Promise <any> => requests.file(`getstudentphoto`, params),
+	uploadStudents: (params: {}): Promise <any> => requests.file(`uploadstudents`, params),
 
 	//Fees API
 	fetchFeeTypes: (params: {}): Promise <any> => requests.post(`getfeetypes`, params),

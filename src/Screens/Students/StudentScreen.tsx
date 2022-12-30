@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Row , Col, Button, Modal, Spin } from 'antd';
+import { Row , Col, Button, Modal, Spin, Upload, UploadProps } from 'antd';
 
 import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
@@ -19,12 +19,15 @@ import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import MaleIcon from '../../Components/UI/Icons/Male';
 import FemaleIcon from '../../Components/UI/Icons/Female';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
+import UploadIcon from '../../Components/UI/Icons/UploadIcon';
 
 import { useAppDispatch } from '../../State/Hooks';
-import { fetchStudentsAsync } from '../../State/Thunks/StudentsThunks';
+import { fetchStudentsAsync, uploadStudentsAsync } from '../../State/Thunks/StudentsThunks';
+import Axios, { AxiosResponse} from 'axios';
 
 const StudentScreen: React.FC<any> = () => {
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false); 
+	const [loadingMessage, setLoadingMessage] = useState('Fetching students...');
 	const [originalStudents, setOriginalStudents] = useState([]);
 	const [filteredStudents, setFilteredStudents] = useState([]);
 
@@ -197,17 +200,110 @@ const StudentScreen: React.FC<any> = () => {
 			console.log("Error");
 			console.log(error);
 		} );
-	}, [])
+	}, []);
+
+	const props: UploadProps = {
+		name: 'file',
+		showUploadList: false,
+		maxCount: 1,
+		listType: 'text',
+		beforeUpload(file, FileList) {
+			const type = file.type;
+			const extension = type.split('/')[1];
+
+			if(['csv', 'xsl','json'].indexOf(extension) === -1) {
+				const modal = Modal.error({
+					title: 'Wrong Format',
+					content: 'The file you selected is not supported. Only csv, xsl and json file formats are accepted.',
+					icon: <Danger color={Color.students}/>
+				});
+	
+				modal.update({});
+				return false;
+			}
+
+			const size = file.size;
+			if(size > 500000) {
+				const modal = Modal.error({
+					title: 'File too large',
+					content: 'The file you selected is too large. Maximum size is 500KB.',
+					icon: <Danger color={Color.students}/>
+				});
+	
+				modal.update({});
+				return false;
+			}
+
+			const connid: any = localStorage.getItem('connid');
+
+			const b64 : any = localStorage.getItem('data');
+			const store : any = base64_decode(b64) ;
+			const locale = JSON.parse(store).result.value[0][0].locale;
+			console.log(locale);
+
+			const data = new FormData();
+			data.append("connid", connid);
+			data.append("locale", locale);
+			data.append("batch", file);
+
+			// Axios.post("https://httpbin.org/anything", data)
+			// 	.then(res => console.log(res))
+			// 	.catch(err => console.log(err));
+			setLoading(true);
+			setLoadingMessage('Uploading student batch...')
+			dispatch(uploadStudentsAsync(data)).then((value) => {
+				const result = value.payload ;
+				if(result.error === false) {
+					// We have the db results here
+					const dataSource = result.result.value;
+					setFilteredStudents(dataSource);
+					setOriginalStudents(dataSource);
+					setLoading(false);
+				} else {
+					//An axios error
+					let msg = '';
+					let code = '';
+		
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Students`,
+						content: msg + ' (' + code + ')',
+						icon: <Danger color={Color.students}/>
+					});
+		
+					modal.update({});
+					setLoading(false);
+				}
+			},(error) => {
+				console.log("Error");
+				console.log(error);
+			} );
+		},
+	  };
 
     return (
         <Flex>
-			<Spin spinning={loading} tip="Fetching students...">
+			<Spin spinning={loading} tip={loadingMessage}>
 				<Header title='Students' loggedin={true} lastlogin={ll}></Header>
 				<Row>
 					<Col md={18}>
-						<Flex style={{padding: "5rem 5rem 1px 5rem"}}>
+						<Flex style={{padding: "5rem 0 1px 5rem"}}>
 							<CustomTable columns={columns} source={filteredStudents} searchIconColor={Color.students} rowKey='userid' filter={filterTable}/>
-							<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/student/new', {state: {title: 'Create New Student'}})}}/>
+							<Flex style={{float:'right', display: 'flex'}}>
+								<Flex style={{marginTop: '-17px', paddingRight: '15px'}}>
+									<Upload {...props}>
+										<AddButton hint='Upload batch students' icon={<UploadIcon/>} top='-50px' float='right' color={Color.students}/>
+									</Upload>
+								</Flex>
+								<AddButton hint='Create new student' icon={<PlusIcon/>} top='-50px' float='right' color={Color.students} onClick={() => {navigate('/student/new', {state: {title: 'Create New Student'}})}}/>
+							</Flex>
 						</Flex>
 					</Col>
 					<Col md={6}>Notifications</Col>

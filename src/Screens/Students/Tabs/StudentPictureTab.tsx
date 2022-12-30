@@ -2,7 +2,7 @@ import  React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 //import type { UploadFile, UploadProps } from 'antd';
-import { Col, Modal, Row, Image, Upload, message, Spin } from 'antd';
+import { Col, Modal, Row, Image, Upload, Spin } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import Compressor from 'compressorjs';
 
@@ -11,16 +11,13 @@ import { InboxOutlined } from '@ant-design/icons';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 
-import { decode as base64_decode, encode as base64_encode } from 'base-64';
+import { decode as base64_decode } from 'base-64';
 
 import { useAppDispatch } from '../../../State/Hooks';
 import { uploadStudentPhotoAsync, getStudentPhotoAsync } from '../../../State/Thunks/StudentsThunks';
-import Axios , {AxiosResponse, AxiosError} from 'axios';
-import { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { UploadProps } from 'antd/es/upload/interface';
 
 const { Dragger } = Upload;
-
-const { confirm, info } = Modal;
 
 interface Prop {
 	userid?: number,
@@ -49,9 +46,6 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 		data.append("locale", locale);
 		data.append("picture", '');
 
-		// Axios.post("http://192.168.8.102:3000/getstudentphoto", data)
-		// 		.then(res => console.log(res))
-		// 		.catch(err => console.log(err));
 		dispatch(getStudentPhotoAsync(data)).then((value) => {
 			const result = value.payload ;
 			if(result.error === false) {
@@ -88,7 +82,6 @@ const StudentPicture: React.FC<Prop> = ({userid, matricule}) => {
 
 	const props: UploadProps = {
 		name: 'file',
-		//action: 'https://httpbin.org/anything',
 		showUploadList: false,
 		listType: 'picture',
 		maxCount: 1,

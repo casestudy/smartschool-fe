@@ -12,21 +12,14 @@ import Color from '../../Components/UI/Header/Theme.json';
 import StudentParents from './Tabs/StudentParentsTab';
 import StudentFees from './Tabs/StudentFeesTab';
 import StudentPicture from './Tabs/StudentPictureTab';
-// import RolePrivileges from './Tabs/RolePrivilegesTab';
-// import SubRoles from './Tabs/SubRolesTab';
+
 import { Col, Row } from "antd";
 
 const VisualizeStudentScreen: React.FC<any> = () => {
 	const [currentTab, setCurrentTab] = useState('Parents');
 	const [currentTabView, setCurrentTabView] = useState(<></>);
-	const [title, setCurrentTitle] = useState('');
-    const [titleS, setCurrentTitleS] = useState('');
 	
     let ll: any = localStorage.getItem('lastlogin');
-
-    const b64 : any = localStorage.getItem('data');
-    const store : any = base64_decode(b64) ;
-    const loggedinUser = JSON.parse(store).result.value[0][0].usertype;
 
 	const navigate = useNavigate();
 
