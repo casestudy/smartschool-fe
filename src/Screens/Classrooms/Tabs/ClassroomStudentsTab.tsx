@@ -13,6 +13,8 @@ import { useAppDispatch } from '../../../State/Hooks';
 
 import { fetchClassroomStudentsAsync } from '../../../State/Thunks/ClassroomsThunk';
 import Danger from '../../../Components/UI/Icons/Danger';
+import AddButton from '../../../Components/UI/Button/AddButton';
+import PrinterIcon from '../../../Components/UI/Icons/Printer';
 
 interface Prop {
     classid?: string;
@@ -32,6 +34,10 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 		const filt = originalStudents.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.code.toString().includes(e) || x.descript.toLowerCase().includes(e.toLowerCase()));
 		setFilteredStudents(filt);
 	};
+
+	const printClasslist = () => {
+		console.log('Printing');
+	}
 
     const columns = [
         {
@@ -103,7 +109,6 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 
 		dispatch(fetchClassroomStudentsAsync(data)).then((value) => {
 			const result = value.payload ;
-			console.log(result);
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
@@ -142,6 +147,7 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 			<Flex>
 				<Spin spinning={loading} tip={loadingMessage}>
 					<CustomTable columns={columns} source={filteredStudents} searchIconColor={Color.classrooms} rowKey='userid' filter={filterTable}/>
+					<AddButton hint='Print class list' color={Color.classrooms} icon={<PrinterIcon/>} top='-50px' float='right' onClick={printClasslist}/>
 				</Spin>
 			</Flex>
 		</>
