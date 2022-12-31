@@ -63,8 +63,8 @@ const ClassroomTeachersTab: React.FC<Prop> = ({classid, locale}) => {
         },
         {
 			title: 'Subject code',
-			dataIndex: 'scode',
-			key: 'scode',
+			dataIndex: 'code',
+			key: 'code',
 			width: '10%'
         },
 		{
@@ -98,13 +98,11 @@ const ClassroomTeachersTab: React.FC<Prop> = ({classid, locale}) => {
 
 		dispatch(fetchClassroomTeachersAsync(data)).then((value) => {
 			const result = value.payload ;
-			//console.log(result);
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
-				console.log(dataSource);
-				//setFilteredClassrooms(dataSource);
-				//setOriginalClassrooms(dataSource);
+				setFilteredTeachers(dataSource);
+				setOriginalTeachers(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -136,7 +134,7 @@ const ClassroomTeachersTab: React.FC<Prop> = ({classid, locale}) => {
     return (
         <>
 			<Flex>
-                <CustomTable columns={columns} source={filteredTeachers} searchIconColor='#D07515' rowKey='classid' filter={filterTable}/>
+                <CustomTable columns={columns} source={filteredTeachers} searchIconColor='#D07515' rowKey='subjectid' filter={filterTable}/>
             </Flex>
 		</>
     );

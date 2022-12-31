@@ -234,8 +234,8 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
         },
         {
 			title: 'Subject code',
-			dataIndex: 'scode',
-			key: 'scode',
+			dataIndex: 'code',
+			key: 'code',
 			width: '22%'
         },
         {
@@ -243,7 +243,8 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 			dataIndex: 'cname',
 			key: 'cname',
 			width: '30%',
-			sorter: (a: any, b: any) => a.cname.localeCompare(b.cname)
+			sorter: (a: any, b: any) => a.cname.localeCompare(b.cname),
+			render: (text:any,record:any) => (record.cname + ' (' + record.abbreviation + ')')
         },
         {
             title: 'Actions',
@@ -260,8 +261,8 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 		},
         {
 			title: 'Classroom Id',
-			dataIndex: 'classroomid',
-			key: 'classroomid',
+			dataIndex: 'classid',
+			key: 'classid',
 			width: '2%',
 			hidden: true
 		},
@@ -379,10 +380,12 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
         dispatch(fetchTeacherSubjectsAsync(data)).then((value) => {
 
 			const result = value.payload ;
-			//console.log(result);
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
+				dataSource.map((data : any) => {
+					data.key = data.classid+'/'+data.subjectid
+				})
 				setFilteredTeacherSubjects(dataSource);
 				setOriginalTeacherSubjects(dataSource);
 				setLoading(false);
@@ -418,7 +421,7 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
     return (
         <>
 			<Spin spinning={loading} tip='Fetching teacher subjects...'>
-				<CustomTable columns={columns} source={filteredTeacherSubjects} rowKey='roleid' searchIconColor={usertype === 'teacher'? Color.teachers : Color.subjects} filter={filterTable}/>
+				<CustomTable columns={columns} source={filteredTeacherSubjects} rowKey='key' searchIconColor={usertype === 'teacher'? Color.teachers : Color.subjects} filter={filterTable}/>
 				<Flex style={{marginTop: '-50px', float:'right', display: 'flex'}}>
 					<Flex style={{paddingRight: '15px'}}>
 						<AddButton icon={<MinusIcon/>} color={usertype === 'teacher'? Color.teachers : Color.subjects} hint='Remove selected roles from user' onClick={() => {}} />

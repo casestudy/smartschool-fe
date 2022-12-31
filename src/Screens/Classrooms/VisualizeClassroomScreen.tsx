@@ -33,7 +33,7 @@ const VisualizeRoleScreen: React.FC<any> = () => {
 		if(currentTab === 'Teachers') {
 			setCurrentTabView(<TeachersTab classid={state.classid} locale={locale}/>);
 		} else if(currentTab === 'Students') {
-			setCurrentTabView(<StudentsTab/>);
+			setCurrentTabView(<StudentsTab classid={state.classid} locale={locale}/>);
 		}
 	}, [currentTab]);
 
