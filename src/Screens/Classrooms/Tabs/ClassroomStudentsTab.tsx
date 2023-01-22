@@ -36,7 +36,58 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 	};
 
 	const printClasslist = () => {
-		console.log('Printing');
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			classid: classid,
+			locale: locale,
+			connid: localStorage.getItem('connid'),
+			print: true
+		}
+
+		dispatch(fetchClassroomStudentsAsync(data)).then((value) => {
+			const result = value.payload ;
+
+			if(result.error === false) {
+				// We have the db results here				
+				setLoading(false);
+
+				const data = 'data:application/pdf;base64,'+result.data;
+
+				var a = document.createElement('a')
+				a.setAttribute('href', data)
+				a.setAttribute('download', 'classlist')
+				a.click()
+				a.remove()
+
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: 'Students',
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.classrooms}/>
+				});
+	
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
 	}
 
     const columns = [
@@ -104,11 +155,13 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 		const data = {
 			classid: classid,
 			locale: locale,
-			connid: localStorage.getItem('connid')
+			connid: localStorage.getItem('connid'),
+			print: false
 		}
 
 		dispatch(fetchClassroomStudentsAsync(data)).then((value) => {
 			const result = value.payload ;
+			setLoading(false);
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
@@ -140,6 +193,7 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 		},(error) => {
 			console.log("Error");
 			console.log(error);
+			setLoading(false);
 		} );
     },[])
     return (
