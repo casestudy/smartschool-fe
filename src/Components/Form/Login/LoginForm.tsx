@@ -62,17 +62,17 @@ const CustomizedForm: React.FC<CustomizedFormProps> = ({ onChange, fields, butto
 			<Form.Item
 				name="username"
 				rules={[{ required: true, message: 'Please input your Username!' }]} style={{textAlign: "left"}}>
-				<Input prefix={<User color='#000' size='18px' line='20px' />} placeholder="Username" style={{borderRadius: "5px"}}/>
+				<Input data-cy="username" prefix={<User color='#000' size='18px' line='20px' />} placeholder="Username" style={{borderRadius: "5px"}}/>
 			</Form.Item>
 
 			<Form.Item
 				name="password"
 				rules={[{ required: true, message: 'Please input your Password!' }]} style={{textAlign: "left"}}>
-				<Input.Password prefix={<Lock color='#000' size='18px' line='20px' />} placeholder="Password" style={{borderRadius: "5px"}} />
+				<Input.Password data-cy="password" prefix={<Lock color='#000' size='18px' line='20px' />} placeholder="Password" style={{borderRadius: "5px"}} />
 			</Form.Item>
 
 			<Form.Item {...tailFormItemLayout}>
-				<Button type="primary" htmlType="submit" icon={<Login color='#fff' size='18px' line='20px' padding='0 0 0 0'/>} disabled={button}>
+				<Button data-cy="submitLogin" type="primary" htmlType="submit" icon={<Login color='#fff' size='18px' line='20px' padding='0 0 0 0'/>} disabled={button}>
 					 <span style={{fontWeight: 'bold'}}>Login</span>
 				</Button>
 			</Form.Item>

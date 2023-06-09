@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+
 import { PostType} from './Models/Post.interface';
 import { baseURL } from '../AppEnv';
 import { url } from 'inspector';
@@ -19,6 +20,7 @@ const requests = {
 	post: (url: string, body: {}) => instance.post(url, body, { headers }).then(responseBody),
 	put: (url: string, body: {}) => instance.put(url, body, { headers }).then(responseBody),
 	delete: ( url: string) => instance.delete(url).then(responseBody), 
+	file: (url: string, data: any) => axios.post(baseURL+url, data).then(responseBody),
 };
 
 export const Post = {
@@ -58,6 +60,7 @@ export const Post = {
 	createClassroom: (params: {}): Promise <any> => requests.post(`createclassroom`, params),
 	updateClassroom: (params: {}): Promise <any> => requests.post(`modifyclassroom`, params),
 	fetchClassroomTeacher: (params: {}): Promise <any> => requests.post(`getclassroomteachers`, params),
+	fetchClassroomStudents: (params: {}): Promise <any> => requests.post(`getclassroomstudents`, params),
 
 	//Users API
 	fetchUsers: (params: {}): Promise <any> => requests.post(`getallusers`, params),
@@ -77,4 +80,18 @@ export const Post = {
 	fetchStudents: (params: {}): Promise <any> => requests.post(`getallstudents`, params),
 	createStudent: (params: {}): Promise <any> => requests.post(`createstudent`, params),
 	editStudent: (params: {}): Promise <any> => requests.post(`modifystudent`, params),
+	fetchStudentParents: (params: {}): Promise <any> => requests.post(`getstudentparents`, params),
+	removeStudentParent: (params: {}): Promise <any> => requests.post(`removestudentparent`, params),
+	addStudentParent: (params: {}): Promise <any> => requests.post(`addstudentparent`, params),
+	uploadStudentPhoto: (params: {}): Promise <any> => requests.file(`uploadstudentphoto`, params),
+	getStudentPhoto: (params: {}): Promise <any> => requests.file(`getstudentphoto`, params),
+	uploadStudents: (params: {}): Promise <any> => requests.file(`uploadstudents`, params),
+
+	//Fees API
+	fetchFeeTypes: (params: {}): Promise <any> => requests.post(`getfeetypes`, params),
+	fetchPaymentMethods: (params: {}): Promise <any> => requests.post(`getpaymethods`, params),
+	fetchStudentFees: (params: {}): Promise <any> => requests.post(`getstudentfees`, params),
+	addStudentFee: (params: {}): Promise <any> => requests.post(`addstudentfee`, params),
+	editStudentFee: (params: {}): Promise <any> => requests.post(`editstudentfee`, params),
+	deleteStudentFee: (params: {}): Promise <any> => requests.post(`deletestudentfee`, params),
 }

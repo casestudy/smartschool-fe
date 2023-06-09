@@ -41,8 +41,8 @@ export const fetchClassroomsSlice = createSlice({
             // console.log(state);
         });
         builder.addCase(fetchClassroomTeachersAsync.fulfilled, (state, action) => {
-            console.log(action.payload);
-            console.log(state);
+            // console.log(action.payload);
+            // console.log(state);
         });
     },
 });

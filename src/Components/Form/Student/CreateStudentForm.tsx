@@ -121,6 +121,7 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			dob: fields[5].value.format('YYYY-MM-DD'),
 			pob: fields[6].value,
             classid: fields[7].value,
+			locale: locale,
 			localee: locale,
 			connid: localStorage.getItem('connid')
 		}
@@ -129,7 +130,6 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 
 		if (data.userid === '') {
 			// We are adding
-			console.log("Adding");
 			setLoadingMessage('Creating student...');
 			dispatch(createStudentAsync(data)).then((value) => {
 	
@@ -162,13 +162,13 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 			})
 		} else {
 			//We are updating the user
-			console.log(data);
 			setLoadingMessage('Updating student...');
 			dispatch(editStudentAsync(data)).then((value) => {
 	
 				const result = value.payload;
 	
 				if(result.error === false) {
+					setLoading(false);
 					navigate('/students');
 				} else {
 					//Probably an error due to axios. check for status 400 first
@@ -195,6 +195,12 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 		}
 	}
 
+	function disabledDate(current:any) {
+		var today = new Date();
+		let customDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+		return current && current > moment(customDate, "YYYY-MM-DD");
+	}
+
 	return (
 		<>
 			<Spin spinning={loading} tip={loadingMessage}>
@@ -205,12 +211,11 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 						setFields(allFields);
                         
 						if(fields[0].value === '' && fields[1].value === '') {
-                            console.log(fields);
+                            //console.log(fields);
 							//We are adding a new role
-							if(fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value.length > 0 && 
+							if(fields[2].value.length > 0 && fields[3].value.length > 0 && fields[4].value !== '' && 
 								fields[5].value !== '' && fields[6].value.length > 0 && fields[7].value !== ''
 							) {
-                                console.log(fields[2].value);
 								setDisabled(false);
 							} else {
 								setDisabled(true);
@@ -302,7 +307,7 @@ const CreateStudentForm: React.FC<Prop> = ({matricule, surname, othernames, gend
 								style={{width: '250px'}}
 								rules={[{ required: true, message: 'Date of Birth is required' }]}
 							>
-								<DatePicker format={'YYYY-MM-DD'} showToday={false} style={{width: '250px'}}/>
+								<DatePicker format={'YYYY-MM-DD'} disabledDate={disabledDate} showToday={false} style={{width: '250px'}}/>
 							</FormItem>
 						</InputRow>
 						<InputRow>
