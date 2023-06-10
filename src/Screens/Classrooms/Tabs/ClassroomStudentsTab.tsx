@@ -5,16 +5,17 @@ import Color from '../../../Components/UI/Header/Theme.json';
 
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
-import { Modal, Spin } from 'antd';
+import { Modal, Spin, Button } from 'antd';
 import { decode as base64_decode } from 'base-64';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch } from '../../../State/Hooks';
 
 import { fetchClassroomStudentsAsync } from '../../../State/Thunks/ClassroomsThunk';
 import Danger from '../../../Components/UI/Icons/Danger';
 import AddButton from '../../../Components/UI/Button/AddButton';
 import PrinterIcon from '../../../Components/UI/Icons/Printer';
+import PenIcon from '../../../Components/UI/Icons/Pen';
 
 interface Prop {
     classid?: string;
@@ -29,6 +30,7 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 
     const navigate = useNavigate();
 	const dispatch = useAppDispatch();
+	const { state } = useLocation();
 
 	const filterTable = (e: any) => {
 		const filt = originalStudents.filter((x:any) => x.surname.toLowerCase().includes(e.toLowerCase()) || x.othernames.toString().includes(e) || x.matricule.toLowerCase().includes(e.toLowerCase()) || x.descript.toLowerCase().includes(e.toLowerCase()));
@@ -201,7 +203,15 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 			<Flex>
 				<Spin spinning={loading} tip={loadingMessage}>
 					<CustomTable columns={columns} source={filteredStudents} searchIconColor={Color.classrooms} rowKey='userid' filter={filterTable}/>
-					<AddButton hint='Print class list' color={Color.classrooms} icon={<PrinterIcon/>} top='-50px' float='right' onClick={printClasslist}/>
+					<Flex style={{float:'right', display: 'flex'}}>
+						{
+							state.usertype === 'teacher'? <Flex style={{paddingRight: '15px'}}>
+								<AddButton hint='Enter student marks' color={Color.classrooms} icon={<PenIcon color='#fff' size='18px' line='20px'/>} top='-50px' float='right' onClick={printClasslist}/>
+							</Flex>: '' 
+						}
+						
+						<AddButton hint='Print class list' color={Color.classrooms} icon={<PrinterIcon/>} top='-50px' float='right' onClick={printClasslist}/>
+					</Flex>
 				</Spin>
 			</Flex>
 		</>
