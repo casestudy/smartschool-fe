@@ -31,7 +31,7 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalStudents.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.code.toString().includes(e) || x.descript.toLowerCase().includes(e.toLowerCase()));
+		const filt = originalStudents.filter((x:any) => x.surname.toLowerCase().includes(e.toLowerCase()) || x.othernames.toString().includes(e) || x.matricule.toLowerCase().includes(e.toLowerCase()) || x.descript.toLowerCase().includes(e.toLowerCase()));
 		setFilteredStudents(filt);
 	};
 
