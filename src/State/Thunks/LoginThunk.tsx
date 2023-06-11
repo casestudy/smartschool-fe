@@ -33,3 +33,17 @@ export const logoutUserAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const chpwdAsync = createAsyncThunk (
+	'chpwd',
+	async (postData: any) => {
+		try {
+			const response = await Post.chpwd(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
