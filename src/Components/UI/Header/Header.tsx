@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Typography } from 'antd';
+import { Modal, Typography } from 'antd';
 import { Divider } from 'antd';
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
+import { decode as base64_decode } from 'base-64';
+
+import { useAppDispatch } from '../../../State/Hooks';
 
 import Globe from '../Icons/Globe';
 import User from '../Icons/User';
@@ -23,6 +27,9 @@ import Color from './Theme.json';
 import { HeaderContainer } from './Header.style';
 import './Header.css';
 
+import { logoutUserAsync } from '../../../State/Thunks/LoginThunk';
+import Danger from '../../../Components/UI/Icons/Danger';
+
 interface Prop {
     title: string;
 	lastlogin?: string;
@@ -33,6 +40,9 @@ const { Title } = Typography;
 
 const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 	const [collapsed, setCollapsed] = useState(false);
+	const dispatch = useAppDispatch();
+
+	const navigate = useNavigate();
 
     const toggleCollapsed = () => {
         setCollapsed(!collapsed);
@@ -40,6 +50,69 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 
 	const appsMenu = () => {
 		toggleCollapsed();
+	}
+
+	const onUserDataClick: MenuProps['onClick'] = (e) => {
+		switch (e.key) {
+			case 'logout':
+				logoutUser();
+				break;
+		
+			default:
+				break;
+		}
+	};
+
+	const logoutUser = () => {
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			locale: locale,
+			connid: localStorage.getItem('connid'),
+		}
+
+		dispatch(logoutUserAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				const modal = Modal.success({
+					title: 'Logout',
+					content: 'Logout successful!',
+				});
+	
+				modal.update({});
+
+				localStorage.clear();
+				window.location.reload();
+				
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: 'Logout',
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.classrooms}/>
+				});
+	
+				modal.update({});
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
 	}
 
 	const items: MenuProps['items'] = [
@@ -193,6 +266,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 					height: "2.8rem",
 					width: "100%"
 				}}
+				onClick={onUserDataClick}
 				items={items}
 			/>
 			{collapsed?<AppMenu height='448px' visibility='visible'/> : <AppMenu height='0px' visibility='hidden'/>}
