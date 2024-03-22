@@ -130,7 +130,6 @@ width: 100%;
 & .ant-form-item-label {
 font-size: 14px;
 font-weight: 600;
-margin-bottom: 0.5rem;
 }
 & .ant-form-item-label
 > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
