@@ -82,8 +82,6 @@ const LoginCard: React.FC<Prop> = () => {
 			password: fields[2].value
 		}
 
-		console.log(data);
-
 		dispatch(chpwdAsync(data)).then((value) => {
 			const result = value.payload ;
 			if(result.error === false) {
@@ -91,7 +89,7 @@ const LoginCard: React.FC<Prop> = () => {
 				const dataSource = result.result.value;
 				const modal = Modal.success({
 					title: 'Change password',
-					content: 'Code sent to your email. Please ',
+					content: 'Password changed successfully.',
 				});
 	
 				modal.update({});

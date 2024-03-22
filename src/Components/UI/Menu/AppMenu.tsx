@@ -1,7 +1,9 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 
 import { Col, Row } from 'antd';
+
+import { decode as base64_decode} from 'base-64';
 
 import AdminIcon from '../Icons/Admin';
 import TeacherIcon from '../Icons/Teacher';
@@ -28,6 +30,15 @@ const styleIcon: React.CSSProperties = {paddingTop: '30px', textAlign: 'center'}
 const styleLabel: React.CSSProperties = {textAlign: 'center', fontWeight: '500', color: 'black !important'};
 
 const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
+	useEffect(() => {
+		const b64 : any = localStorage.getItem('data');
+		const store : any = base64_decode(b64) ;
+		const privs = JSON.parse(store).result.value[1];
+		console.log(privs);
+
+
+	});
+
     return (
         <>
             <Flex style={{
