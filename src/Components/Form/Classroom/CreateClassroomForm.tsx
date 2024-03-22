@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-import { Form, Input, Modal, Spin } from 'antd';
+import { Form, Input, Modal, Select, Spin } from 'antd';
 
 import SaveButton from '../../UI/Button/SaveButton';
 import Danger from '../../UI/Icons/Danger';
@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
 import { createClassroomAsync, editclassroomAsync } from '../../../State/Thunks/ClassroomsThunk';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 interface FieldData {
 	name: string | number | (string | number)[];
@@ -23,14 +24,15 @@ interface FieldData {
 interface Prop {
 	cname?: string;
 	abbreviation?: number;
+	letter?: string;
 	description?: string;
 	disp?: string; //Is the id field displayed?
 	classid?: string;
 }
 
 
-const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, classid, disp}) => {
-	const [fields, setFields] = useState<FieldData[]>([{name: ['classid'], value: ''}, { name: ['name'], value: '' }, { name: ['abbreviation'], value: '' }, { name: ['description'], value: ''}]);
+const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, letter, description, classid, disp}) => {
+	const [fields, setFields] = useState<FieldData[]>([{name: ['classid'], value: ''}, { name: ['name'], value: '' }, { name: ['abbreviation'], value: '' }, { name: ['letter'], value: '' }, { name: ['description'], value: ''}]);
 	const [disabled, setDisabled] = useState(true);
 
 	const [loading, setLoading] = useState(false);
@@ -45,7 +47,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 			if(!(fields[1].value > 0)) {
 				//Don't read
 				setTimeout(() => {
-					setFields([{name: ['classid'], value: classid}, {name: ['name'] , value: cname}, {name: ['abbreviation'] , value: abbreviation}, {name: ['description'], value: description}]);
+					setFields([{name: ['classid'], value: classid}, {name: ['name'] , value: cname}, {name: ['abbreviation'] , value: abbreviation}, { name: ['letter'], value: letter }, {name: ['description'], value: description}]);
 					setDisabled(false);
 				},100);
 			}
@@ -57,7 +59,8 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 			classid: fields[0].value,
 			name: fields[1].value,
 			abbrev: fields[2].value,
-			descr: fields[3].value,
+			letter: fields[3].value,
+			descr: fields[4].value,
 			connid: localStorage.getItem('connid')
 		}
 
@@ -85,7 +88,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 						code = result.error.code;
 					}
 					const modal = Modal.error({
-						title: `Create Subject`,
+						title: `Create Classroom`,
 						content: msg + ' (' + code + ')',
 						icon: <Danger color='#D07515'/>
 					});
@@ -195,6 +198,45 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
 							</FormItem>
 						</InputRow>
                     </Flex>
+					<Flex style={{width: '100%'}}>
+						<InputRow>
+							<FormItem 
+								label='Letter (Used when generating matricules):'
+								name='letter'
+								style={{width: '500px'}}
+								rules={[{required: true, message: ''}]}
+							>
+								<Select defaultValue={letter}>
+									<Option value='A'>A</Option>
+									<Option value='B'>B</Option>
+									<Option value='C'>C</Option>
+									<Option value='D'>D</Option>
+									<Option value='E'>E</Option>
+									<Option value='F'>F</Option>
+									<Option value='G'>G</Option>
+									<Option value='H'>H</Option>
+									<Option value='I'>I</Option>
+									<Option value='J'>J</Option>
+									<Option value='K'>K</Option>
+									<Option value='L'>L</Option>
+									<Option value='M'>M</Option>
+									<Option value='N'>N</Option>
+									<Option value='O'>O</Option>
+									<Option value='P'>P</Option>
+									<Option value='Q'>Q</Option>
+									<Option value='R'>R</Option>
+									<Option value='S'>S</Option>
+									<Option value='T'>T</Option>
+									<Option value='U'>U</Option>
+									<Option value='V'>V</Option>
+									<Option value='W'>W</Option>
+									<Option value='X'>X</Option>
+									<Option value='Y'>Y</Option>
+									<Option value='Z'>Z</Option>
+								</Select>
+							</FormItem>
+						</InputRow>
+					</Flex>
                     <Flex style={{width: '100%'}}>
 						<InputRow>
 							<FormItem 
@@ -220,7 +262,7 @@ const CreateClassroomForm: React.FC<Prop> = ({cname, abbreviation, description, 
                     <Flex>
 						<InputRow>
 							<FormItem>
-								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/subjects')}}/>
+								<SaveButton title='Cancel' size='large' bgcolor='#8C8C8C' onClick={() => {navigate('/classrooms')}}/>
 							</FormItem>
 							<FormItem>
 								<SaveButton title='Save' size='large' bgcolor='#D07515' disabled={disabled} onClick={onFinish}/>

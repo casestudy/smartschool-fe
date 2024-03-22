@@ -35,7 +35,7 @@ const CreateClassroomScreen: React.FC<any> = () => {
                             {(state.classroomid !== undefined)? 
                                         <CreateClassroomForm disp="block" classid={state.classroomid} 
                                                             cname={state.classroomname}
-                                                            abbreviation={state.classroomabbrev} description={state.classroomdesc}/> : 
+                                                            abbreviation={state.classroomabbrev} letter={state.classroomletter} description={state.classroomdesc}/> : 
                                         <CreateClassroomForm disp="none"/>}
 							
 						</StyledFormBody>

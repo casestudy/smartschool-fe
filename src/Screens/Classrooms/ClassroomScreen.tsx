@@ -87,6 +87,7 @@ const ClassroomScreen: React.FC<any> = () => {
 								title: 'Modify Classroom', 
 								classroomid: row.classid,
 								classroomname: row.cname,
+								classroomletter: row.letter,
 								classroomabbrev: row.abbreviation,
 								classroomdesc: row.descript
 							}
