@@ -32,8 +32,8 @@ const styleLabel: React.CSSProperties = {textAlign: 'center', fontWeight: '500',
 const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 	useEffect(() => {
 		const b64 : any = localStorage.getItem('data');
-		const store : any = base64_decode(b64) ;
-		const privs = JSON.parse(store).result.value[1];
+		const store : any = b64?base64_decode(b64) : '';
+		const privs = store?JSON.parse(store).result.value[1] : 'ssssss';
 		console.log(privs);
 
 
