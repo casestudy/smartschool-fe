@@ -6,6 +6,7 @@ import fetchClassroomsReducer from './Reducers/ClassroomsReducers';
 import fetchUsersReducer from './Reducers/UsersReducers';
 import fetchTeachersReducer from './Reducers/TeachersReducers';
 import fetchStudentsReducer from './Reducers/StudentsReducer';
+import fetchCalendarReducer from './Reducers/CalendarReducer';
 
 export const Store = configureStore({
     middleware: (getDefaultMiddleware) => 
@@ -29,7 +30,8 @@ export const Store = configureStore({
 		fetchClassrooms: fetchClassroomsReducer,
 		fetchUsers: fetchUsersReducer,
 		fetchTeachers: fetchTeachersReducer,
-		fetchStudents: fetchStudentsReducer
+		fetchStudents: fetchStudentsReducer,
+		fetchAcademicYears: fetchCalendarReducer
 	}, 
 });
 

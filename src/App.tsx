@@ -31,6 +31,9 @@ import StudentScreen from './Screens/Students/StudentScreen';
 import CreateStudentScreen from './Screens/Students/CreateStudentScreen';
 import VisualizeStudentScreen from './Screens/Students/VisualizeStudentScreen';
 
+import CalendarScreen from './Screens/Calendar/CalendarScreen';
+import CreateAcademicYearScreen from './Screens/Calendar/CreateAcademicYearScreen';
+
 import { ThemeProvider } from 'styled-components';
 
 const App = () => {
@@ -66,6 +69,9 @@ const App = () => {
 					<Route path="/students" element={loggedin === 'true'? <StudentScreen/> : <LoginScreen/>} />
 					<Route path="/student/new" element={loggedin === 'true'? <CreateStudentScreen/> : <LoginScreen/>} />
 					<Route path="/student/visualize" element={loggedin === 'true'? <VisualizeStudentScreen/> : <LoginScreen/>} />
+
+					<Route path="/calendar" element={loggedin === 'true'? <CalendarScreen/> : <LoginScreen/>} />
+					<Route path="/calendar/new" element={loggedin === 'true'? <CreateAcademicYearScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>
