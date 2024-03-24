@@ -96,4 +96,9 @@ export const Post = {
 	addStudentFee: (params: {}): Promise <any> => requests.post(`addstudentfee`, params),
 	editStudentFee: (params: {}): Promise <any> => requests.post(`editstudentfee`, params),
 	deleteStudentFee: (params: {}): Promise <any> => requests.post(`deletestudentfee`, params),
+
+	//Calendar API
+	fetchAcademicYears: (params: {}): Promise <any> => requests.post(`getyears`, params),
+	createAcademicYear: (params: {}): Promise <any> => requests.post(`createyear`, params),
+	modifyAcademicYear: (params: {}): Promise <any> => requests.post(`modifyyear`, params),
 }

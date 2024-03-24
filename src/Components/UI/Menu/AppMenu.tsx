@@ -34,9 +34,6 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 		const b64 : any = localStorage.getItem('data');
 		const store : any = b64?base64_decode(b64) : '';
 		const privs = store?JSON.parse(store).result.value[1] : 'ssssss';
-		console.log(privs);
-
-
 	});
 
     return (
@@ -133,8 +130,12 @@ const LeftMenu: React.FC<Prop> = ({height, visibility}) => {
 						<Row justify="center" style={styleLabel}>Assistances</Row>
 					</Col>
 					<Col span={8} className="gutter-row">
-						<Row justify="center" align="middle" style={styleIcon}><CalendarIcon/></Row>
-						<Row justify="center" style={styleLabel}>Calendar</Row>
+						<Link to="/calendar" className="app-menu-link">
+							<Flex className="app-menu-item-container">
+								<Row justify="center" align="middle" style={styleIcon}><CalendarIcon/></Row>
+								<Row justify="center" style={styleLabel}>Calendar</Row>
+							</Flex>
+						</Link>
 					</Col>
 					<Col span={8} className="gutter-row">
 						<Row justify="center" align="middle" style={styleIcon}><SettingsIcon/></Row>
