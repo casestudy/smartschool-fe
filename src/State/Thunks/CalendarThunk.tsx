@@ -42,3 +42,59 @@ export const modifyAcademicYearAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const fetchAcademicTermTypesAsync = createAsyncThunk (
+	'fetchAcademicTermTypes',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchAcademicTermTypes(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const fetchAcademicTermAsync = createAsyncThunk (
+	'fetchAcademicTerm',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchAcademicTerms(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const createAcademicTerm = createAsyncThunk (
+	'createAcademicTerm',
+	async (postData: any) => {
+		try {
+			const response = await Post.createAcademicTerm(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const modifyAcademicTerm = createAsyncThunk (
+	'modifyAcademicTerm',
+	async (postData: any) => {
+		try {
+			const response = await Post.modifyAcademicTerm(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
