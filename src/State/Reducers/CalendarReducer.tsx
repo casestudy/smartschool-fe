@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../Store';
-import { createAcademicYearAsync, modifyAcademicYearAsync, fetchAcademicYearAsync } from '../Thunks/CalendarThunk'
+import { createAcademicYearAsync, modifyAcademicYearAsync, fetchAcademicYearAsync, fetchAcademicTermAsync, fetchAcademicTermTypesAsync, createAcademicTerm } from '../Thunks/CalendarThunk'
 
 interface CalendarMap {
     [key: string]: any;
@@ -27,6 +27,12 @@ export const fetchCalendarSlice = createSlice({
         performCreateClassroom: (state, action: PayloadAction<Array<any>>) => {
             state.calendar = action.payload;
         },
+        performFetchAcademicTerms: (state, action: PayloadAction<Array<any>>) => {
+            state.calendar = action.payload;
+        },
+        performFetchAcademicTermTypes: (state, action: PayloadAction<Array<any>>) => {
+            state.calendar = action.payload;
+        },
     },
     extraReducers(builder) {
         builder.addCase(fetchAcademicYearAsync.fulfilled, (state, action) => {
@@ -38,6 +44,18 @@ export const fetchCalendarSlice = createSlice({
             // console.log(state);
         });
         builder.addCase(modifyAcademicYearAsync.fulfilled, (state, action) => {
+            // console.log(action.payload);
+            // console.log(state);
+        });
+        builder.addCase(fetchAcademicTermAsync.fulfilled, (state, action) => {
+            // console.log(action.payload);
+            // console.log(state);
+        });
+        builder.addCase(fetchAcademicTermTypesAsync.fulfilled, (state, action) => {
+            // console.log(action.payload);
+            // console.log(state);
+        });
+        builder.addCase(createAcademicTerm.fulfilled, (state, action) => {
             // console.log(action.payload);
             // console.log(state);
         });

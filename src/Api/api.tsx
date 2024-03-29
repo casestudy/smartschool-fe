@@ -101,4 +101,8 @@ export const Post = {
 	fetchAcademicYears: (params: {}): Promise <any> => requests.post(`getyears`, params),
 	createAcademicYear: (params: {}): Promise <any> => requests.post(`createyear`, params),
 	modifyAcademicYear: (params: {}): Promise <any> => requests.post(`modifyyear`, params),
+	fetchAcademicTerms: (params: {}): Promise <any> => requests.post(`getterms`, params),
+	fetchAcademicTermTypes: (params: {}): Promise <any> => requests.post(`gettermtypes`, params),
+	createAcademicTerm: (params: {}): Promise <any> => requests.post(`createterm`, params),
+	modifyAcademicTerm: (params: {}): Promise <any> => requests.post(`modifyterm`, params),
 }
