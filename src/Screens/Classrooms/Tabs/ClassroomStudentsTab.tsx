@@ -51,6 +51,7 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 
 		dispatch(fetchClassroomStudentsAsync(data)).then((value) => {
 			const result = value.payload ;
+
 			if(result.error === false) {
 				// We have the db results here				
 				setLoading(false);
@@ -68,9 +69,14 @@ const ClassroomStudentsTab: React.FC<Prop> = ({classid, locale}) => {
 				let msg = '';
 				let code = '';
 	
-				msg = result.msg;
-				code = '500';
-
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
 				const modal = Modal.error({
 					title: 'Students',
 					content: msg + ' (' + code + ')',
