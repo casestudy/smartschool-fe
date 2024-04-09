@@ -19,12 +19,12 @@ import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchAcademicTermAsync } from '../../State/Thunks/CalendarThunk';
+import { fetchSequencesAsync } from '../../State/Thunks/CalendarThunk';
 
-const AcademicTermScreen: React.FC<any> = () => {
+const SequenceScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
-	const [originalCalendar, setOriginalCalendar] = useState([]);
-	const [filteredCalendar, setFilteredCalendar] = useState([]);
+	const [originalSequences, setOriginalSequences] = useState([]);
+	const [filteredSequences, setFilteredSequences] = useState([]);
 
 	let ll: any = localStorage.getItem('lastlogin');
 
@@ -32,8 +32,8 @@ const AcademicTermScreen: React.FC<any> = () => {
 	const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
-		const filt = originalCalendar.filter((x:any) => x.startdate.toLowerCase().includes(e.toLowerCase()) || x.enddate.toString().includes(e));
-		setFilteredCalendar(filt);
+		const filt = originalSequences.filter((x:any) => x.startdate.toLowerCase().includes(e.toLowerCase()) || x.enddate.toString().includes(e));
+		setFilteredSequences(filt);
 	};
 
 	const columns = [
@@ -90,16 +90,16 @@ const AcademicTermScreen: React.FC<any> = () => {
 				
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						navigate('/calendar/terms/visualize', {state: {termid: row.termid, yearid: row.yearid}});
+						navigate('/calendar/terms/visualize', {state: {termid: row.termid}});
 					}}>
 					<VisualizeIcon color='#D07515'/> 
 				</Button>
 			</Flex>
 		},
 		{
-			title: 'year Id',
-			dataIndex: 'yearid',
-			key: 'yearid',
+			title: 'Exam Id',
+			dataIndex: 'examid',
+			key: 'examid',
 			width: '15%',
 			hidden: true
 		},
@@ -111,9 +111,9 @@ const AcademicTermScreen: React.FC<any> = () => {
 			hidden: true
 		},
 		{
-			title: 'Term type',
-			dataIndex: 'termtype',
-			key: 'termtype',
+			title: 'Exam type',
+			dataIndex: 'examtype',
+			key: 'examtype',
 			width: '5%',
 			hidden: true
 		},
@@ -124,16 +124,16 @@ const AcademicTermScreen: React.FC<any> = () => {
 	useEffect(() => {
 		const data = {
 			connid: localStorage.getItem('connid'),
-			yearid: state.yearid,
+			termid: state.termid,
 		};
 
-		dispatch(fetchAcademicTermAsync(data)).then((value) => {
+		dispatch(fetchSequencesAsync(data)).then((value) => {
 			const result = value.payload ;
 			if(result.error === false) {
 				// We have the db results here
 				const dataSource = result.result.value;
-				setFilteredCalendar(dataSource);
-				setOriginalCalendar(dataSource);
+				setFilteredSequences(dataSource);
+				setOriginalSequences(dataSource);
 				setLoading(false);
 			} else {
 				//An axios error
@@ -149,7 +149,7 @@ const AcademicTermScreen: React.FC<any> = () => {
 					code = result.error.code;
 				}
 				const modal = Modal.error({
-					title: `Academic terms`,
+					title: `Sequences`,
 					content: msg + ' (' + code + ')',
 					icon: <Danger color='#D07515'/>
 				});
@@ -165,21 +165,21 @@ const AcademicTermScreen: React.FC<any> = () => {
 
     return (
         <Flex>
-			<Spin spinning={loading} tip="Fetching academic terms...">
+			<Spin spinning={loading} tip="Fetching sequences...">
 				<Header title='Calendar' loggedin={true} lastlogin={ll}></Header>
 				<Row>
 					<Col md={18}>
 						<Flex style={{padding: "5rem 5rem 1px 5rem", fontWeight: 700, fontSize: "1.2rem", alignItems: "center", marginBottom: 0, display: "flex"}}>
 							<BackArrow>
-								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/calendar')}}/>
+								<BackButton icon={<BackIcon/>} onClick={() => {navigate('/calendar/terms', {state: {yearid: state.yearid}})}}/>
 							</BackArrow>
 							<Flex style={{columnGap: '1rem', display: 'flex'}}>
-								<Title>Academic Terms</Title>
+								<Title>Sequences</Title>
 							</Flex>
 						</Flex>
 						<Flex style={{padding: "5rem 5rem 1px 5rem"}}>
-							<CustomTable columns={columns} source={filteredCalendar} searchIconColor='#D07515' rowKey='termid' filter={filterTable}/>
-							<AddButton hint='Create new academic term' icon={<PlusIcon/>} top='-50px' float='right' color='#D07515' onClick={() => {navigate('/calendar/terms/new', {state: {title: 'Create New Academic Term', yearid: state.yearid}})}}/>
+							<CustomTable columns={columns} source={filteredSequences} searchIconColor='#D07515' rowKey='examid' filter={filterTable}/>
+							<AddButton hint='Create new sequence' icon={<PlusIcon/>} top='-50px' float='right' color='#D07515' onClick={() => {navigate('/calendar/exam/new', {state: {title: 'Create New Sequence', termid: state.termid, yearid: state.yearid}})}}/>
 						</Flex>
 					</Col>
 					<Col md={6}>Notifications</Col>
@@ -203,4 +203,4 @@ const Title = styled.div`
 	text-transform: uppercase;
 `;
 
-export default AcademicTermScreen;
+export default SequenceScreen;

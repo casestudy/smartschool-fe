@@ -35,6 +35,8 @@ import CalendarScreen from './Screens/Calendar/CalendarScreen';
 import CreateAcademicYearScreen from './Screens/Calendar/CreateAcademicYearScreen';
 import AcademicTermScreen from './Screens/Calendar/AcademicTermsScreen';
 import CreateAcademicTermScreen from './Screens/Calendar/CreateAcademicTermScreen';
+import SequenceScreen from './Screens/Calendar/SequenceScreen';
+import CreateSequenceScreen from './Screens/Calendar/CreateExaminationScreen';
 
 import { ThemeProvider } from 'styled-components';
 
@@ -76,6 +78,8 @@ const App = () => {
 					<Route path="/calendar/new" element={loggedin === 'true'? <CreateAcademicYearScreen/> : <LoginScreen/>} />
 					<Route path="/calendar/terms" element={loggedin === 'true'? <AcademicTermScreen/> : <LoginScreen/>} />
 					<Route path="/calendar/terms/new" element={loggedin === 'true'? <CreateAcademicTermScreen/> : <LoginScreen/>} />
+					<Route path="/calendar/terms/visualize" element={loggedin === 'true'? <SequenceScreen/> : <LoginScreen/>} />
+					<Route path="/calendar/exam/new" element={loggedin === 'true'? <CreateSequenceScreen/> : <LoginScreen/>} />
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>

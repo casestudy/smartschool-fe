@@ -98,3 +98,45 @@ export const modifyAcademicTerm = createAsyncThunk (
 		}
 	}
 )
+
+export const fetchSequencesAsync = createAsyncThunk (
+	'fetchSequencesAsync',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchSequences(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const fetchExamTypeAsync = createAsyncThunk (
+	'fetchExamTypeAsync',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchExamTypes(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
+
+export const createExamAsync = createAsyncThunk (
+	'createExamAsync',
+	async (postData: any) => {
+		try {
+			const response = await Post.createExam(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)
