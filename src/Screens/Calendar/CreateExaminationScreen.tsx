@@ -34,7 +34,6 @@ const CreateAcademicTermScreen: React.FC<any> = () => {
 							<Filler/>
                             {(state.examid !== undefined)? 
                                         <CreateExamination disp="block" examid={state.examid} 
-                                                            termid={state.termid}
                                                             sdate={state.startdate}
                                                             edate={state.enddate} etype={state.etype}/> : 
                                         <CreateExamination disp="none"/>}

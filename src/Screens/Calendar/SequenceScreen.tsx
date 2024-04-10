@@ -73,26 +73,19 @@ const SequenceScreen: React.FC<any> = () => {
 			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						navigate('/calendar/terms/new', {
+						navigate('/calendar/exam/new', {
 							state: {
-								title: 'Modify Academic Term', 
-								yearid: row.yearid, 
-								termid: row.termid,
+								title: 'Modify Sequence', 
+								examid: row.examid, 
 								startdate: row.startdate,
 								enddate: row.enddate,
-								descript: row.descript,
-								ttype: row.termtype,
+								etype: row.name,
+								termid: state.termid,
+								yearid: state.yearid
 							}
 						})
 					}}>
 					<PenIcon color='#D07515' size='18px' line='20px'/> 
-				</Button>
-				
-				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
-					onClick={() => {
-						navigate('/calendar/terms/visualize', {state: {termid: row.termid}});
-					}}>
-					<VisualizeIcon color='#D07515'/> 
 				</Button>
 			</Flex>
 		},
@@ -100,14 +93,7 @@ const SequenceScreen: React.FC<any> = () => {
 			title: 'Exam Id',
 			dataIndex: 'examid',
 			key: 'examid',
-			width: '15%',
-			hidden: true
-		},
-        {
-			title: 'Term Id',
-			dataIndex: 'termid',
-			key: 'termid',
-			width: '5%',
+			width: '20%',
 			hidden: true
 		},
 		{

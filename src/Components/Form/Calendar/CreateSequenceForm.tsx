@@ -10,7 +10,7 @@ import Danger from '../../UI/Icons/Danger';
 import Color from '../../UI/Header/Theme.json';
 
 import { useAppDispatch, useAppSelector} from '../../../State/Hooks';
-import { fetchExamTypeAsync, createExamAsync } from '../../../State/Thunks/CalendarThunk';
+import { fetchExamTypeAsync, createExamAsync, modifyExamAsync } from '../../../State/Thunks/CalendarThunk';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -50,7 +50,7 @@ const CreateSequenceForm: React.FC<Prop> = ({sdate, edate, etype, examid, termid
 	useEffect(() => {
 		setYearId(state.yearid);
 
-		if(typeof termid !== 'undefined') {
+		if(typeof examid !== 'undefined') {
 			if(!(fields[0].value > 0)) {
 				//Don't read
 				setTimeout(() => {
@@ -114,7 +114,6 @@ const CreateSequenceForm: React.FC<Prop> = ({sdate, edate, etype, examid, termid
 			end: fields[2].value.format('YYYY-MM-DD'),
 			etype: fields[3].value,
 			connid: localStorage.getItem('connid'),
-			termid: state.termid,
 			locale: locale,
 		}
 
@@ -128,7 +127,7 @@ const CreateSequenceForm: React.FC<Prop> = ({sdate, edate, etype, examid, termid
 				const result = value.payload;
 	
 				if(result.error === false) {
-					navigate('/calendar/terms/visualize', {state: {termid: data.termid}});
+					navigate('/calendar/terms/visualize', {state: {termid: state.termid}});
 				} else {
 					//Probably an error due to axios. check for status 400 first
 					let msg = '';
@@ -154,34 +153,34 @@ const CreateSequenceForm: React.FC<Prop> = ({sdate, edate, etype, examid, termid
 		} else {
 			//We are updating the role
 			setLoadingMessage('Updating examination...');
-			// dispatch(modifyAcademicTerm(data)).then((value) => {
+			dispatch(modifyExamAsync(data)).then((value) => {
 	
-			// 	const result = value.payload;
+				const result = value.payload;
 	
-			// 	if(result.error === false) {
-			// 		navigate('/calendar/terms/visualize', {state: {termid: data.termid}});
-			// 	} else {
-			// 		//Probably an error due to axios. check for status 400 first
-			// 		let msg = '';
-			// 		let code = '';
-			// 		if(result.status === 400) {
-			// 			msg = result.message;
-			// 			code = result.code;
-			// 		} else {
-			// 			//It is error from the back end
-			// 			msg = result.error.msg;
-			// 			code = result.error.code;
-			// 		}
-			// 		const modal = Modal.error({
-			// 			title: `Modify Academic Term: `,
-			// 			content: msg + ' (' + code + ')',
-            //             okType: 'text',
-			// 			icon: <Danger color='#D07515'/>
-			// 		});
+				if(result.error === false) {
+					navigate('/calendar/terms/visualize', {state: {termid: state.termid}});
+				} else {
+					//Probably an error due to axios. check for status 400 first
+					let msg = '';
+					let code = '';
+					if(result.status === 400) {
+						msg = result.message;
+						code = result.code;
+					} else {
+						//It is error from the back end
+						msg = result.error.msg;
+						code = result.error.code;
+					}
+					const modal = Modal.error({
+						title: `Modify Examination`,
+						content: msg + ' (' + code + ')',
+                        okType: 'text',
+						icon: <Danger color='#D07515'/>
+					});
 	
-			// 		modal.update({});
-			// 	}
-			// })
+					modal.update({});
+				}
+			})
 			setLoading(false);
 		}
 	}

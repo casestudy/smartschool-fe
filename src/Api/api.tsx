@@ -108,5 +108,6 @@ export const Post = {
 	fetchSequences: (params: {}): Promise <any> => requests.post(`getexams`, params),
 	fetchExamTypes: (params: {}): Promise <any> => requests.post(`getexamtypes`, params),
 	createExam: (params: {}): Promise <any> => requests.post(`createexam`, params),
+	modifyExam: (params: {}): Promise <any> => requests.post(`modifyexam`, params),
 
 }
