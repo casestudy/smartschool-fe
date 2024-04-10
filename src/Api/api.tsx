@@ -105,4 +105,9 @@ export const Post = {
 	fetchAcademicTermTypes: (params: {}): Promise <any> => requests.post(`gettermtypes`, params),
 	createAcademicTerm: (params: {}): Promise <any> => requests.post(`createterm`, params),
 	modifyAcademicTerm: (params: {}): Promise <any> => requests.post(`modifyterm`, params),
+	fetchSequences: (params: {}): Promise <any> => requests.post(`getexams`, params),
+	fetchExamTypes: (params: {}): Promise <any> => requests.post(`getexamtypes`, params),
+	createExam: (params: {}): Promise <any> => requests.post(`createexam`, params),
+	modifyExam: (params: {}): Promise <any> => requests.post(`modifyexam`, params),
+
 }
