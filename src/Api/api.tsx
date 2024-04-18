@@ -77,6 +77,7 @@ export const Post = {
 	//Teachers API
 	fetchTeacherSubjects: (params: {}): Promise <any> => requests.post(`getteachersubjects`, params),
 	addTeacherSubjects: (params: {}): Promise <any> => requests.post(`addteachersubjects`, params),
+	fetchStudentMarks: (params: {}): Promise <any> => requests.post(`beginsequenceentry`, params),
 
 	//Students API
 	fetchStudents: (params: {}): Promise <any> => requests.post(`getallstudents`, params),

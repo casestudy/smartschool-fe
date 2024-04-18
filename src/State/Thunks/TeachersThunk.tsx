@@ -28,3 +28,17 @@ export const addTeacherSubjectsAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const fetchStudentsMarksAsync = createAsyncThunk (
+	'fetchStudentsMarks',
+	async (postData: any) => {
+		try {
+			const response = await Post.fetchStudentMarks(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)

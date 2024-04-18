@@ -127,6 +127,8 @@ const LoginForm: React.FC = () => {
 			toggle(true);
 			const result = value.payload ;
 
+			console.log(result);
+
 			if(result.error === false) {
 				toggle(false);
 				localStorage.setItem("loggedin", "true");
