@@ -469,7 +469,7 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 			dataIndex: 'mark',
 			key: 'mark',
 			width: '15%',
-			render: (text: any, row: any) => <InputNumber type='number' size='middle' placeholder='Sequence Mark' value={row.mark} style={{width: '100%'}}/>
+			render: (text: any, row: any) => <InputNumber type='number' max={20} min={0} placeholder='Sequence Mark' defaultValue={parseFloat(row.mark)} style={{width: '100%'}}/>
         },
 		{
 			title: 'Student Id',
