@@ -22,7 +22,7 @@ import InputField from '../../../Components/UI/Input/InputField';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 import { useAppDispatch } from '../../../State/Hooks';
-import { fetchTeacherSubjectsAsync, addTeacherSubjectsAsync, fetchStudentsMarksAsync } from '../../../State/Thunks/TeachersThunk';
+import { fetchTeacherSubjectsAsync, addTeacherSubjectsAsync, fetchStudentsMarksAsync, submitSequenceMarksAsync } from '../../../State/Thunks/TeachersThunk';
 import { fetchSubjectsAsync} from '../../../State/Thunks/SubjectsThunk';
 import { fetchClassroomsAsync } from '../../../State/Thunks/ClassroomsThunk';
 
@@ -54,6 +54,10 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 
 	const [modalLoading, setModalLoading] = useState(true);
 	const [modalLoadingMessage, setModalLoadingMessage] = useState('');
+
+	const [countOfMarksSaved, setCountOfMarksSaved] = useState(0);
+	const [currentSequenceDetails, setCurrentSequenceDetails] = useState([]);
+	const [currentSubjectTitle, setCurrentSubjectTitle] = useState('');
 
     const dispatch = useAppDispatch();
 
@@ -241,9 +245,15 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 			locale: locale,
 		};
 
+		const seqdata : any = [{
+			subjectid: row.subjectid,
+			classid: row.classid
+		}];
+		setCurrentSubjectTitle(`Sequence marks for: ${row.sname}`);
+		setCurrentSequenceDetails(seqdata);
+
 		dispatch(fetchStudentsMarksAsync(data)).then((value) => {
 			const result = value.payload ;
-			console.log(result);
 			if(result.error === false) {
 				const dataSource = result.result.value;
 				setFilteredAllStudents(dataSource);
@@ -280,6 +290,70 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 			console.log(error);
 		} );
 
+	}
+
+	const updateStudentMark = (id:any, value: number) => {
+		if(countOfMarksSaved < 5) {
+			setOriginalAllStudents((previousData:any) =>
+								previousData.map((row:any) => row.userid === id? {...row, mark: Number(value)} : row));
+			setCountOfMarksSaved(countOfMarksSaved+1);
+		} else {
+			handleOkSubmitSequenceMarks();
+			setCountOfMarksSaved(0);
+		}
+	}
+
+	const handleOkSubmitSequenceMarks = () => {
+		setModalLoading(true);
+		setModalLoadingMessage('Saving sequence marks...');
+
+		const b64 : any = localStorage.getItem('data');
+		const store : any = base64_decode(b64) ;
+		const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			connid: localStorage.getItem('connid'),
+			subjectid: currentSequenceDetails[0]['subjectid'],
+			classid: currentSequenceDetails[0]['classid'],
+			locale:locale,
+			data: JSON.stringify(originalAllStudents)
+
+		};
+
+		dispatch(submitSequenceMarksAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setModalLoading(false);
+				
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Sequence Marks`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.teachers}/>
+				});
+	
+				modal.update({});
+				setModalLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+			setModalLoading(false);
+		} );
 	}
 
     const columns = [
@@ -469,7 +543,7 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 			dataIndex: 'mark',
 			key: 'mark',
 			width: '15%',
-			render: (text: any, row: any) => <InputNumber type='number' max={20} min={0} placeholder='Sequence Mark' defaultValue={parseFloat(row.mark)} style={{width: '100%'}}/>
+			render: (text: any, row: any, index:any) => <InputNumber type='number' max={20} min={0} placeholder='Sequence Mark' defaultValue={parseFloat(row.mark)} style={{width: '100%'}} onBlur={(e:any) => updateStudentMark(row.userid, e.target.value)}/>
         },
 		{
 			title: 'Student Id',
@@ -549,8 +623,8 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 								columnsC={allClassroomsColumns} sourceC={filteredAllClassrooms} tableKeyC='classid' onFilterC={filterAllClassroomsTable} 
 								display='block' radio={true} radioChanged={handleRadioButtonChange}/>
 
-			<CustomModal visible={isAddSubjectMarkstModalOpen} title='All Students' 
-								okText='Save Marks' onOk={handleOkAddTeacherSubjectBatch} onCancel={handleCancelTeacherSequenceMarks} 
+			<CustomModal visible={isAddSubjectMarkstModalOpen} title={currentSubjectTitle} 
+								okText='Save Marks' onOk={handleOkSubmitSequenceMarks} onCancel={handleCancelTeacherSequenceMarks} 
 								columns={allStudentColumns} source={filteredAllStudents} tableKey='userid' onFilter={filterAllStudentsTable} onClose={handleCancelTeacherSequenceMarks}
 								okDisabled={false} spin={modalLoading} spinMessage={modalLoadingMessage} width={1000}
 								okColor={usertype === 'teacher'? Color.teachers : Color.subjects}
