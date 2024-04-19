@@ -124,7 +124,6 @@ const TeacherScreen: React.FC<any> = () => {
 
 				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
 					onClick={() => {
-						//localStorage.setItem("role", JSON.stringify(row));
 						navigate('/user/visualize', {state: {usertype: 'teacher', row: row}});
 					}}>
 					<VisualizeIcon color = {Color.teachers}/> 

@@ -8,15 +8,17 @@ interface Prop {
 	size: SizeType;
 	holder: string;
 	type?: string;
+	value?: any;
 	prefix?: ReactNode;
 	suffix?: ReactNode;
 	style?: CSSProperties;
 	onChange?: any;
+	onKeyUp?: any;
 }
 
-const App: React.FC<Prop> = ({size, holder, type, prefix, suffix, style, onChange}) => (
+const App: React.FC<Prop> = ({size, holder, type, value, prefix, suffix, style, onChange, onKeyUp}) => (
   <>
-    	<Input type={type} size={size} placeholder={holder} prefix={prefix} suffix={suffix} style={style} onChange={onChange}/>
+    	<Input type={type} size={size} defaultValue={value} placeholder={holder} prefix={prefix} suffix={suffix} style={style} onChange={onChange} onKeyUp={onKeyUp}/>
   </>
 );
 

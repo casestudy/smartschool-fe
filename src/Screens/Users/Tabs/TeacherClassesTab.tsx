@@ -1,6 +1,7 @@
 import  React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Row , Col, Button, Modal, Spin, Radio } from 'antd';
+import { Button, Modal, Spin, Radio, InputNumber } from 'antd';
 
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
@@ -11,21 +12,19 @@ import AddButton from '../../../Components/UI/Button/AddButton';
 import CustomModal from '../../../Components/UI/Modal/Modal';
 
 import Danger from '../../../Components/UI/Icons/Danger';
-import ThrashIcon from '../../../Components/UI/Icons/ThrashIcon';
 import PlusIcon from '../../../Components/UI/Icons/PlusIcon';
 import MinusIcon from '../../../Components/UI/Icons/MinusIcon';
-import ArrowUpIcon from '../../../Components/UI/Icons/ArrowUp';
+import VisualizeIcon from '../../../Components/UI/Icons/Visualize';
+import ThrashIcon from '../../../Components/UI/Icons/Thrash';
 
-import Title from '../../../Components/UI/Messages/Title';
-import Message from '../../../Components/UI/Messages/Message';
 import CheckboxField from '../../../Components/UI/Input/CheckBox';
+import InputField from '../../../Components/UI/Input/InputField';
 
 import Color from '../../../Components/UI/Header/Theme.json';
 import { useAppDispatch } from '../../../State/Hooks';
-import { fetchTeacherSubjectsAsync, addTeacherSubjectsAsync } from '../../../State/Thunks/TeachersThunk';
+import { fetchTeacherSubjectsAsync, addTeacherSubjectsAsync, fetchStudentsMarksAsync, submitSequenceMarksAsync } from '../../../State/Thunks/TeachersThunk';
 import { fetchSubjectsAsync} from '../../../State/Thunks/SubjectsThunk';
 import { fetchClassroomsAsync } from '../../../State/Thunks/ClassroomsThunk';
-import { set } from 'immer/dist/internal';
 
 interface Prop {
 	userid?: number,
@@ -44,24 +43,30 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 	const [allClassroomsBatch, setAllClassroomsBatch] = useState<string[]>([]);
 	const [originalAllSubjects, setOriginalAllSubjects] = useState([]);
 	const [filteredAllSubjects, setFilteredAllSubjects] = useState([]);
+	const [originalAllStudents, setOriginalAllStudents] = useState([]);
+	const [filteredAllStudents, setFilteredAllStudents] = useState([]);
 
 	const [originalAllClassrooms, setOriginalAllClassrooms] = useState([]);
 	const [filteredAllClassrooms, setFilteredAllClassrooms] = useState([]);
 
 	const [isAddTeacherSubjectModalOpen, setIsAddUserRoleModalOpen] = useState(false);
+	const [isAddSubjectMarkstModalOpen, setIsAddSubjectMarksModalOpen] = useState(false);
 
 	const [modalLoading, setModalLoading] = useState(true);
 	const [modalLoadingMessage, setModalLoadingMessage] = useState('');
 
-    const dispatch = useAppDispatch();
+	const [countOfMarksSaved, setCountOfMarksSaved] = useState(0);
+	const [currentSequenceDetails, setCurrentSequenceDetails] = useState([]);
+	const [currentSubjectTitle, setCurrentSubjectTitle] = useState('');
 
-	const b64 : any = localStorage.getItem('data');
-	const store : any = base64_decode(b64) ;
+    const dispatch = useAppDispatch();
 
 	const filterTable = (e: any) => {
 		const filt = originalTeacherSubjects.filter((x:any) => x.sname.toLowerCase().includes(e.toLowerCase()) || x.cname.toLowerCase().includes(e.toLowerCase()));
 		setFilteredTeacherSubjects(filt);
 	};
+
+	const navigate = useNavigate();
 
 	const handleOkAddTeacherSubjectBatch = () => {
 		setModalLoading(true);
@@ -217,6 +222,140 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 		setSelectedSubject(a.target.value);
 	}
 
+	const handleCancelTeacherSequenceMarks = () => {
+		setIsAddSubjectMarksModalOpen(false);
+		setOriginalAllStudents([]);
+	}
+
+	const filterAllStudentsTable = (e: any) => {
+		const filt = originalAllStudents.filter((x:any) => x.surname.toLowerCase().includes(e.toLowerCase()) || x.othernames.toLowerCase().includes(e.toLowerCase()));
+		setFilteredAllStudents(filt);
+	}
+
+
+	const handleAddStudentsMarksForSubject = (row:any) => {
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			connid: localStorage.getItem('connid'),
+			subjectid: row.subjectid,
+			classid: row.classid,
+			locale: locale,
+		};
+
+		const seqdata : any = [{
+			subjectid: row.subjectid,
+			classid: row.classid
+		}];
+		setCurrentSubjectTitle(`Sequence marks for: ${row.sname}`);
+		setCurrentSequenceDetails(seqdata);
+
+		dispatch(fetchStudentsMarksAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				const dataSource = result.result.value;
+				setFilteredAllStudents(dataSource);
+				setOriginalAllStudents(dataSource);
+
+				setIsAddSubjectMarksModalOpen(true);
+				
+				setModalLoading(false);
+				setLoading(false);
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Exam Marks`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.teachers}/>
+				});
+	
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+
+	}
+
+	const updateStudentMark = (id:any, value: number) => {
+		if(countOfMarksSaved < 5) {
+			setOriginalAllStudents((previousData:any) =>
+								previousData.map((row:any) => row.userid === id? {...row, mark: Number(value)} : row));
+			setCountOfMarksSaved(countOfMarksSaved+1);
+		} else {
+			handleOkSubmitSequenceMarks();
+			setCountOfMarksSaved(0);
+		}
+	}
+
+	const handleOkSubmitSequenceMarks = () => {
+		setModalLoading(true);
+		setModalLoadingMessage('Saving sequence marks...');
+
+		const b64 : any = localStorage.getItem('data');
+		const store : any = base64_decode(b64) ;
+		const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			connid: localStorage.getItem('connid'),
+			subjectid: currentSequenceDetails[0]['subjectid'],
+			classid: currentSequenceDetails[0]['classid'],
+			locale:locale,
+			data: JSON.stringify(originalAllStudents)
+
+		};
+
+		dispatch(submitSequenceMarksAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here
+				const dataSource = result.result.value;
+				setModalLoading(false);
+				
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: `Sequence Marks`,
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.teachers}/>
+				});
+	
+				modal.update({});
+				setModalLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+			setModalLoading(false);
+		} );
+	}
+
     const columns = [
         {
 			title: 'SN',
@@ -251,6 +390,19 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
             dataIndex: 'actions',
             key: 'actions',
             width: '5%',
+			render: (text:any,row:any) => <Flex style={{display: 'flex', alignItems: 'center'}}>
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {
+						
+					}}>
+					<ThrashIcon color={Color.teachers} /> 
+				</Button>
+
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => {handleAddStudentsMarksForSubject(row)}}>
+					<VisualizeIcon color = {Color.teachers}/> 
+				</Button>
+			</Flex>
         },
 		{
 			title: 'Subject Id',
@@ -370,6 +522,38 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 		},
     ].filter(item => !item.hidden);
 
+	const allStudentColumns = [
+        {
+			title: 'SN',
+			dataIndex: 'sn',
+			key: 'sn',
+			width: '5%',
+			render: (text:any,record:any,index:any) => (index+1)
+        },
+        {
+			title: 'Name',
+			dataIndex: 'sname',
+			key: 'surname',
+			width: '20%',
+			sorter: (a: any, b: any) => (a.surname).localeCompare(b.surname),
+			render: (text:any,record:any) => (record.surname + ' ' + record.othernames )
+        },
+		{
+			title: 'Mark',
+			dataIndex: 'mark',
+			key: 'mark',
+			width: '15%',
+			render: (text: any, row: any, index:any) => <InputNumber type='number' max={20} min={0} placeholder='Sequence Mark' defaultValue={parseFloat(row.mark)} style={{width: '100%'}} onBlur={(e:any) => updateStudentMark(row.userid, e.target.value)}/>
+        },
+		{
+			title: 'Student Id',
+			dataIndex: 'userid',
+			key: 'userid',
+			width: '60%',
+			hidden: true
+		},
+    ].filter(item => !item.hidden);
+
 
     useEffect(() => {
         const data = {
@@ -438,6 +622,14 @@ const TeacherClasses: React.FC<Prop> = ({userid, usertype}) => {
 								
 								columnsC={allClassroomsColumns} sourceC={filteredAllClassrooms} tableKeyC='classid' onFilterC={filterAllClassroomsTable} 
 								display='block' radio={true} radioChanged={handleRadioButtonChange}/>
+
+			<CustomModal visible={isAddSubjectMarkstModalOpen} title={currentSubjectTitle} 
+								okText='Save Marks' onOk={handleOkSubmitSequenceMarks} onCancel={handleCancelTeacherSequenceMarks} 
+								columns={allStudentColumns} source={filteredAllStudents} tableKey='userid' onFilter={filterAllStudentsTable} onClose={handleCancelTeacherSequenceMarks}
+								okDisabled={false} spin={modalLoading} spinMessage={modalLoadingMessage} width={1000}
+								okColor={usertype === 'teacher'? Color.teachers : Color.subjects}
+								
+								display='none'/>
 		</>
     );
 };

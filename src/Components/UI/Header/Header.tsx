@@ -77,7 +77,6 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 			const result = value.payload ;
 			if(result.error === false) {
 				// We have the db results here
-				const dataSource = result.result.value;
 				const modal = Modal.success({
 					title: 'Logout',
 					content: 'Logout successful!',
@@ -86,6 +85,7 @@ const Header: React.FC<Prop> = ({title, lastlogin, loggedin}) => {
 				modal.update({});
 
 				localStorage.clear();
+				navigate('/');
 				window.location.reload();
 				
 			} else {
