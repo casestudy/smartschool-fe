@@ -70,3 +70,17 @@ export const fetchClassroomStudentsAsync = createAsyncThunk (
 		}
 	}
 )
+
+export const printReportCardAsync = createAsyncThunk (
+	'printReportCardAsync',
+	async (postData: any) => {
+		try {
+			const response = await Post.printReportCard(postData);
+			return response;
+		} catch(error){
+			const err = JSON.stringify(error);
+			const errj = JSON.parse(err);
+			return { status: 400, message: errj.message, code: errj.code};
+		}
+	}
+)

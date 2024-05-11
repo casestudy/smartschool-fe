@@ -63,6 +63,7 @@ export const Post = {
 	updateClassroom: (params: {}): Promise <any> => requests.post(`modifyclassroom`, params),
 	fetchClassroomTeacher: (params: {}): Promise <any> => requests.post(`getclassroomteachers`, params),
 	fetchClassroomStudents: (params: {}): Promise <any> => requests.post(`getclassroomstudents`, params),
+	printReportCard: (params: {}): Promise <any> => requests.post(`printreportcards`, params),
 
 	//Users API
 	fetchUsers: (params: {}): Promise <any> => requests.post(`getallusers`, params),
