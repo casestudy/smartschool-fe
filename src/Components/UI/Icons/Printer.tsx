@@ -3,9 +3,10 @@ import { PrinterOutlined } from '@ant-design/icons';
 
 interface Prop {
 	color?: string
+  padding?: string
 }
 
-const PrinterIcon: React.FC <Prop> = ({color}) => {
+const PrinterIcon: React.FC <Prop> = ({color, padding}) => {
   const PrinterIcon = () => (
         <PrinterOutlined
             style={{
@@ -15,7 +16,7 @@ const PrinterIcon: React.FC <Prop> = ({color}) => {
                 fontWeight: 800,
                 fontSize: "20px",
                 lineHeight: "33px",
-                padding: "0.5rem 0 0 0"
+                padding: padding !== undefined? `${padding} 0 0 0` :"0.5rem 0 0 0"
             }}
         />	
   );

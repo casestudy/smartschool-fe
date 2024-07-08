@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Row , Col, Button, Modal, Spin } from 'antd';
+import Color from '../../Components/UI/Header/Theme.json';
 
 import Header from '../../Components/UI/Header/Header';
 import CustomTable from '../../Components/UI/Table/CustomTable';
@@ -9,14 +10,16 @@ import AddButton from '../../Components/UI/Button/AddButton';
 
 import styled from 'styled-components';
 import 'antd/dist/antd.css';
+import { decode as base64_decode } from 'base-64';
 
 import PenIcon from '../../Components/UI/Icons/Pen';
 import Danger from '../../Components/UI/Icons/Danger';
 import PlusIcon from '../../Components/UI/Icons/PlusIcon';
 import VisualizeIcon from '../../Components/UI/Icons/Visualize';
+import PrinterIcon from '../../Components/UI/Icons/Printer';
 
 import { useAppDispatch, useAppSelector} from '../../State/Hooks';
-import { fetchClassroomsAsync } from '../../State/Thunks/ClassroomsThunk';
+import { fetchClassroomsAsync, printReportCardAsync } from '../../State/Thunks/ClassroomsThunk';
 
 const ClassroomScreen: React.FC<any> = () => {
 	const [loading, setLoading] = useState(true);
@@ -33,6 +36,61 @@ const ClassroomScreen: React.FC<any> = () => {
 		setFilteredClassrooms(filt);
 	};
 
+	const printReportCard = (classid:number) => {
+		const b64 : any = localStorage.getItem('data');
+        const store : any = base64_decode(b64) ;
+        const locale = JSON.parse(store).result.value[0][0].locale;
+
+		const data = {
+			classid: classid,
+			locale: locale,
+			connid: localStorage.getItem('connid'),
+			print: true
+		}
+
+		dispatch(printReportCardAsync(data)).then((value) => {
+			const result = value.payload ;
+			if(result.error === false) {
+				// We have the db results here				
+				setLoading(false);
+
+				const data = 'data:application/pdf;base64,'+result.data;
+
+				var a = document.createElement('a')
+				a.setAttribute('href', data)
+				a.setAttribute('download', 'reportcard')
+				a.click()
+				a.remove()
+
+			} else {
+				//An axios error
+				let msg = '';
+				let code = '';
+	
+				if(result.status === 400) {
+					msg = result.message;
+					code = result.code;
+				} else {
+					//It is error from the back end
+					msg = result.error.msg;
+					code = result.error.code;
+				}
+				const modal = Modal.error({
+					title: 'Classrooms',
+					content: msg + ' (' + code + ')',
+					icon: <Danger color={Color.classrooms}/>
+				});
+	
+				modal.update({});
+				setLoading(false);
+			}
+		},(error) => {
+			console.log("Error");
+			console.log(error);
+		} );
+
+	}
+
 	const columns = [
         {
 			title: 'SN',
@@ -45,7 +103,7 @@ const ClassroomScreen: React.FC<any> = () => {
 			title: 'Name',
 			dataIndex: 'cname',
 			key: 'cname',
-			width: '10%',
+			width: '20%',
 			sorter: (a: any, b: any) => a.cname.localeCompare(b.cname)
         },
 		{
@@ -59,7 +117,7 @@ const ClassroomScreen: React.FC<any> = () => {
 			title: 'Description',
 			dataIndex: 'descript',
 			key: 'descript',
-			width: '25%',
+			width: '15%',
 			sorter: (a: any, b: any) => a.descript.localeCompare(b.descript)
         },
         {
@@ -101,6 +159,11 @@ const ClassroomScreen: React.FC<any> = () => {
 						navigate('/classroom/visualize', {state: {title: row.cname, classid: row.classid}});
 					}}>
 					<VisualizeIcon color='#D07515'/> 
+				</Button>
+				
+				<Button type='text' style={{color: 'BC6470', fontSize: '1rem', fontWeight: '600'}} 
+					onClick={() => printReportCard(row.classid)}>
+					<PrinterIcon color='#D07515' padding='0'/> 
 				</Button>
 			</Flex>
 		},
