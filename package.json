@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:fe": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "cypress": "npx cypress open",
